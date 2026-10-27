@@ -10,20 +10,99 @@ function watchErrors(page: Page): string[] {
   return errors
 }
 
-test('shows the title and an empty 16 × 11 board', async ({ page }) => {
+interface Layout {
+  scale: number
+  x: number
+  y: number
+  cell: number
+  boardLeft: number
+  toolboxLeft: number
+  top: number
+  toolboxColumns: number
+}
+
+/** Screen position of a board cell (column and row from 0) or a toolbox slot. */
+async function centerOf(page: Page, place: { cell: [number, number] } | { slot: number }) {
+  const layout = JSON.parse(
+    (await page.locator('.board').getAttribute('data-layout')) ?? '{}',
+  ) as Layout
+  const box = await page.locator('.board canvas').boundingBox()
+  if (box === null) throw new Error('The canvas is not visible')
+  const [x, y] =
+    'slot' in place
+      ? [
+          layout.toolboxLeft + ((place.slot % layout.toolboxColumns) + 0.5) * layout.cell,
+          layout.top + (Math.floor(place.slot / layout.toolboxColumns) + 0.5) * layout.cell,
+        ]
+      : [
+          layout.boardLeft + (place.cell[0] + 0.5) * layout.cell,
+          layout.top + (place.cell[1] + 0.5) * layout.cell,
+        ]
+  return { x: box.x + layout.x + x * layout.scale, y: box.y + layout.y + y * layout.scale }
+}
+
+/** First level: carry the mirror from the toolbox to B6 and turn it once to the left. */
+async function placeMirrorWithKeyboard(page: Page) {
+  await page.locator('.board').focus()
+  await page.keyboard.press('Enter')
+  for (let step = 0; step < 7; step++) await page.keyboard.press('ArrowRight')
+  await page.keyboard.press('ArrowDown')
+  await page.keyboard.press('Enter')
+}
+
+test('shows the first level without errors', async ({ page }) => {
   const errors = watchErrors(page)
   await page.goto('./')
 
   await expect(page.getByRole('heading', { name: 'Vibe Laser' })).toBeVisible()
   await expect(
-    page.getByRole('img', { name: 'Empty game board with 16 columns and 11 rows' }),
+    page.getByRole('application', { name: 'First Light: game board with 6 columns and 3 rows' }),
   ).toBeVisible()
-  const canvas = page.locator('.board canvas')
-  await expect(canvas).toBeVisible()
-  const size = await canvas.boundingBox()
+  const size = await page.locator('.board canvas').boundingBox()
   expect(size?.width).toBeGreaterThan(300)
   expect(size?.height).toBeGreaterThan(200)
   expect(errors).toEqual([])
+})
+
+test('solves the first level with the keyboard and moves on', async ({ page }) => {
+  await page.goto('./')
+  await placeMirrorWithKeyboard(page)
+  await page.keyboard.press('q')
+
+  const dialog = page.getByRole('dialog', { name: 'Level solved' })
+  await expect(dialog).toBeVisible()
+  await dialog.getByRole('button', { name: 'Next level' }).click()
+  await expect(page.getByRole('application', { name: /^Two Turns:/ })).toBeVisible()
+})
+
+test('solves the first level with the mouse', async ({ page }) => {
+  await page.goto('./')
+  const mirror = await centerOf(page, { slot: 0 })
+  const target = await centerOf(page, { cell: [5, 1] })
+  await page.mouse.move(mirror.x, mirror.y)
+  await page.mouse.down()
+  await page.mouse.move(target.x, target.y, { steps: 12 })
+  await page.mouse.up()
+  // A left click turns the mirror one step to the left, which sends the beam north.
+  await page.mouse.click(target.x, target.y)
+
+  await expect(page.getByRole('dialog', { name: 'Level solved' })).toBeVisible()
+})
+
+test('undoes and redoes a move with the buttons', async ({ page }) => {
+  await page.goto('./')
+  const undo = page.getByRole('button', { name: 'Undo' })
+  const redo = page.getByRole('button', { name: 'Redo' })
+  await expect(undo).toBeDisabled()
+
+  await placeMirrorWithKeyboard(page)
+  await expect(undo).toBeEnabled()
+  await undo.click()
+  await expect(undo).toBeDisabled()
+  await expect(redo).toBeEnabled()
+  await redo.click()
+  await expect(redo).toBeDisabled()
+  await expect(undo).toBeEnabled()
 })
 
 test('switches the interface to German and remembers it', async ({ page }) => {
@@ -31,7 +110,7 @@ test('switches the interface to German and remembers it', async ({ page }) => {
   await page.getByLabel('Language').selectOption('de')
 
   await expect(page.locator('html')).toHaveAttribute('lang', 'de')
-  await expect(page.getByText('Lenke farbige Laserstrahlen auf jede Münze.')).toBeVisible()
+  await expect(page.getByRole('button', { name: 'Rückgängig' })).toBeVisible()
   await page.reload()
   await expect(page.getByLabel('Sprache')).toHaveValue('de')
 })
@@ -42,7 +121,7 @@ test.describe('with a German browser', () => {
   test('starts in German', async ({ page }) => {
     await page.goto('./')
     await expect(
-      page.getByRole('img', { name: 'Leeres Spielfeld mit 16 Spalten und 11 Zeilen' }),
+      page.getByRole('application', { name: 'Erstes Licht: Spielfeld mit 6 Spalten und 3 Zeilen' }),
     ).toBeVisible()
   })
 })

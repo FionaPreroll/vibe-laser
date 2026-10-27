@@ -2,7 +2,14 @@
 
 A laser logic puzzle for the browser. Place mirrors, prisms, filters and other optical parts on a grid until colored laser beams hit every coin in exactly its color. The game is inspired by Aargon Deluxe (Twilight Games, 2001); its rules are rebuilt from a written specification, with our own name, art and levels.
 
-Once GitHub Pages is switched on (see [Deployment](#deployment)), the game runs at https://fionapreroll.github.io/vibe-laser/.
+Play it at https://fionapreroll.github.io/vibe-laser/.
+
+## How to play
+
+- Drag pieces from the toolbox on the left onto the board. Click a piece to turn it left, right-click to turn it right.
+- A level is solved when every coin spins: each colored coin needs light of exactly its color, and dark anti-coins must stay out of the light.
+- The buttons below the board restart the level, clean up (unlit pieces go back into the toolbox), undo, redo, and rotate the selected piece.
+- Keyboard: focus the board with Tab. The arrow keys move a frame over the toolbox and the board, Enter picks a piece up and puts it down, Escape cancels, Q and E rotate, Ctrl+Z undoes and Ctrl+Y or Ctrl+Shift+Z redoes.
 
 ## Getting started
 
@@ -39,15 +46,17 @@ TypeScript 7, PixiJS 8 for the board, Preact with Signals for the interface arou
 ```
 src/
   core/      game rules in pure TypeScript: no DOM, PixiJS or Preact
+  game/      the game session: current state, undo and redo, solved or not
+  content/   the tutorial levels, until level packs arrive
   i18n/      English and German texts, t() and the language setting
-  view/      PixiJS scene: board, later beams, pieces and input
-  ui/        Preact header, screens and dialogs around the canvas
+  view/      PixiJS scene, art packs, pointer and keyboard input
+  ui/        Preact header, button bar and dialogs around the canvas
   main.tsx   entry point
 tests/e2e/   Playwright browser tests
 public/      static files, copied as they are
 ```
 
-Later milestones add `game/` (session, ticks, undo), `content/` (packs and levels), `persistence/` (profiles and progress), `editor/` and `audio/`.
+Later milestones add `persistence/` (profiles and progress), `editor/` and `audio/`.
 
 Two rules keep the layers apart:
 
@@ -67,6 +76,14 @@ Unit tests sit next to the code as `*.test.ts`.
 
 Property tests (`src/core/properties.test.ts`, with fast-check) check the model on random boards: tracing ends within its bound, the light of all lasers is the sum of each laser alone, and turning or mirroring a board turns or mirrors its light.
 
+## Game session
+
+- `GameSession` in `src/game/session.ts` is the only writer of game state. Views and buttons send it commands (`move`, `rotate`, or a `batch` of them, as Cleanup does) from `src/core/commands.ts`.
+- Every command stores its inverse. Undo applies that inverse to the current puzzle instead of restoring a snapshot, so that later the work of slimes, mines and ships survives undo, as the spec demands.
+- Once every coin spins, the session locks the level; only Restart and the next level remain.
+- `BoardController` in `src/view/controller.ts` holds what only the interface needs: the selected piece, the keyboard focus and a piece lifted with the keyboard.
+- Each tutorial level in `src/content/levels.ts` carries one known solution; a test plays every solution and expects the level to be solved.
+
 ## Game rules decided so far
 
 - A coin hit by beams from several angles spins only if every beam carries exactly the coin's color (rule flag `coinAngles: sameColor`).
@@ -74,13 +91,22 @@ Property tests (`src/core/properties.test.ts`, with fast-check) check the model 
 - Art comes in switchable art packs. The first one is flat vector art drawn in code.
 - The interface speaks English and German.
 
+## Assumptions until checked against the original
+
+- A beam that runs into a laser stops there (`beamIntoLaser: absorb`).
+- Light passes through anti-coins, as it passes through coins.
+- Mirrors and double mirrors stop a beam that runs along their surface; only the slit mirror lets it through.
+- Cleanup returns unlit moveable pieces to the first free toolbox slots, in reading order; pieces that find no free slot stay on the board.
+- The toolbox has two slots per board row.
+- A dragged piece stays where it was until it is dropped, so carrying it around never changes the beams.
+
 ## CI and deployment
 
 CI (`.github/workflows/ci.yml`) runs the type check, Biome, the unit tests, the build and the Playwright tests on every pull request and on every push to `main`.
 
 ### Deployment
 
-Every push to `main` builds the game and deploys `dist/` to GitHub Pages (`.github/workflows/deploy.yml`). Pages has to be switched on once: Settings → Pages → Build and deployment → Source: GitHub Actions. The build uses relative asset paths, so it runs under any path.
+Every push to `main` builds the game and deploys `dist/` to GitHub Pages (`.github/workflows/deploy.yml`), with Pages set to GitHub Actions in the repository settings. The build uses relative asset paths, so it runs under any path.
 
 ## Branches and pull requests
 

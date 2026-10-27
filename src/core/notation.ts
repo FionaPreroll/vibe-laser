@@ -39,14 +39,16 @@ export function parseBoard(text: string): Board {
     if (tokens.length !== width) {
       throw new SyntaxError(`Row ${y + 1} has ${tokens.length} cells, but row 1 has ${width}`)
     }
-    for (const [x, token] of tokens.entries()) cells.push(parsePiece(token, x, y))
+    for (const [x, token] of tokens.entries()) {
+      cells.push(parsePiece(token, `${cellName({ x, y })} "${token}"`))
+    }
   }
   return { ...board, cells }
 }
 
-function parsePiece(token: string, x: number, y: number): Piece | undefined {
+/** Reads one part such as "M5" or "Crb", or "." for none; `where` names it in error messages. */
+export function parsePiece(token: string, where = `"${token}"`): Piece | undefined {
   if (token === '.') return undefined
-  const where = `${cellName({ x, y })} "${token}"`
   const [, abbreviation = '', digit = '', letters = ''] = TOKEN.exec(token) ?? []
   const kind = KINDS.get(abbreviation)
   if (kind === undefined) throw new SyntaxError(`${where} is not a part`)

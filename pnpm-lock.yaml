@@ -169,6 +169,9 @@ importers:
       '@preact/signals':
         specifier: ^2.11.3
         version: 2.11.3(preact@11.0.2)
+      '@preact/signals-core':
+        specifier: ^1.14.4
+        version: 1.14.4
       pixi.js:
         specifier: ^8.22.0
         version: 8.22.0
