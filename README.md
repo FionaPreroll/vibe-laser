@@ -56,6 +56,17 @@ Two rules keep the layers apart:
 
 Unit tests sit next to the code as `*.test.ts`.
 
+## Beam model
+
+- Directions run 0 to 7 clockwise from north. A piece's rotation counts 45° steps clockwise from its base orientation; a laser fires in the direction of its rotation.
+- A color is three bits, red 1, green 2 and blue 4. Mixing is OR, filtering is AND.
+- `trace()` in `src/core/trace.ts` follows each primary color from each laser and records the light on every half-segment, the line from a cell's center toward one of its eight neighbours. Parts act on each primary on its own, so mixed light needs no second pass.
+- Each part is a table in rotation 0 (`src/core/parts.ts`). Other rotations turn the beam into the part's frame and turn its exits back.
+- Tests write boards in a text notation (`src/core/notation.ts`): `L2r . M5` is a red laser firing east, an empty cell and a mirror in rotation 5.
+- Rules the spec leaves open are flags in `src/core/rules.ts`. `coinAngles` is decided; `beamIntoLaser: absorb` is an assumption until it is checked against the original.
+
+Property tests (`src/core/properties.test.ts`, with fast-check) check the model on random boards: tracing ends within its bound, the light of all lasers is the sum of each laser alone, and turning or mirroring a board turns or mirrors its light.
+
 ## Game rules decided so far
 
 - A coin hit by beams from several angles spins only if every beam carries exactly the coin's color (rule flag `coinAngles: sameColor`).
