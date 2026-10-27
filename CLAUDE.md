@@ -13,3 +13,10 @@ The README describes the project, its layout and its conventions. These rules ho
 - A pull request that changes what players see adds that change to `CHANGELOG.md`, under `## [Unreleased]`, in the section it belongs to (`### Added`, `### Changed`, `### Fixed` or `### Removed`). Write it for players, in English.
 - Changes only developers notice (tests, tooling, refactoring) need no entry.
 - A new version is made only when asked: see "Changelog and versions" in the README.
+
+## Code
+
+- Use pnpm, never npm or yarn. Run `pnpm check` before every push.
+- `src/core` holds the game rules as pure TypeScript: no DOM, no PixiJS, no Preact and no imports from other `src/` folders.
+- PixiJS is version 8, while most examples online are PixiJS 7. Create the app with `new Application()` and `await app.init({...})`, draw with `graphics.rect(...).fill(...)` instead of `beginFill`, `drawRect` and `endFill`, and use `eventMode` instead of `interactive`.
+- Every text players see goes through `t()` from `src/i18n`, with an English and a German version.
