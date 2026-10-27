@@ -54,6 +54,7 @@ pnpm dev
 | `pnpm typecheck`               | TypeScript for `src/core` (without DOM types), the app, and the config and test files |
 | `pnpm lint`, `pnpm format`     | Biome: check lint and formatting, or fix both                                         |
 | `pnpm test`, `pnpm test:watch` | Vitest unit tests                                                                     |
+| `pnpm test:coverage`           | Unit tests with a coverage report in `coverage/`                                      |
 | `pnpm test:e2e`                | Builds, then runs the Playwright browser tests                                        |
 
 Playwright needs a Chromium: run `pnpm exec playwright install chromium` once, or set `CHROMIUM_PATH` to an installed Chromium binary.
@@ -131,6 +132,8 @@ Property tests (`src/core/properties.test.ts`, with fast-check) check the model 
 ## CI and deployment
 
 CI (`.github/workflows/ci.yml`) runs the type check, Biome, the unit tests, the build and the Playwright tests on every pull request and on every push to `main`.
+
+The unit tests run with coverage, and CI uploads the report to [Codecov](https://about.codecov.io/), which comments the numbers on pull requests. `codecov.yml` keeps them informational, so coverage never fails a pull request. The upload needs the repository secret `CODECOV_TOKEN`, from the repository's settings on codecov.io; without it, CI still passes but no coverage arrives.
 
 ### Deployment
 
