@@ -1,10 +1,15 @@
 import { useEffect, useRef, useState } from 'preact/hooks'
-import { DEFAULT_COLUMNS, DEFAULT_ROWS } from '../core/grid'
 import { t } from '../i18n'
 import { type BoardView, mountBoard } from '../view/board'
+import type { BoardController } from '../view/controller'
 
-/** Hosts the PixiJS canvas: the view mounts once and is destroyed with the component. */
-export function BoardCanvas() {
+interface Props {
+  readonly controller: BoardController
+  readonly label: string
+}
+
+/** Hosts the PixiJS canvas for one controller; the view mounts once and is destroyed with it. */
+export function BoardCanvas({ controller, label }: Props) {
   const host = useRef<HTMLDivElement>(null)
   const [failed, setFailed] = useState(false)
 
@@ -13,7 +18,7 @@ export function BoardCanvas() {
     if (!element) return
     let view: BoardView | undefined
     let unmounted = false
-    mountBoard(element, DEFAULT_COLUMNS, DEFAULT_ROWS).then(
+    mountBoard(element, controller).then(
       (mounted) => {
         if (unmounted) mounted.destroy()
         else view = mounted
@@ -27,15 +32,16 @@ export function BoardCanvas() {
       unmounted = true
       view?.destroy()
     }
-  }, [])
+  }, [controller])
 
   if (failed) return <p class="board-failed">{t('boardFailed')}</p>
   return (
     <div
       ref={host}
       class="board"
-      role="img"
-      aria-label={t('board', { columns: DEFAULT_COLUMNS, rows: DEFAULT_ROWS })}
+      role="application"
+      aria-label={label}
+      aria-describedby="controls-hint"
     />
   )
 }

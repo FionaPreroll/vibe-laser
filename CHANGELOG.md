@@ -6,5 +6,10 @@ All changes players can notice are listed here. The format follows [Keep a Chang
 
 ### Added
 
-- The game opens in the browser with an empty 16 × 11 board, its rows marked A to K and its columns 1 to 16 as in the original.
+- Five tutorial levels: guide red, green and blue laser beams onto coins of their color with mirrors, double mirrors and slit mirrors, and keep dark anti-coins out of the light. Every level is open from the start.
+- Drag pieces from the toolbox onto the board. Click a piece to turn it left, right-click to turn it right.
+- Buttons below the board: Restart, Clean up, Undo, Redo, Rotate left and Rotate right.
+- Keyboard play: the arrow keys move a frame over the toolbox and the board, Enter picks a piece up and puts it down, Q and E rotate, Ctrl+Z and Ctrl+Y undo and redo.
+- When every coin spins, the level is solved and a message offers the next level.
+- Rows and columns of the board are marked with letters and numbers, as in the original.
 - The interface speaks English and German. It follows the browser's language, and the switch in the header changes it.
