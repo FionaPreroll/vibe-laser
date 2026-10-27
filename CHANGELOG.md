@@ -7,6 +7,8 @@ All changes players can notice are listed here. The format follows [Keep a Chang
 ### Added
 
 - Five tutorial levels: guide red, green and blue laser beams onto coins of their color with mirrors, double mirrors and slit mirrors, and keep dark anti-coins out of the light. Every level is open from the start.
+- Eight new optical parts. Refractors bend beams by 45°, one-way pieces let light through in one direction only, splitters and threeways split a beam in two, prisms split white light into red, green and blue and merge them again, color converters change a beam's color, filters let only their own colors through, and polarizers also demand a direction.
+- Eight more tutorial levels, one for each new part, for 13 in all.
 - Drag pieces from the toolbox onto the board. Click a piece to turn it left, right-click to turn it right.
 - Buttons below the board: Restart, Clean up, Undo, Redo, Rotate left and Rotate right.
 - Keyboard play: the arrow keys move a frame over the toolbox and the board, Enter picks a piece up and puts it down, Q and E rotate, Ctrl+Z and Ctrl+Y undo and redo.

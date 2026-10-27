@@ -93,6 +93,103 @@ export const TUTORIAL: readonly LevelDefinition[] = [
     toolbox: ['SM0'],
     solution: [{ piece: 0, cell: 'B3', rotation: 0 }],
   },
+  {
+    id: 'bend',
+    name: { en: 'Bend', de: 'Knick' },
+    board: `
+      .   .   .   .   Cg
+      .   .   .   .   .
+      .   .   .   .   .
+      L2g .   .   .   .
+    `,
+    toolbox: ['R0'],
+    solution: [{ piece: 0, cell: 'D2', rotation: 2 }],
+  },
+  {
+    id: 'one-way-street',
+    name: { en: 'One-Way Street', de: 'Einbahnstraße' },
+    // The one-way must let the red beam through and stop the green one in the same cell.
+    board: `
+      .   .   A   .   .
+      L2r .   .   .   Cr
+      .   .   L0g .   .
+    `,
+    toolbox: ['OW0'],
+    solution: [{ piece: 0, cell: 'B3', rotation: 2 }],
+  },
+  {
+    id: 'split',
+    name: { en: 'Split', de: 'Geteilt' },
+    board: `
+      .   .   L4g .   .
+      .   .   .   .   .
+      Cg  .   .   .   Cg
+    `,
+    toolbox: ['S2'],
+    solution: [{ piece: 0, cell: 'C3', rotation: 0 }],
+  },
+  {
+    id: 'three-ways',
+    name: { en: 'Three Ways', de: 'Drei Wege' },
+    board: `
+      Cb  .   .   .   Cb
+      .   .   .   .   .
+      .   .   .   .   .
+      .   .   L0b .   .
+    `,
+    toolbox: ['SC2'],
+    solution: [{ piece: 0, cell: 'C3', rotation: 0 }],
+  },
+  {
+    id: 'rainbow',
+    name: { en: 'Rainbow', de: 'Regenbogen' },
+    board: `
+      .   Cr    .   Cg  .
+      .   .     .   .   .
+      .   .     .   .   Cb
+      .   L0rgb .   .   .
+    `,
+    toolbox: ['P6'],
+    solution: [{ piece: 0, cell: 'C2', rotation: 0 }],
+  },
+  {
+    id: 'color-shift',
+    name: { en: 'Color Shift', de: 'Farbwechsel' },
+    board: `
+      L2r .   .   .   Cg
+      L2r .   .   .   Cb
+    `,
+    toolbox: ['CC0', 'CC0'],
+    solution: [
+      { piece: 0, cell: 'A3', rotation: 6 },
+      { piece: 1, cell: 'B3', rotation: 2 },
+    ],
+  },
+  {
+    id: 'filters',
+    name: { en: 'Filters', de: 'Filter' },
+    board: `
+      L2rgb .   .   Cr
+      L2rgb .   .   Crg
+    `,
+    toolbox: ['Fr', 'Frg'],
+    solution: [
+      { piece: 0, cell: 'A2', rotation: 0 },
+      { piece: 1, cell: 'B2', rotation: 0 },
+    ],
+  },
+  {
+    id: 'polarized',
+    name: { en: 'Polarized', de: 'Polarisiert' },
+    // Only blue traveling east may cross B3: the polarizer filters by color and direction at once.
+    board: `
+      .     .   A   .   .
+      L2rgb .   .   .   Cb
+      .     .   L0r .   .
+    `,
+    toolbox: ['PO0b'],
+    solution: [{ piece: 0, cell: 'B3', rotation: 2 }],
+  },
 ]
 
 function toolboxPiece(token: string, level: LevelDefinition): Piece {

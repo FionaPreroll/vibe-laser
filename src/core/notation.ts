@@ -8,7 +8,8 @@ import { ROTATING_KINDS } from './parts'
  * A compact text form of boards, in the spirit of the original editor's Script export. One line per
  * row, cells separated by spaces, "." for an empty cell. A part is its abbreviation from the spec,
  * then its rotation 0 to 7 if it has one, then its color letters: "L2r" is a red laser firing east,
- * "M5" a mirror in rotation 5, "Crb" a magenta coin, "A" an anti-coin.
+ * "M5" a mirror in rotation 5, "Fg" a green filter, "PO2b" a blue polarizer pointing east,
+ * "Crb" a magenta coin, "A" an anti-coin.
  */
 
 const ABBREVIATIONS: Record<PartKind, string> = {
@@ -16,13 +17,26 @@ const ABBREVIATIONS: Record<PartKind, string> = {
   mirror: 'M',
   doubleMirror: 'DM',
   slitMirror: 'SM',
+  refractor: 'R',
+  oneWay: 'OW',
+  splitter: 'S',
+  threeway: 'SC',
+  prism: 'P',
+  colorConverter: 'CC',
+  filter: 'F',
+  polarizer: 'PO',
   coin: 'C',
   antiCoin: 'A',
 }
 const KINDS = new Map(
   Object.entries(ABBREVIATIONS).map(([kind, abbreviation]) => [abbreviation, kind as PartKind]),
 )
-const COLORED_KINDS: ReadonlySet<PartKind> = new Set<PartKind>(['laser', 'coin'])
+const COLORED_KINDS: ReadonlySet<PartKind> = new Set<PartKind>([
+  'laser',
+  'filter',
+  'polarizer',
+  'coin',
+])
 const TOKEN = /^([A-Z]+)([0-7]?)([a-z]*)$/
 
 export function parseBoard(text: string): Board {

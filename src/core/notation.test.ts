@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { cellByName } from './board'
-import { MAGENTA, RED } from './color'
+import { BLUE, GREEN, MAGENTA, RED } from './color'
 import { formatBoard, parseBoard } from './notation'
 
 describe('parseBoard', () => {
@@ -26,8 +26,25 @@ describe('parseBoard', () => {
     expect(board.cells[cellByName(board, 'A2')]).toBeUndefined()
   })
 
+  it('reads every optical part', () => {
+    const board = parseBoard('R3 OW2 S0 SC1 P7 CC4 Fg PO2b')
+    expect(board.cells.map((piece) => piece && [piece.kind, piece.rotation, piece.color])).toEqual([
+      ['refractor', 3, 0],
+      ['oneWay', 2, 0],
+      ['splitter', 0, 0],
+      ['threeway', 1, 0],
+      ['prism', 7, 0],
+      ['colorConverter', 4, 0],
+      ['filter', 0, GREEN],
+      ['polarizer', 2, BLUE],
+    ])
+  })
+
   it.each([
     ['', 'no rows'],
+    ['F2r', 'A1 "F2r" cannot rotate'],
+    ['PO2', 'A1 "PO2" needs a color'],
+    ['P3r', 'A1 "P3r" cannot have a color'],
     ['X1', 'A1 "X1" is not a part'],
     ['. M', 'A2 "M" needs a rotation from 0 to 7'],
     ['C2r', 'A1 "C2r" cannot rotate'],

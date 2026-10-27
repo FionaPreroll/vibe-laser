@@ -1,6 +1,6 @@
 import fc from 'fast-check'
 import { describe, expect, it } from 'vitest'
-import { type Board, neighbour, type Piece, withPiece } from './board'
+import { type Board, neighbour, type PartKind, type Piece, withPiece } from './board'
 import type { Color } from './color'
 import { DIRECTIONS, type Direction, opposite, turn } from './direction'
 import { formatBoard, parseBoard } from './notation'
@@ -11,13 +11,34 @@ import { trace } from './trace'
 const rotation = fc.integer({ min: 0, max: 7 }).map((step) => step as Direction)
 const color = fc.integer({ min: 1, max: 7 }).map((bits) => bits as Color)
 
+/** Parts whose mirror image is a different part: they bend light one way round. */
+const CHIRAL_KINDS = new Set<PartKind>(['prism'])
+
+/**
+ * The rotation in which a part shows its own mirror image, east to west; 0 unless listed. The
+ * mirror image of a part in rotation r is then the same part in rotation `MIRROR_ROTATION - r`.
+ */
+const MIRROR_ROTATION: Partial<Record<PartKind, Direction>> = { refractor: 1 }
+
 const piece: fc.Arbitrary<Piece> = fc.oneof(
   fc.record({ kind: fc.constant('laser' as const), rotation, color }),
   fc.record({
-    kind: fc.constantFrom('mirror' as const, 'doubleMirror' as const, 'slitMirror' as const),
+    kind: fc.constantFrom<PartKind>(
+      'mirror',
+      'doubleMirror',
+      'slitMirror',
+      'refractor',
+      'oneWay',
+      'splitter',
+      'threeway',
+      'prism',
+      'colorConverter',
+    ),
     rotation,
     color: fc.constant(0 as const),
   }),
+  fc.record({ kind: fc.constant('polarizer' as const), rotation, color }),
+  fc.record({ kind: fc.constant('filter' as const), rotation: fc.constant(0 as const), color }),
   fc.record({ kind: fc.constant('coin' as const), rotation: fc.constant(0 as const), color }),
   fc.record({
     kind: fc.constant('antiCoin' as const),
@@ -26,22 +47,27 @@ const piece: fc.Arbitrary<Piece> = fc.oneof(
   }),
 )
 
-const cell = fc.oneof(
-  { arbitrary: fc.constant(undefined), weight: 3 },
-  { arbitrary: piece, weight: 2 },
-)
-
-const board: fc.Arbitrary<Board> = fc
-  .record({ width: fc.integer({ min: 1, max: 7 }), height: fc.integer({ min: 1, max: 7 }) })
-  .chain(({ width, height }) =>
-    fc
-      .array(cell, { minLength: width * height, maxLength: width * height })
-      .map((cells) => ({ width, height, cells })),
+function boardOf(pieces: fc.Arbitrary<Piece>): fc.Arbitrary<Board> {
+  const cell = fc.oneof(
+    { arbitrary: fc.constant(undefined), weight: 3 },
+    { arbitrary: pieces, weight: 2 },
   )
+  return fc
+    .record({ width: fc.integer({ min: 1, max: 7 }), height: fc.integer({ min: 1, max: 7 }) })
+    .chain(({ width, height }) =>
+      fc
+        .array(cell, { minLength: width * height, maxLength: width * height })
+        .map((cells) => ({ width, height, cells })),
+    )
+}
+
+const board = boardOf(piece)
+const achiralBoard = boardOf(piece.filter((candidate) => !CHIRAL_KINDS.has(candidate.kind)))
 
 const rules = fc.record({
   coinAngles: fc.constantFrom('single' as const, 'sameColor' as const),
   beamIntoLaser: fc.constantFrom('absorb' as const, 'pass' as const),
+  polarizer: fc.constantFrom('direction' as const, 'axis' as const),
 }) satisfies fc.Arbitrary<Rules>
 
 /** Moves every cell to the index `place` gives it and turns pieces that have a rotation. */
@@ -49,15 +75,13 @@ function transform(
   board: Board,
   size: { width: number; height: number },
   place: (x: number, y: number) => number,
-  turnPiece: (rotation: Direction) => Direction,
+  turnPiece: (piece: Piece) => Direction,
 ): Board {
   const cells: (Piece | undefined)[] = Array.from({ length: board.cells.length }, () => undefined)
   board.cells.forEach((piece, index) => {
     const target = place(index % board.width, Math.floor(index / board.width))
     cells[target] =
-      piece && ROTATING_KINDS.has(piece.kind)
-        ? { ...piece, rotation: turnPiece(piece.rotation) }
-        : piece
+      piece && ROTATING_KINDS.has(piece.kind) ? { ...piece, rotation: turnPiece(piece) } : piece
   })
   return { ...size, cells }
 }
@@ -113,7 +137,7 @@ describe('beam model properties', () => {
           b,
           { width: b.height, height: b.width },
           (x, y) => x * b.height + (b.height - 1 - y),
-          (rotation) => turn(rotation, 2),
+          (piece) => turn(piece.rotation, 2),
         )
         const before = trace(b, r).light.halves
         const after = trace(turned, r).light.halves
@@ -127,15 +151,15 @@ describe('beam model properties', () => {
     )
   })
 
-  it('mirrors the light with the board, east to west', () => {
+  it('mirrors the light with the board, east to west, for parts without a handedness', () => {
     fc.assert(
-      fc.property(board, rules, (b, r) => {
+      fc.property(achiralBoard, rules, (b, r) => {
         const reflect = (direction: Direction) => turn(0, -direction)
         const mirrored = transform(
           b,
           { width: b.width, height: b.height },
           (x, y) => y * b.width + (b.width - 1 - x),
-          reflect,
+          (piece) => turn(MIRROR_ROTATION[piece.kind] ?? 0, -piece.rotation),
         )
         const before = trace(b, r).light.halves
         const after = trace(mirrored, r).light.halves

@@ -9,6 +9,7 @@ import {
   type Puzzle,
   samePlace,
 } from './level'
+import { ROTATING_KINDS } from './parts'
 import { isLit, type LightField } from './trace'
 
 /** A player move. Batches apply all of their commands or none. */
@@ -57,7 +58,8 @@ function move(puzzle: Puzzle, id: number, to: Place): Applied | undefined {
 
 function rotate(puzzle: Puzzle, id: number, steps: number): Applied | undefined {
   const item = itemById(puzzle, id)
-  if (!item?.rotateable || !Number.isInteger(steps) || steps % 8 === 0) return undefined
+  if (!item?.rotateable || !ROTATING_KINDS.has(item.piece.kind)) return undefined
+  if (!Number.isInteger(steps) || steps % 8 === 0) return undefined
   const piece = { ...item.piece, rotation: turn(item.piece.rotation, steps) }
   return {
     puzzle: replace(puzzle, { ...item, piece }),

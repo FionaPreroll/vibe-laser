@@ -1,4 +1,5 @@
 import type { Board, Piece } from './board'
+import { ROTATING_KINDS } from './parts'
 
 /** Where a piece sits: on a board cell or in a toolbox slot. */
 export type Place =
@@ -25,7 +26,8 @@ export interface Puzzle {
 
 /**
  * A puzzle from a board and the pieces of its toolbox. Pieces on the board stay fixed; toolbox
- * pieces can be moved and rotated. The toolbox has two slots per board row, or more if needed.
+ * pieces can be moved, and rotated if their kind has a rotation. The toolbox has two slots per
+ * board row, or more if needed.
  */
 export function createPuzzle(board: Board, toolbox: readonly Piece[]): Puzzle {
   const items: Item[] = []
@@ -44,7 +46,7 @@ export function createPuzzle(board: Board, toolbox: readonly Piece[]): Puzzle {
       id: items.length,
       piece,
       moveable: true,
-      rotateable: true,
+      rotateable: ROTATING_KINDS.has(piece.kind),
       place: { area: 'toolbox', slot },
     })
   })
