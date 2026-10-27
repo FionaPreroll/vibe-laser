@@ -87,6 +87,14 @@ describe('rotate', () => {
     expect(itemById(applied?.puzzle ?? start, 2)?.piece.rotation).toBe(7)
   })
 
+  it('refuses parts without a rotation, even when marked rotateable', () => {
+    const filter = puzzle('L2r . Cr', ['Fr'])
+    expect(filter.items[2]?.rotateable).toBe(false)
+    expect(applyCommand(filter, { kind: 'rotate', item: 2, steps: 1 })).toBeUndefined()
+    const marked = { ...filter, items: filter.items.map((item) => ({ ...item, rotateable: true })) }
+    expect(applyCommand(marked, { kind: 'rotate', item: 2, steps: 1 })).toBeUndefined()
+  })
+
   it('refuses fixed pieces and full turns', () => {
     expect(applyCommand(start, { kind: 'rotate', item: 0, steps: 1 })).toBeUndefined()
     expect(applyCommand(start, { kind: 'rotate', item: 2, steps: 8 })).toBeUndefined()

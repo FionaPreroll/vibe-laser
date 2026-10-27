@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { type Board, cellByName } from './board'
-import { BLUE, MAGENTA, RED, WHITE } from './color'
+import { BLUE, GREEN, MAGENTA, RED, WHITE } from './color'
 import type { Axis, Direction } from './direction'
 import { parseBoard } from './notation'
 import { DEFAULT_RULES } from './rules'
@@ -11,6 +11,7 @@ const EAST_WEST: Axis = 2
 const SOUTH_EAST: Axis = 3
 const E: Direction = 2
 const S: Direction = 4
+const SW: Direction = 5
 const W: Direction = 6
 
 function traced(text: string, rules = DEFAULT_RULES) {
@@ -103,6 +104,35 @@ describe('trace', () => {
     expect(axis('C3', SOUTH_EAST)).toBe(RED)
     expect(lit('A2')).toBe(false)
     expect(lit('B1')).toBe(false)
+  })
+
+  it('splits white light at a prism into red, green and blue beams', () => {
+    const { half } = traced(`
+      .  .     .
+      .  P0    .
+      .  L0rgb .
+    `)
+    expect(half('A2', S)).toBe(RED)
+    expect(half('A3', SW)).toBe(GREEN)
+    expect(half('B3', W)).toBe(BLUE)
+  })
+
+  it('merges two beams entering the bevels of a threeway into one mixed beam', () => {
+    const { axis } = traced(`
+      L3b .   L5r
+      .   SC0 .
+      .   .   .
+    `)
+    expect(axis('C2', NORTH_SOUTH)).toBe(MAGENTA)
+  })
+
+  it('shifts colors at a converter and filters them', () => {
+    const { half } = traced('L2r CC6 . Fg .')
+    expect(half('A3', W)).toBe(GREEN)
+    expect(half('A5', W)).toBe(GREEN)
+    const blocked = traced('L2r CC2 . Fg .')
+    expect(blocked.half('A3', W)).toBe(BLUE)
+    expect(blocked.lit('A5')).toBe(false)
   })
 
   it('traces each primary of white light', () => {

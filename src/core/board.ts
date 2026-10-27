@@ -2,14 +2,31 @@ import type { Color } from './color'
 import { type Direction, DX, DY } from './direction'
 import { MAX_ROWS, parseCellName } from './grid'
 
-/** The parts the beam core knows so far; later milestones add the other optical parts and hazards. */
-export type PartKind = 'laser' | 'mirror' | 'doubleMirror' | 'slitMirror' | 'coin' | 'antiCoin'
+/** The parts known so far; later milestones add hazards, actors and expansion parts. */
+export type PartKind =
+  | 'laser'
+  | 'mirror'
+  | 'doubleMirror'
+  | 'slitMirror'
+  | 'refractor'
+  | 'oneWay'
+  | 'splitter'
+  | 'threeway'
+  | 'prism'
+  | 'colorConverter'
+  | 'filter'
+  | 'polarizer'
+  | 'coin'
+  | 'antiCoin'
 
 export interface Piece {
   readonly kind: PartKind
   /** Clockwise 45° steps from the base orientation. A laser fires in the direction of its rotation. */
   readonly rotation: Direction
-  /** Color of lasers and coins; 0 for every other part. A laser with color 0 is switched off. */
+  /**
+   * Color of lasers, coins, filters and polarizers; 0 for every other part. A laser with color 0
+   * is switched off.
+   */
   readonly color: Color
 }
 

@@ -11,6 +11,27 @@ Play it at https://fionapreroll.github.io/vibe-laser/.
 - The buttons below the board restart the level, clean up (unlit pieces go back into the toolbox), undo, redo, and rotate the selected piece.
 - Keyboard: focus the board with Tab. The arrow keys move a frame over the toolbox and the board, Enter picks a piece up and puts it down, Escape cancels, Q and E rotate, Ctrl+Z undoes and Ctrl+Y or Ctrl+Shift+Z redoes.
 
+## Parts
+
+The abbreviations are those of the board notation (see [Beam model](#beam-model)).
+
+| Part            | Abbreviation | What it does                                                                                                                                  |
+| --------------- | ------------ | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| Laser           | `L`          | Fires a beam of its color.                                                                                                                    |
+| Mirror          | `M`          | Its silver side turns a beam by 90°, or sends a beam that hits it head-on straight back. Its back stops light.                                |
+| Double mirror   | `DM`         | A mirror that reflects on both sides.                                                                                                         |
+| Slit mirror     | `SM`         | A double mirror with a slit between its faces: a beam along its surface passes straight through.                                              |
+| Refractor       | `R`          | A glass bar that bends light by 45°. Light enters only through its two short ends; the shaded long sides stop it.                             |
+| One-way         | `OW`         | Lets light in only straight through its broad side.                                                                                           |
+| Splitter        | `S`          | Splits light that hits its tip into two beams, 90° to the left and to the right. Every other side stops light.                                |
+| Threeway        | `SC`         | Light through the flat side splits and leaves both bevels turned 45°. Light through a bevel leaves the flat side.                             |
+| Prism           | `P`          | Splits light into its primaries: red goes straight, green turns 45° and blue 90°. Run backwards, it merges them into one beam.                |
+| Color converter | `CC`         | Shifts colors: through the narrow end red turns green, green blue and blue red; through the broad end the other way round. White stays white. |
+| Filter          | `F`          | Lets only its own colors through, from every direction. Filters do not rotate.                                                                |
+| Polarizer       | `PO`         | A filter that also lets light through only in the direction its marker points.                                                                |
+| Coin            | `C`          | Spins when the light on its line has exactly its color.                                                                                       |
+| Anti-coin       | `A`          | Spins as long as no light touches it.                                                                                                         |
+
 ## Getting started
 
 You need Node.js 22.12 or newer (CI uses Node 24) and pnpm. `package.json` pins pnpm 12.15.0, and pnpm 10 or newer switches to that version by itself.
@@ -70,11 +91,11 @@ Unit tests sit next to the code as `*.test.ts`.
 - Directions run 0 to 7 clockwise from north. A piece's rotation counts 45° steps clockwise from its base orientation; a laser fires in the direction of its rotation.
 - A color is three bits, red 1, green 2 and blue 4. Mixing is OR, filtering is AND.
 - `trace()` in `src/core/trace.ts` follows each primary color from each laser and records the light on every half-segment, the line from a cell's center toward one of its eight neighbours. Parts act on each primary on its own, so mixed light needs no second pass.
-- Each part is a table in rotation 0 (`src/core/parts.ts`). Other rotations turn the beam into the part's frame and turn its exits back.
-- Tests write boards in a text notation (`src/core/notation.ts`): `L2r . M5` is a red laser firing east, an empty cell and a mirror in rotation 5.
-- Rules the spec leaves open are flags in `src/core/rules.ts`. `coinAngles` is decided; `beamIntoLaser: absorb` is an assumption until it is checked against the original.
+- Each part is described once, in rotation 0, in `src/core/parts.ts`: as a table of exits for each direction of travel, or as a small function where the color matters. Other rotations turn the beam into the part's frame and turn its exits back.
+- Tests and levels write boards in a text notation (`src/core/notation.ts`): an abbreviation, then the rotation for parts that rotate, then the color letters. `L2r . M5 Fg PO2b` is a red laser firing east, an empty cell, a mirror in rotation 5, a green filter and a blue polarizer pointing east.
+- Rules the spec leaves open are flags in `src/core/rules.ts`. `coinAngles` is decided; `beamIntoLaser: absorb` and `polarizer: direction` are assumptions until they are checked against the original.
 
-Property tests (`src/core/properties.test.ts`, with fast-check) check the model on random boards: tracing ends within its bound, the light of all lasers is the sum of each laser alone, and turning or mirroring a board turns or mirrors its light.
+Property tests (`src/core/properties.test.ts`, with fast-check) check the model on random boards: tracing ends within its bound, the light of all lasers is the sum of each laser alone, turning a board turns its light, and mirroring a board mirrors its light. The mirror test leaves out prisms, which bend light one way round; a mirrored refractor is the same refractor turned by 45°.
 
 ## Game session
 
@@ -96,6 +117,13 @@ Property tests (`src/core/properties.test.ts`, with fast-check) check the model 
 - A beam that runs into a laser stops there (`beamIntoLaser: absorb`).
 - Light passes through anti-coins, as it passes through coins.
 - Mirrors and double mirrors stop a beam that runs along their surface; only the slit mirror lets it through.
+- A beam enters a refractor's end either straight, and leaves turned 45°, or diagonally from the one side that makes it leave straight. The other diagonal stops. In rotation 0 the bar runs north to south, and a beam traveling north leaves to the north-west.
+- Only light that hits a splitter's tip head-on splits.
+- A threeway takes light into a bevel only on the path of a split beam run backwards: in rotation 0, traveling south-west into the north-east bevel or south-east into the north-west one.
+- In rotation 0 a prism takes light through its south side and sends green and blue to the right, clockwise. Light entering its long side passes only on a path run backwards, so each primary needs its own angle; anything else stops.
+- A color converter passes light only straight through its ends; its sides stop light.
+- A filter lets its colors through from every direction, diagonals included.
+- A polarizer passes light only in the direction its marker points (`polarizer: direction`); the rule flag `polarizer: axis` also passes the opposite direction.
 - Cleanup returns unlit moveable pieces to the first free toolbox slots, in reading order; pieces that find no free slot stay on the board.
 - The toolbox has two slots per board row.
 - A dragged piece stays where it was until it is dropped, so carrying it around never changes the beams.
