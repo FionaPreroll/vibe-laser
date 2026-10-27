@@ -1,5 +1,7 @@
 # Vibe Laser
 
+[![Coverage](https://codecov.io/gh/FionaPreroll/vibe-laser/branch/main/graph/badge.svg)](https://codecov.io/gh/FionaPreroll/vibe-laser)
+
 A laser logic puzzle for the browser. Place mirrors, prisms, filters and other optical parts on a grid until colored laser beams hit every coin in exactly its color. The game is inspired by Aargon Deluxe (Twilight Games, 2001); its rules are rebuilt from a written specification, with our own name, art and levels.
 
 Play it at https://fionapreroll.github.io/vibe-laser/.
@@ -133,7 +135,7 @@ Property tests (`src/core/properties.test.ts`, with fast-check) check the model 
 
 CI (`.github/workflows/ci.yml`) runs the type check, Biome, the unit tests, the build and the Playwright tests on every pull request and on every push to `main`.
 
-The unit tests run with coverage, and CI uploads the report to [Codecov](https://about.codecov.io/), which comments the numbers on pull requests. `codecov.yml` keeps them informational, so coverage never fails a pull request. The upload needs the repository secret `CODECOV_TOKEN`, from the repository's settings on codecov.io; without it, CI still passes but no coverage arrives.
+The unit tests run with coverage, and CI uploads the report to [Codecov](https://about.codecov.io/), which comments the numbers on pull requests. `codecov.yml` keeps them informational, so coverage never fails a pull request. The upload needs the repository secret `CODECOV_TOKEN`, from the repository's settings on codecov.io; without it, CI still passes but no coverage arrives. The badge at the top of this README shows the coverage of `main`.
 
 ### Deployment
 
