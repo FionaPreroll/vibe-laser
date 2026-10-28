@@ -13,7 +13,8 @@ const STYLE: TextStyleOptions = {
 
 /**
  * Color-blind mode's letters: every piece with a color names its primaries, R, G and B, in the
- * lower right corner of its cell. The letters stay upright while pieces turn and coins spin.
+ * lower right corner of its cell, and a complex adds its inner color after a slash, as in R/GB.
+ * The letters stay upright while pieces turn and coins spin.
  */
 export class ColorLabelLayer extends Container {
   readonly #labels = new Map<number, Text>()
@@ -22,7 +23,8 @@ export class ColorLabelLayer extends Container {
   show(puzzle: Puzzle, geometry: SceneGeometry, on: boolean, carried?: number): void {
     const shown = new Set<number>()
     for (const item of on ? puzzle.items : []) {
-      const letters = colorLetters(item.piece.color).toUpperCase()
+      const { color, inner } = item.piece
+      const letters = (colorLetters(color) + (inner ? `/${colorLetters(inner)}` : '')).toUpperCase()
       if (letters === '' || item.id === carried) continue
       shown.add(item.id)
       let label = this.#labels.get(item.id)

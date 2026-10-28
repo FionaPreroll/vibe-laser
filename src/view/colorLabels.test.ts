@@ -28,6 +28,13 @@ describe('ColorLabelLayer', () => {
     expect(layer.children[0]?.position.y).toBe(corner.y + CELL / 2 - 2)
   })
 
+  it('adds the inner color of a complex after a slash', () => {
+    const parts = puzzleOf('CX0r/gb SE2g Cr')
+    const layer = new ColorLabelLayer()
+    layer.show(parts, sceneGeometry(parts.width, parts.height, parts.toolboxSize), true)
+    expect(letters(layer)).toEqual(['R/GB', 'G', 'R'])
+  })
+
   it('leaves out a carried piece, follows color changes and clears when switched off', () => {
     const layer = new ColorLabelLayer()
     layer.show(puzzle, geometry, true, 0)

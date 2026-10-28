@@ -16,7 +16,7 @@ Play it at https://fionapreroll.github.io/vibe-laser/.
 - Slimes, robot mines and spaceships move by themselves. With mines or ships on the board, a solution must hold for five seconds while a bar fills.
 - The buttons below the board lead back to the level selection, restart the level, clean up (unlit pieces go back into the toolbox), undo, redo, rotate the selected piece and open the help.
 - Each player can have a profile of their own, with their own progress and settings: the volume of sound effects and music, less motion on the board, and color-blind mode. Profiles can be exported as a file and imported in another browser.
-- Color-blind mode writes the colors of pieces as letters, R, G and B, and draws each color in a beam as a line of its own, red, green and blue always in the same order across the beam. Help explains how colors mix.
+- Color-blind mode writes the colors of pieces as letters, R, G and B, with a complex's inner color after a slash, as in R/GB, and draws each color in a beam as a line of its own, red, green and blue always in the same order across the beam. Help explains how colors mix.
 - Keyboard: focus the board with Tab. The arrow keys move a frame over the toolbox and the board, Enter picks a piece up and puts it down, Escape cancels, Q and E rotate, Ctrl+Z undoes and Ctrl+Y or Ctrl+Shift+Z redoes.
 - The level editor in the header makes levels of your own, in packs that appear in the pack list next to the built-in ones (see [Level editor](#level-editor)).
 - Once it has loaded, the game also plays offline, and browsers can install it as an app. When a new version is out, a notice below the header offers to reload into it.
