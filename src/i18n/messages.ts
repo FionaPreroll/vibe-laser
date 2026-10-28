@@ -35,6 +35,8 @@ export const en = {
   rotateRight: 'Rotate right',
   controls:
     'Drag pieces from the toolbox onto the board. Click a piece to rotate it left, right-click to rotate it right. Keyboard: arrow keys, Enter to pick up and drop, Q and E to rotate, Ctrl+Z to undo.',
+  touchControls:
+    'Drag pieces from the toolbox onto the board, or tap a piece and then a free place. Tap a selected piece to rotate it left; the buttons rotate it either way. Pinch to zoom, and drag an empty spot to move the zoomed board.',
   stabilizing: 'System stable: every coin spins. Wait until the bar is full.',
   stability: 'Stability',
 
@@ -316,6 +318,8 @@ export const de: Record<MessageKey, string> = {
   rotateRight: 'Nach rechts drehen',
   controls:
     'Ziehe Teile aus der Ablage auf das Spielfeld. Ein Klick dreht ein Teil nach links, ein Rechtsklick nach rechts. Tastatur: Pfeiltasten, Enter zum Aufnehmen und Ablegen, Q und E zum Drehen, Strg+Z zum Rückgängigmachen.',
+  touchControls:
+    'Ziehe Teile aus der Ablage auf das Spielfeld, oder tippe ein Teil und dann einen freien Platz an. Tippe ein ausgewähltes Teil an, um es nach links zu drehen; die Knöpfe drehen in beide Richtungen. Mit zwei Fingern zoomst du, und auf einem leeren Feld verschiebst du das gezoomte Spielfeld.',
   stabilizing: 'System stabil: Alle Münzen drehen sich. Warte, bis der Balken voll ist.',
   stability: 'Stabilität',
 

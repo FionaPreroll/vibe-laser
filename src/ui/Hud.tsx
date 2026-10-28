@@ -1,6 +1,7 @@
 import { STABLE_TICKS } from '../game/session'
 import { t } from '../i18n'
 import type { BoardController } from '../view/controller'
+import { touchScreen } from './pointer'
 
 interface Props {
   readonly controller: BoardController
@@ -59,7 +60,7 @@ export function Hud({ controller, onExit, onHelp }: Props) {
         </button>
       </div>
       <p id="controls-hint" class="hint">
-        {t('controls')}
+        {t(touchScreen.value ? 'touchControls' : 'controls')}
       </p>
     </div>
   )

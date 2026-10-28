@@ -7,8 +7,12 @@ import { playSolution } from '../content/solution'
 import { GameSession } from '../game/session'
 import { BoardController } from '../view/controller'
 import { Hud } from './Hud'
+import { touchScreen } from './pointer'
 
-afterEach(cleanup)
+afterEach(() => {
+  cleanup()
+  touchScreen.value = false
+})
 
 async function load(id: string): Promise<Level> {
   const level = await findLevel(id)?.entry.load()
@@ -27,6 +31,17 @@ function renderHud(controller: BoardController, onExit = () => {}, onHelp = () =
 const button = (name: string) => screen.getByRole('button', { name }) as HTMLButtonElement
 
 describe('Hud', () => {
+  it('explains the controls for mouse and keyboard, or for fingers on a touch screen', async () => {
+    const controller = await controllerFor('tutorial/1/1')
+    renderHud(controller)
+    const hint = () => document.getElementById('controls-hint')?.textContent
+    expect(hint()).toContain('right-click to rotate it right')
+    await act(() => {
+      touchScreen.value = true
+    })
+    expect(hint()).toContain('Pinch to zoom')
+  })
+
   it('enables undo and redo as moves are made and taken back', async () => {
     const controller = await controllerFor('tutorial/1/1')
     renderHud(controller)

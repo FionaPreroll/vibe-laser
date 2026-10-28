@@ -94,16 +94,104 @@ export function gridOfPlace(geometry: SceneGeometry, place: Place): GridPoint {
       }
 }
 
+/** Where the scene sits on the screen: its scale, and its offset in screen pixels. */
+export interface Transform {
+  readonly scale: number
+  readonly x: number
+  readonly y: number
+}
+
+/** How far players can zoom in, over the size that shows the whole scene. */
+export const MAX_ZOOM = 4
+
 /** Scale and offset that fit the whole scene into a screen, centered. */
 export function fitScene(
   geometry: SceneGeometry,
   screenWidth: number,
   screenHeight: number,
-): { scale: number; x: number; y: number } {
+): Transform {
   const scale = Math.max(0, Math.min(screenWidth / geometry.width, screenHeight / geometry.height))
   return {
     scale,
     x: (screenWidth - geometry.width * scale) / 2,
     y: (screenHeight - geometry.height * scale) / 2,
   }
+}
+
+/**
+ * A zoomed or panned scene, kept in bounds: from its fitted size up to MAX_ZOOM times that, and
+ * along each axis centered where it fits the screen and covering the screen where it does not.
+ */
+export function clampTransform(
+  geometry: SceneGeometry,
+  screenWidth: number,
+  screenHeight: number,
+  transform: Transform,
+): Transform {
+  const fit = fitScene(geometry, screenWidth, screenHeight).scale
+  const scale = Math.min(Math.max(transform.scale, fit), fit * MAX_ZOOM)
+  const along = (offset: number, size: number, screen: number) =>
+    size <= screen ? (screen - size) / 2 : Math.min(0, Math.max(screen - size, offset))
+  return {
+    scale,
+    x: along(transform.x, geometry.width * scale, screenWidth),
+    y: along(transform.y, geometry.height * scale, screenHeight),
+  }
+}
+
+/**
+ * Where two fingers that started at `from` on a scene at `start` take it when they reach `to`:
+ * it scales with the distance between them, and the scene point under their first midpoint
+ * follows the midpoint. The result is kept in bounds.
+ */
+export function pinchTransform(
+  geometry: SceneGeometry,
+  screenWidth: number,
+  screenHeight: number,
+  start: Transform,
+  from: readonly [Point, Point],
+  to: readonly [Point, Point],
+): Transform {
+  const fit = fitScene(geometry, screenWidth, screenHeight).scale
+  const spread = (points: readonly [Point, Point]) =>
+    Math.hypot(points[0].x - points[1].x, points[0].y - points[1].y)
+  const middle = (points: readonly [Point, Point]) => ({
+    x: (points[0].x + points[1].x) / 2,
+    y: (points[0].y + points[1].y) / 2,
+  })
+  const ratio = spread(to) / Math.max(1, spread(from))
+  const scale = Math.min(Math.max(start.scale * ratio, fit), fit * MAX_ZOOM)
+  const before = middle(from)
+  const after = middle(to)
+  const point = { x: (before.x - start.x) / start.scale, y: (before.y - start.y) / start.scale }
+  return clampTransform(geometry, screenWidth, screenHeight, {
+    scale,
+    x: after.x - point.x * scale,
+    y: after.y - point.y * scale,
+  })
+}
+
+/**
+ * The same view on a screen of another size: as far zoomed in over the fitted size as before,
+ * with the scene point in the middle of the screen still in the middle.
+ */
+export function refitTransform(
+  geometry: SceneGeometry,
+  transform: Transform,
+  before: { readonly width: number; readonly height: number },
+  after: { readonly width: number; readonly height: number },
+): Transform {
+  const fitBefore = fitScene(geometry, before.width, before.height).scale
+  const fitAfter = fitScene(geometry, after.width, after.height)
+  if (fitBefore <= 0 || transform.scale <= 0) return fitAfter
+  const scale = fitAfter.scale * (transform.scale / fitBefore)
+  const middle = {
+    x: (before.width / 2 - transform.x) / transform.scale,
+    y: (before.height / 2 - transform.y) / transform.scale,
+  }
+  return clampTransform(geometry, after.width, after.height, {
+    scale,
+    x: after.width / 2 - middle.x * scale,
+    y: after.height / 2 - middle.y * scale,
+  })
 }

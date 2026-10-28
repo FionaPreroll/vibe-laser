@@ -773,6 +773,55 @@ button.link {
   padding: 8px 16px 4px;
 }
 
+/* Phones: a smaller header and button bar leave the board as much room as they can. */
+@media (max-width: 600px), (max-height: 500px) {
+  .top-bar {
+    gap: 8px;
+    padding: 8px 12px;
+  }
+
+  .tagline {
+    display: none;
+  }
+
+  .top-controls,
+  .hud-buttons {
+    gap: 6px;
+  }
+
+  .top-controls button,
+  .language select,
+  .hud-buttons button {
+    padding: 5px 8px;
+    font-size: 0.875rem;
+  }
+
+  /* The language list names its languages; its label stays for screen readers. */
+  .language > span {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  .hud {
+    padding: 6px 12px 8px;
+  }
+}
+
+/* Phones on their side have height for the board and little else. */
+@media (max-height: 500px) {
+  .top-bar h1 {
+    font-size: 1rem;
+  }
+
+  .hud .hint {
+    display: none;
+  }
+}
+
 @media (max-width: 800px) {
   .workbench {
     grid-template-columns: 1fr;

@@ -5,12 +5,13 @@ import { type Phase, STABLE_TICKS } from '../game/session'
 import { createFlatArt } from './art/flat'
 import type { ArtPack } from './art/types'
 import type { BoardController } from './controller'
-import { CELL, type Point, placeAt, placeCenter } from './layout'
+import { CELL, type Point, placeAt, placeCenter, type Transform } from './layout'
 import { BOARD_COLORS } from './palette'
 import { createStage, isTextField } from './stage'
 
-/** Pointer travel in screen pixels before a press turns into a drag. */
+/** Pointer travel in screen pixels before a press turns into a drag; fingers wobble more. */
 const DRAG_THRESHOLD = 6
+const TOUCH_DRAG_THRESHOLD = 12
 /** The frame around the board tells the phase: stable, blown up or solved. */
 const FRAME_COLORS: Partial<Record<Phase, number>> = {
   stabilizing: BOARD_COLORS.target,
@@ -56,14 +57,20 @@ export interface BoardView {
 interface Press {
   readonly id: number | undefined
   readonly button: number
+  readonly touch: boolean
   readonly x: number
   readonly y: number
+  /** Where the pointer was last, for panning. */
+  last: Point
   dragging: boolean
+  panning: boolean
 }
 
 /**
  * Draws the controller's game into `host` and turns pointer and keyboard input into commands.
- * Left click rotates a piece to the left, right click to the right, as in the original.
+ * Left click rotates a piece to the left, right click to the right, as in the original. On touch
+ * screens a tap selects and a second tap turns (see BoardController.tap), two fingers zoom and
+ * pan, and one finger pans a zoomed board where it finds no piece to drag.
  */
 export async function mountBoard(
   host: HTMLElement,
@@ -81,6 +88,11 @@ export async function mountBoard(
 
   let press: Press | undefined
   let target: Place | undefined
+  /** Fingers on the board, by pointer id, at their latest screen positions. */
+  const fingers = new Map<number, Point>()
+  let pinching: { readonly start: Transform; readonly from: readonly [Point, Point] } | undefined
+  /** After a pinch, the fingers still down neither tap nor drag. */
+  let gesture = false
 
   const render = () => {
     const { puzzle, light, spinning, phase, stable } = session.state.value
@@ -130,55 +142,112 @@ export async function mountBoard(
     return cursorFor(place && itemAt(session.state.value.puzzle, place), session.canPlay.value)
   }
 
+  /** A second finger turns whatever the first one did into a pinch. */
+  const startPinch = () => {
+    const [first, second] = fingers.values()
+    if (first === undefined || second === undefined) return
+    if (press?.dragging) {
+      target = undefined
+      showGhost(undefined, undefined)
+    }
+    press = undefined
+    gesture = true
+    pinching = { start: stage.transform(), from: [first, second] }
+    render()
+  }
+
   scene.on('pointerdown', (event: FederatedPointerEvent) => {
+    const touch = event.pointerType === 'touch'
+    if (touch) {
+      fingers.set(event.pointerId, { x: event.global.x, y: event.global.y })
+      if (fingers.size >= 2) {
+        startPinch()
+        return
+      }
+    }
+    if (gesture) return
     const place = placeAt(geometry, scene.toLocal(event.global))
     const item = place && itemAt(session.state.value.puzzle, place)
     batch(() => {
       controller.keyboardActive.value = false
       controller.lifted.value = undefined
-      controller.select(item?.id)
+      // A touch decides what it selects once the finger lifts.
+      if (!touch) controller.select(item?.id)
     })
     press = {
       id: item?.id,
       button: event.button,
+      touch,
       x: event.global.x,
       y: event.global.y,
+      last: { x: event.global.x, y: event.global.y },
       dragging: false,
+      panning: false,
     }
   })
   scene.on('globalpointermove', (event: FederatedPointerEvent) => {
+    if (fingers.has(event.pointerId)) {
+      fingers.set(event.pointerId, { x: event.global.x, y: event.global.y })
+      const [first, second] = fingers.values()
+      if (pinching !== undefined && first !== undefined && second !== undefined) {
+        stage.pinch(pinching.start, pinching.from, [first, second])
+        return
+      }
+    }
     const local = scene.toLocal(event.global)
     if (press === undefined) {
-      scene.cursor = cursorAt(local)
+      if (!fingers.has(event.pointerId)) scene.cursor = cursorAt(local)
       return
     }
     const item = press.id === undefined ? undefined : itemById(session.state.value.puzzle, press.id)
-    if (!press.dragging) {
+    if (!press.dragging && !press.panning) {
       const travel = Math.hypot(event.global.x - press.x, event.global.y - press.y)
-      if (travel < DRAG_THRESHOLD || !item?.moveable || !session.canPlay.value) return
-      press.dragging = true
-      scene.cursor = 'grabbing'
+      if (travel < (press.touch ? TOUCH_DRAG_THRESHOLD : DRAG_THRESHOLD)) return
+      if (item?.moveable && session.canPlay.value) {
+        press.dragging = true
+        controller.select(item.id)
+        scene.cursor = 'grabbing'
+      } else if (stage.zoom() > 1) {
+        press.panning = true
+      } else {
+        return
+      }
+    }
+    if (press.panning) {
+      stage.pan(event.global.x - press.last.x, event.global.y - press.last.y)
+      press.last = { x: event.global.x, y: event.global.y }
+      return
     }
     target = placeAt(geometry, local)
     showGhost(item, local)
     render()
   })
   const release = (event: FederatedPointerEvent) => {
+    if (fingers.delete(event.pointerId)) {
+      if (fingers.size < 2) pinching = undefined
+      if (gesture) {
+        gesture = fingers.size > 0
+        return
+      }
+    }
     const ended = press
     press = undefined
-    if (ended === undefined) return
+    if (ended === undefined || ended.panning) return
+    const at = placeAt(geometry, scene.toLocal(event.global))
     if (ended.dragging) {
-      const to = placeAt(geometry, scene.toLocal(event.global))
       target = undefined
       showGhost(undefined, undefined)
-      if (ended.id === undefined || to === undefined || !controller.move(ended.id, to)) render()
+      if (ended.id === undefined || at === undefined || !controller.move(ended.id, at)) render()
+    } else if (ended.touch) {
+      controller.tap(at)
     } else if (ended.id !== undefined && (ended.button === 0 || ended.button === 2)) {
       controller.rotate(ended.id, ended.button === 2 ? 1 : -1)
     }
-    scene.cursor = cursorAt(scene.toLocal(event.global))
+    if (!ended.touch) scene.cursor = cursorAt(scene.toLocal(event.global))
   }
   scene.on('pointerup', release)
   scene.on('pointerupoutside', release)
+  scene.on('pointercancel', release)
 
   const onKey = (event: KeyboardEvent) => {
     if (controller.paused.value) return
