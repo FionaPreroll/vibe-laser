@@ -251,6 +251,8 @@ There are no sound files: `src/audio/synth.ts` synthesizes every effect and the 
 
 CI (`.github/workflows/ci.yml`) runs the type check, Biome, the unit tests, the build and the Playwright tests on every pull request and on every push to `main`.
 
+Headless Chromium draws WebGL without a graphics card, in SwiftShader. Antialiasing there costs more than the rest of a frame, so the board leaves it out wherever the renderer is a software one (`rendersInSoftware()` in `src/view/stage.ts`). That keeps the board at 60 frames a second in the browser tests, and for players on machines without graphics acceleration.
+
 The unit tests run with coverage, and CI uploads the report to [Codecov](https://about.codecov.io/), which comments the numbers on pull requests. `codecov.yml` keeps them informational, so coverage never fails a pull request. The upload needs the repository secret `CODECOV_TOKEN`, from the repository's settings on codecov.io; without it, CI still passes but no coverage arrives. The badge at the top of this README shows the coverage of `main`.
 
 ### Deployment
