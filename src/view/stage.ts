@@ -133,6 +133,8 @@ export async function createStage(
     })
   }
   show(transform)
+  // Browser tests also read which art pack draws the board.
+  host.dataset.art = art.id
   // A zoomed view stays zoomed when the screen changes, as when a phone's address bar hides.
   const fitToHost = () => {
     const resized = { width: app.screen.width, height: app.screen.height }

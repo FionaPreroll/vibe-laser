@@ -132,17 +132,21 @@ describe('SettingsDialog', () => {
       false,
     ])
     expect(colors.getAttribute('aria-describedby')).toBe('color-blind-hint')
+    const look = screen.getByLabelText('Look') as HTMLSelectElement
+    expect([...look.options].map((option) => option.text)).toEqual(['Plain', 'Neon'])
     await act(() => {
       fireEvent.input(sound, { target: { value: '30' } })
       fireEvent.input(music, { target: { value: '0' } })
       fireEvent.click(motion)
       fireEvent.click(colors)
+      fireEvent.change(look, { target: { value: 'neon' } })
     })
     expect(book.active.value.settings).toEqual({
       soundVolume: 0.3,
       musicVolume: 0,
       reducedMotion: true,
       colorBlind: true,
+      art: 'neon',
     })
     expect(motion.checked).toBe(true)
     expect(screen.getByLabelText('Language')).toBeTruthy()

@@ -1,5 +1,5 @@
 import { expect, type Page, test } from '@playwright/test'
-import { placeMirrorWithKeyboard } from './board'
+import { centerOf, placeMirrorWithKeyboard } from './board'
 
 /** Solves the first level and goes back to the level selection. */
 async function solveFirstLevel(page: Page) {
@@ -55,6 +55,22 @@ test('opens help and the settings over the game, and keeps the settings', async 
   await page.getByRole('button', { name: 'Settings' }).click()
   await expect(page.getByLabel('Reduce motion')).toBeChecked()
   await expect(page.getByLabel('Music')).toHaveValue('20')
+})
+
+test('changes the look in the middle of a level, and the game goes on', async ({ page }) => {
+  await page.goto('./#/play/tutorial/1/1')
+  await placeMirrorWithKeyboard(page)
+  const board = page.locator('.board')
+  await expect(board).toHaveAttribute('data-art', 'flat')
+  await page.getByRole('button', { name: 'Settings' }).click()
+  const settings = page.getByRole('dialog', { name: 'Settings' })
+  await settings.getByLabel('Look').selectOption('neon')
+  await settings.getByRole('button', { name: 'Close' }).click()
+  await expect(board).toHaveAttribute('data-art', 'neon')
+  // The mirror is still where it was put; a left click turns it into the beam.
+  const mirror = await centerOf(page, { cell: [5, 1] })
+  await page.mouse.click(mirror.x, mirror.y)
+  await expect(page.getByRole('dialog', { name: 'Level solved' })).toBeVisible()
 })
 
 test('gives a new profile progress of its own', async ({ page }) => {

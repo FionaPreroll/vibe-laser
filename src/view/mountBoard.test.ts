@@ -83,12 +83,13 @@ const B1: Place = { area: 'board', cell: 6 }
 const MIRROR = 2
 
 describe('mountBoard', () => {
-  it('puts a canvas into its host and reports the layout for browser tests', async () => {
+  it('puts a canvas into its host and reports the layout and the art for browser tests', async () => {
     const { host } = await mount()
     expect(host.querySelector('canvas')).toBeTruthy()
     const layout = JSON.parse(host.dataset.layout ?? '{}')
     expect(layout.cell).toBe(64)
     expect(layout.scale).toBeGreaterThan(0)
+    expect(host.dataset.art).toBe('flat')
     expect(host.tabIndex).toBe(0)
   })
 

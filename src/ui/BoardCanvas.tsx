@@ -1,7 +1,9 @@
 import { useCallback, useEffect, useRef, useState } from 'preact/hooks'
 import { t } from '../i18n'
+import { createArt } from '../view/art'
 import { type BoardView, mountBoard } from '../view/board'
 import type { BoardController } from '../view/controller'
+import { artStyle } from '../view/display'
 
 interface HostProps {
   /** Puts a board into the host; it is destroyed when the host goes or `mount` changes. */
@@ -54,8 +56,15 @@ interface Props {
   readonly label: string
 }
 
-/** The game's board for one controller; the view mounts once and is destroyed with it. */
+/**
+ * The game's board for one controller; the view mounts once and is destroyed with it. A new look
+ * mounts it afresh, and the game goes on where it was.
+ */
 export function BoardCanvas({ controller, label }: Props) {
-  const mount = useCallback((element: HTMLElement) => mountBoard(element, controller), [controller])
+  const style = artStyle.value
+  const mount = useCallback(
+    (element: HTMLElement) => mountBoard(element, controller, createArt(style)),
+    [controller, style],
+  )
   return <CanvasHost mount={mount} label={label} describedBy="controls-hint" />
 }
