@@ -1,4 +1,6 @@
+import { effect } from '@preact/signals-core'
 import { cellByName, type Size } from '../core/board'
+import type { Command } from '../core/commands'
 import { cellName } from '../core/grid'
 import { freeSlot, type Item, itemById, type Place, type Puzzle, samePlace } from '../core/level'
 import type { Rules } from '../core/rules'
@@ -118,6 +120,41 @@ export function recordSolution(
     steps.push(step)
   }
   return steps
+}
+
+/**
+ * Notes the player's last move on each piece of a session that starts from `start`, in the order
+ * recordSolution wants. A restart clears the notes.
+ */
+export function recordMoves(
+  session: GameSession,
+  start: Puzzle,
+): { readonly moves: ReadonlyMap<number, LastMove>; stop(): void } {
+  const moves = new Map<number, LastMove>()
+  const note = (command: Command) => {
+    if (command.kind === 'batch') {
+      for (const step of command.commands) note(step)
+      return
+    }
+    const item = itemById(session.state.value.puzzle, command.item)
+    if (item === undefined) return
+    moves.delete(item.id)
+    moves.set(item.id, { tick: session.ticks, place: item.place, rotation: item.piece.rotation })
+  }
+  const stopEvents = session.onEvents((events) => {
+    for (const event of events) if (event.kind === 'command') note(event.command)
+  })
+  // Only a restart brings back the very puzzle the session started with.
+  const stopRestarts = effect(() => {
+    if (session.state.value.puzzle === start) moves.clear()
+  })
+  return {
+    moves,
+    stop() {
+      stopEvents()
+      stopRestarts()
+    },
+  }
 }
 
 function stepFor(origin: Item, move: LastMove, size: Size): Move | undefined {

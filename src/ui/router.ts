@@ -8,6 +8,14 @@ export type Screen =
   | { readonly name: 'play'; readonly level: string }
   | { readonly name: 'profiles' }
   | { readonly name: 'about' }
+  | { readonly name: 'editor' }
+  | { readonly name: 'editPack'; readonly pack: string }
+  | {
+      readonly name: 'editLevel'
+      readonly pack: string
+      readonly skill: number
+      readonly slot: number
+    }
 
 const PACKS: Screen = { name: 'packs' }
 
@@ -17,6 +25,7 @@ export function parseHash(hash: string): Screen {
   const [first, second, third, fourth] = parts
   if (first === 'profiles' && parts.length === 1) return { name: 'profiles' }
   if (first === 'about' && parts.length === 1) return { name: 'about' }
+  if (first === 'editor') return parseEditor(parts.slice(1))
   if (first === 'play' && parts.length === 4 && /^\d+\/\d+$/.test(`${third}/${fourth}`)) {
     return { name: 'play', level: parts.slice(1).join('/') }
   }
@@ -25,6 +34,17 @@ export function parseHash(hash: string): Screen {
   }
   if (first === 'packs' && second !== undefined && parts.length === 3 && /^\d$/.test(third ?? '')) {
     return { name: 'levels', pack: second, skill: Number(third) }
+  }
+  return PACKS
+}
+
+/** The editor's screens: "#/editor", a pack as "#/editor/my-pack", a level as ".../2/17". */
+function parseEditor(parts: readonly string[]): Screen {
+  const [pack, skill, slot] = parts
+  if (pack === undefined) return { name: 'editor' }
+  if (parts.length === 1) return { name: 'editPack', pack }
+  if (parts.length === 3 && /^[1-4]$/.test(skill ?? '') && /^\d{1,2}$/.test(slot ?? '')) {
+    return { name: 'editLevel', pack, skill: Number(skill), slot: Number(slot) }
   }
   return PACKS
 }
@@ -41,7 +61,12 @@ export function formatHash(screen: Screen): string {
       return `#/play/${screen.level}`
     case 'profiles':
     case 'about':
+    case 'editor':
       return `#/${screen.name}`
+    case 'editPack':
+      return `#/editor/${screen.pack}`
+    case 'editLevel':
+      return `#/editor/${screen.pack}/${screen.skill}/${screen.slot}`
   }
 }
 

@@ -7,6 +7,9 @@ import { t } from '../i18n'
 import { PackShelf } from '../persistence/packs'
 import { ProfileBook } from '../persistence/profiles'
 import { browserStore, type KeyValueStore, memoryStore } from '../persistence/store'
+import { EditorHome } from './editor/EditorHome'
+import { LevelEditor } from './editor/LevelEditor'
+import { PackEditor } from './editor/PackEditor'
 import { HelpDialog } from './HelpDialog'
 import { LanguageSwitch } from './LanguageSwitch'
 import { followAddress, navigate, screen } from './router'
@@ -120,6 +123,9 @@ export function App({ store, audio }: Props) {
           <button type="button" onClick={() => navigate({ name: 'profiles' })}>
             {t('profileButton', { name: book.active.value.name })}
           </button>
+          <button type="button" onClick={() => navigate({ name: 'editor' })}>
+            {t('editorButton')}
+          </button>
           <button type="button" onClick={() => setOverlay('settings')}>
             {t('settings')}
           </button>
@@ -133,7 +139,7 @@ export function App({ store, audio }: Props) {
         </nav>
       </header>
       {opened.blocked && <p class="notice">{t('storageBlocked')}</p>}
-      <main class={current.name === 'play' ? 'play' : 'menu'}>
+      <main class={current.name === 'play' || current.name === 'editLevel' ? 'play' : 'menu'}>
         {current.name === 'packs' && <PacksScreen solved={solved} />}
         {current.name === 'skills' && <SkillsScreen pack={current.pack} solved={solved} />}
         {current.name === 'levels' && (
@@ -151,6 +157,23 @@ export function App({ store, audio }: Props) {
           />
         )}
         {current.name === 'profiles' && <ProfilesScreen book={book} />}
+        {current.name === 'editor' && shelf && <EditorHome shelf={shelf} />}
+        {current.name === 'editPack' && shelf && (
+          <PackEditor key={current.pack} pack={current.pack} shelf={shelf} />
+        )}
+        {current.name === 'editLevel' && shelf && (
+          // One editor per slot: its undo history belongs to one level.
+          <LevelEditor
+            key={`${current.pack}/${current.skill}/${current.slot}`}
+            pack={current.pack}
+            skill={current.skill}
+            slot={current.slot}
+            shelf={shelf}
+            speaker={sound}
+            paused={overlay !== undefined}
+            onHelp={() => setOverlay('help')}
+          />
+        )}
         {current.name === 'about' && <AboutScreen />}
       </main>
       {overlay === 'help' && <HelpDialog onClose={closeOverlay} />}

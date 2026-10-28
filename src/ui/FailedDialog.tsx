@@ -7,10 +7,12 @@ const DELAY_MS = 900
 interface Props {
   readonly onRestart: () => void
   readonly onLevels: () => void
+  /** What the second button says; the level selection unless the editor tests a level. */
+  readonly leaveLabel?: string
 }
 
 /** Shown once an explosion chain has ended; only a fresh start helps. */
-export function FailedDialog({ onRestart, onLevels }: Props) {
+export function FailedDialog({ onRestart, onLevels, leaveLabel }: Props) {
   const button = useRef<HTMLButtonElement>(null)
   const [shown, setShown] = useState(false)
   useEffect(() => {
@@ -32,7 +34,7 @@ export function FailedDialog({ onRestart, onLevels }: Props) {
             {t('startAgain')}
           </button>
           <button type="button" onClick={onLevels}>
-            {t('levelSelection')}
+            {leaveLabel ?? t('levelSelection')}
           </button>
         </div>
       </div>

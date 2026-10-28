@@ -1,6 +1,8 @@
 import { useState } from 'preact/hooks'
 import { t } from '../../i18n'
 import type { Profile, ProfileBook } from '../../persistence/profiles'
+import { downloadFile, fileName } from '../download'
+import { FileButton } from '../FileButton'
 import { navigate } from '../router'
 
 /** Player profiles: who plays, a fresh profile, renaming, deleting, export and import. */
@@ -9,8 +11,7 @@ export function ProfilesScreen({ book }: { readonly book: ProfileBook }) {
   const [importFailed, setImportFailed] = useState(false)
   const { profiles, active } = book.data.value
 
-  const importFile = async (file: File | undefined) => {
-    if (file === undefined) return
+  const importFile = async (file: File) => {
     setImportFailed(false)
     try {
       await book.importProfile(await file.text())
@@ -55,20 +56,7 @@ export function ProfilesScreen({ book }: { readonly book: ProfileBook }) {
         </label>
         <button type="submit">{t('create')}</button>
       </form>
-      <label class="import">
-        <span>{t('importProfile')}</span>
-        <input
-          type="file"
-          accept="application/json,.json"
-          onChange={(event) => {
-            const input = event.currentTarget
-            const file = input.files?.[0]
-            // Cleared, so choosing the same file again still counts as a change.
-            input.value = ''
-            void importFile(file)
-          }}
-        />
-      </label>
+      <FileButton label={t('importProfile')} onFile={(file) => void importFile(file)} />
       {importFailed && <p role="alert">{t('importFailed')}</p>}
     </section>
   )
@@ -84,16 +72,8 @@ function ProfileRow({ profile, active, book }: RowProps) {
   const [editing, setEditing] = useState(false)
   const [name, setName] = useState(profile.name)
 
-  const download = () => {
-    const url = URL.createObjectURL(
-      new Blob([book.exportProfile(profile.id)], { type: 'application/json' }),
-    )
-    const link = document.createElement('a')
-    link.href = url
-    link.download = `vibe-laser-${profile.name.replace(/[^\p{L}\p{N}]+/gu, '-')}.json`
-    link.click()
-    URL.revokeObjectURL(url)
-  }
+  const download = () =>
+    downloadFile(`vibe-laser-${fileName(profile.name)}.json`, book.exportProfile(profile.id))
 
   return (
     <li class={active ? 'profile active' : 'profile'}>
