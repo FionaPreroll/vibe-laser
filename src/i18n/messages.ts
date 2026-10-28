@@ -73,6 +73,9 @@ export const en = {
   musicVolume: 'Music',
   reducedMotion: 'Reduce motion',
   colorBlind: 'Color-blind mode',
+  artLabel: 'Look',
+  'art.flat': 'Plain',
+  'art.neon': 'Neon',
   colorBlindHint:
     'Pieces show their colors as letters, R, G and B, and beams draw each color as a line of its own: red, green and blue side by side.',
 
@@ -365,6 +368,9 @@ export const de: Record<MessageKey, string> = {
   musicVolume: 'Musik',
   reducedMotion: 'Weniger Bewegung',
   colorBlind: 'Farbenblind-Modus',
+  artLabel: 'Aussehen',
+  'art.flat': 'Schlicht',
+  'art.neon': 'Neon',
   colorBlindHint:
     'Teile zeigen ihre Farben als Buchstaben, R, G und B, und Strahlen zeichnen jede Farbe als eigene Linie: Rot, Grün und Blau nebeneinander.',
 

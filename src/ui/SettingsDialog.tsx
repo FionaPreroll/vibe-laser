@@ -1,5 +1,6 @@
 import { t } from '../i18n'
 import type { ProfileBook } from '../persistence/profiles'
+import { ART_STYLES } from '../view/display'
 import { LanguageSwitch } from './LanguageSwitch'
 import { Modal } from './Modal'
 
@@ -63,6 +64,22 @@ export function SettingsDialog({ book, onClose }: Props) {
         <p id="color-blind-hint" class="hint">
           {t('colorBlindHint')}
         </p>
+        <label>
+          <span>{t('artLabel')}</span>
+          <select
+            value={settings.art}
+            onChange={(event) => {
+              const art = ART_STYLES.find((style) => style === event.currentTarget.value)
+              if (art !== undefined) void book.updateSettings({ art })
+            }}
+          >
+            {ART_STYLES.map((style) => (
+              <option key={style} value={style}>
+                {t(`art.${style}`)}
+              </option>
+            ))}
+          </select>
+        </label>
         <LanguageSwitch />
       </div>
     </Modal>

@@ -1,7 +1,9 @@
 import { describe, expect, it } from 'vitest'
 import type { PartKind, Piece } from '../../core/board'
 import { BLUE, type Color, GREEN, RED, WHITE } from '../../core/color'
+import { createArt } from '.'
 import { createFlatArt } from './flat'
+import { createNeonArt } from './neon'
 
 // A record, so a new kind without art fails the type check here too.
 const KINDS = Object.keys({
@@ -34,8 +36,11 @@ const KINDS = Object.keys({
 
 const piece = (kind: PartKind, color: Color = RED): Piece => ({ kind, rotation: 0, color })
 
-describe('flat art', () => {
-  const art = createFlatArt()
+describe.each([
+  ['flat', createFlatArt],
+  ['neon', createNeonArt],
+])('%s art', (id, create) => {
+  const art = create()
 
   it('draws every kind of piece inside its cell', () => {
     for (const kind of KINDS) {
@@ -47,6 +52,14 @@ describe('flat art', () => {
       expect(bounds.minY, kind).toBeGreaterThanOrEqual(-32)
       expect(bounds.maxY, kind).toBeLessThanOrEqual(32)
     }
+  })
+
+  it('draws switched-off lasers, every color and either selector inside its cell', () => {
+    for (const color of [0, RED, GREEN, BLUE, WHITE] as Color[]) {
+      expect(art.piece(piece('laser', color)).bounds.width).toBeGreaterThan(10)
+      expect(art.piece(piece('coin', color)).bounds.width).toBeGreaterThan(10)
+    }
+    expect(art.piece(piece('selector', WHITE)).bounds.height).toBeGreaterThan(40)
   })
 
   it('draws a shape once per kind and color and shares it', () => {
@@ -61,8 +74,15 @@ describe('flat art', () => {
   })
 
   it('has a tile for board cells and a slot for the toolbox', () => {
-    expect(art.id).toBe('flat')
+    expect(art.id).toBe(id)
     expect(art.tile.bounds.width).toBe(60)
     expect(art.slot.bounds.width).toBeGreaterThanOrEqual(60)
+  })
+})
+
+describe('createArt', () => {
+  it('makes the art pack of each style', () => {
+    expect(createArt('flat').id).toBe('flat')
+    expect(createArt('neon').id).toBe('neon')
   })
 })

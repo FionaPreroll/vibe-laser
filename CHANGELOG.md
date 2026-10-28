@@ -35,6 +35,7 @@ All changes players can notice are listed here. The format follows [Keep a Chang
 - Touch screens: tap a piece to select it, tap it again to turn it, or tap a free place to move it there. Pinch to zoom in on the board, and drag an empty spot to look around. The hints below the board explain the touch controls.
 - On phones the header and the buttons take less room, so the board gets more of the screen.
 - Color-blind mode, in the settings: pieces show their colors as letters, R, G and B, and beams draw each of their colors as a line of its own. Help explains how colors mix, with a diagram.
+- A second look for the board, in the settings: Neon draws every part as a glowing outline on a dark board.
 
 ### Changed
 

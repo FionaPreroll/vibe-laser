@@ -46,7 +46,7 @@ describe('ProfileBook', () => {
     const { book } = await open(
       memoryStore({ save: { version: 1, active: 'fiona', profiles: [profile] } }),
     )
-    expect(book.active.value.settings).toEqual({ ...settings, colorBlind: false })
+    expect(book.active.value.settings).toEqual({ ...settings, colorBlind: false, art: 'flat' })
   })
 
   it('starts afresh when the saves cannot be read', async () => {

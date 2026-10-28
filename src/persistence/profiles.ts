@@ -10,6 +10,8 @@ const settingsSchema = z
     reducedMotion: z.boolean(),
     // Added after the first saves, which load with it switched off.
     colorBlind: z.boolean().default(false),
+    // The art pack every board draws with; older saves load with the plain one.
+    art: z.enum(['flat', 'neon']).default('flat'),
   })
   .strict()
 
@@ -51,6 +53,7 @@ export const DEFAULT_SETTINGS: Settings = {
   musicVolume: 0.5,
   reducedMotion: false,
   colorBlind: false,
+  art: 'flat',
 }
 
 const KEY = 'save'
