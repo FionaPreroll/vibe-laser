@@ -83,7 +83,7 @@ export function App({ store, audio }: Props) {
   return (
     <div class="shell">
       <header class="top-bar">
-        <a class="title" href="#/" onClick={() => navigate({ name: 'packs' })}>
+        <a class="title" href="#/">
           <h1>{t('appTitle')}</h1>
           <p class="tagline">{t('tagline')}</p>
         </a>
@@ -111,7 +111,9 @@ export function App({ store, audio }: Props) {
           <LevelsScreen pack={current.pack} skill={current.skill} solved={solved} />
         )}
         {current.name === 'play' && (
+          // One screen per level, so nothing of a finished game carries over to the next.
           <PlayScreen
+            key={current.level}
             level={current.level}
             book={book}
             speaker={sound}

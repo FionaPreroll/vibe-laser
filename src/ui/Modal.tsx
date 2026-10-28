@@ -9,11 +9,20 @@ interface Props {
   readonly children: ComponentChildren
 }
 
-/** A dialog over the current screen, such as help or the settings; Escape closes it. */
+/**
+ * A dialog over the current screen, such as help or the settings; Escape closes it. The focus
+ * moves into it when it opens and returns to where it was when it closes.
+ */
 export function Modal({ id, title, onClose, children }: Props) {
   const close = useRef<HTMLButtonElement>(null)
   useEffect(() => {
+    const opener = document.activeElement
     close.current?.focus()
+    return () => {
+      if (opener instanceof HTMLElement) opener.focus()
+    }
+  }, [])
+  useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
       if (event.key === 'Escape') onClose()
     }

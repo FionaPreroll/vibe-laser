@@ -11,9 +11,9 @@ export function ProfilesScreen({ book }: { readonly book: ProfileBook }) {
 
   const importFile = async (file: File | undefined) => {
     if (file === undefined) return
+    setImportFailed(false)
     try {
       await book.importProfile(await file.text())
-      setImportFailed(false)
     } catch {
       setImportFailed(true)
     }
@@ -60,7 +60,13 @@ export function ProfilesScreen({ book }: { readonly book: ProfileBook }) {
         <input
           type="file"
           accept="application/json,.json"
-          onChange={(event) => void importFile(event.currentTarget.files?.[0])}
+          onChange={(event) => {
+            const input = event.currentTarget
+            const file = input.files?.[0]
+            // Cleared, so choosing the same file again still counts as a change.
+            input.value = ''
+            void importFile(file)
+          }}
         />
       </label>
       {importFailed && <p role="alert">{t('importFailed')}</p>}
@@ -125,7 +131,13 @@ function ProfileRow({ profile, active, book }: RowProps) {
                 {t('playAs', { name: profile.name })}
               </button>
             )}
-            <button type="button" onClick={() => setEditing(true)}>
+            <button
+              type="button"
+              onClick={() => {
+                setName(profile.name)
+                setEditing(true)
+              }}
+            >
               {t('rename')}
             </button>
             <button type="button" onClick={download}>

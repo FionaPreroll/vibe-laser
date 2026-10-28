@@ -184,6 +184,9 @@ export class Synth implements Speaker {
     const context = this.#context
     const out = this.#music
     if (context === undefined || out === undefined) return
+    // Browsers slow timers down in background tabs: skip the beats missed meanwhile, rather than
+    // playing them all at once.
+    if (this.#nextBeat < context.currentTime) this.#nextBeat = context.currentTime + 0.05
     while (this.#nextBeat < context.currentTime + LOOKAHEAD) {
       const at = this.#nextBeat - context.currentTime
       if (this.#beat % 4 === 0) {

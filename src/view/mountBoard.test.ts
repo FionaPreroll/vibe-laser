@@ -2,7 +2,8 @@
 import type { Container, FederatedPointerEvent } from 'pixi.js'
 import { Point } from 'pixi.js'
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { puzzleOf, TUTORIAL } from '../content/levels'
+import { puzzleOf } from '../content/level'
+import { findLevel } from '../content/packs'
 import { itemById, type Place } from '../core/level'
 import { GameSession } from '../game/session'
 import { mountBoard } from './board'
@@ -43,10 +44,10 @@ afterEach(() => {
   fakes.apps.length = 0
 })
 
-async function mount(id = 'first-light') {
-  const level = TUTORIAL.find((candidate) => candidate.id === id)
+async function mount(id = 'tutorial/1/1') {
+  const level = await findLevel(id)?.entry.load()
   if (level === undefined) throw new Error(`No level ${id}`)
-  const controller = new BoardController(new GameSession(puzzleOf(level)))
+  const controller = new BoardController(new GameSession(puzzleOf(level.file)))
   const host = document.createElement('div')
   document.body.append(host)
   const view = await mountBoard(host, controller)
@@ -167,7 +168,7 @@ describe('mountBoard', () => {
   })
 
   it('runs the clock and plays effects for what happens', async () => {
-    const { controller, tick, scene } = await mount('handle-with-care')
+    const { controller, tick, scene } = await mount('tutorial/3/1')
     controller.session.execute({ kind: 'move', item: 3, to: { area: 'board', cell: 0 } })
     controller.session.execute({ kind: 'rotate', item: 3, steps: 3 })
     expect(controller.session.state.value.phase).toBe('exploding')
@@ -177,6 +178,41 @@ describe('mountBoard', () => {
     expect(controller.session.state.value.phase).toBe('failed')
     tick(1000)
     expect(effects.children).toHaveLength(0)
+  })
+
+  it('stands still while help or the settings are open', async () => {
+    const { controller, host, key, tick } = await mount('tutorial/3/1')
+    controller.session.execute({ kind: 'move', item: 3, to: { area: 'board', cell: 0 } })
+    controller.session.execute({ kind: 'rotate', item: 3, steps: 3 })
+    controller.paused.value = true
+    tick(1000)
+    expect(controller.session.state.value.phase).toBe('exploding')
+    host.dispatchEvent(new FocusEvent('focus'))
+    const focus = controller.focus.value
+    expect(key('ArrowRight')).toBe(true)
+    expect(controller.focus.value).toEqual(focus)
+    controller.paused.value = false
+    tick(200)
+    expect(controller.session.state.value.phase).toBe('failed')
+  })
+
+  it('lets actors jump instead of glide when motion is reduced', async () => {
+    const { controller, tick, scene } = await mount('tutorial/3/2')
+    const slimeIndex = () =>
+      controller.session.state.value.puzzle.items.findIndex((item) => item.piece.kind === 'slime')
+    const slime = (scene.children[2] as Container).children[slimeIndex()]
+    const start = { x: slime?.x, y: slime?.y }
+    // One slime step, with the clock moved by hand so no time passes for the gliding.
+    controller.session.advance(800)
+    const place = controller.session.state.value.puzzle.items[slimeIndex()]?.place
+    if (place === undefined) throw new Error('The slime is gone')
+    const target = placeCenter(controller.geometry, place)
+    expect(target).not.toEqual(start)
+    tick(0)
+    expect({ x: slime?.x, y: slime?.y }).toEqual(start)
+    controller.reducedMotion.value = true
+    tick(0)
+    expect({ x: slime?.x, y: slime?.y }).toEqual(target)
   })
 
   it('keeps the browser menu off the canvas and stops listening once destroyed', async () => {

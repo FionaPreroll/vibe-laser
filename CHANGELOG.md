@@ -16,6 +16,12 @@ All changes players can notice are listed here. The format follows [Keep a Chang
 - Drag pieces from the toolbox onto the board. Click a piece to turn it left, right-click to turn it right.
 - Buttons below the board: Restart, Clean up, Undo, Redo, Rotate left and Rotate right.
 - Keyboard play: the arrow keys move a frame over the toolbox and the board, Enter picks a piece up and puts it down, Q and E rotate, Ctrl+Z and Ctrl+Y undo and redo.
-- When every coin spins, the level is solved and a message offers the next level.
+- When every coin spins, the level is solved and a message offers the next unsolved level of the pack, the level selection, or another go.
 - Rows and columns of the board are marked with letters and numbers, as in the original.
 - The interface speaks English and German. It follows the browser's language, and the switch in the header changes it.
+- Level packs: the tutorial levels form the Tutorial pack, in three skills. Pick a pack, a skill and a level; solved levels carry a mark, and every pack and skill shows how many of its levels are solved.
+- Profiles: every player keeps their own solved levels and settings, saved in the browser. Profiles can be created, renamed and deleted, and exported as a file to import them in another browser.
+- Settings for the volume of sound effects and music, and to reduce motion: actors jump instead of gliding, and blasts flash instead of swelling.
+- Sound effects for placing and turning pieces, coins that start to spin, blasts, shots, hungry slimes and the end of a level, with quiet music in the background.
+- A help page that explains the controls and every part, and an About page with the version and this list of changes.
+- Exit and Help buttons below the board. While help or the settings are open, the game waits.

@@ -23,11 +23,14 @@ export function AboutScreen() {
 
 /**
  * Just enough Markdown for CHANGELOG.md: headings, paragraphs and lists. Links keep their text,
- * and nothing becomes raw HTML.
+ * link definitions are left out, and nothing becomes raw HTML.
  */
 export function renderChangelog(markdown: string): ComponentChildren[] {
   const plain = (text: string) =>
-    text.replace(/\[([^\]]+)\]\([^)]*\)/g, '$1').replace(/`([^`]+)`/g, '$1')
+    text
+      .replace(/\[([^\]]+)\]\([^)]*\)/g, '$1')
+      .replace(/\[([^\]]+)\]/g, '$1')
+      .replace(/`([^`]+)`/g, '$1')
   const blocks: ComponentChildren[] = []
   let list: string[] = []
   const flush = () => {
@@ -48,7 +51,7 @@ export function renderChangelog(markdown: string): ComponentChildren[] {
       continue
     }
     flush()
-    if (line.startsWith('# ') || line.trim() === '') continue
+    if (line.startsWith('# ') || line.trim() === '' || /^\[[^\]]+\]:/.test(line)) continue
     if (line.startsWith('### ')) blocks.push(<h4 key={blocks.length}>{plain(line.slice(4))}</h4>)
     else if (line.startsWith('## '))
       blocks.push(<h3 key={blocks.length}>{plain(line.slice(3))}</h3>)

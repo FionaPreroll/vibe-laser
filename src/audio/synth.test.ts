@@ -136,6 +136,19 @@ describe('Synth', () => {
     expect(context.oscillators.length).toBeGreaterThan(stopped)
   })
 
+  it('skips the beats it missed while the page was in the background', () => {
+    vi.useFakeTimers()
+    const { synth: speaker, context } = synth()
+    speaker.unlock()
+    const planned = context.oscillators.length
+    context.currentTime = 60
+    vi.advanceTimersByTime(250)
+    const late = context.oscillators.slice(planned)
+    expect(late.length).toBeGreaterThan(0)
+    expect(late.length).toBeLessThanOrEqual(6)
+    expect(late.every((oscillator) => (oscillator.starts[0] ?? 0) >= 60)).toBe(true)
+  })
+
   it('closes its audio context when disposed', () => {
     const { synth: speaker, context } = synth()
     speaker.unlock()

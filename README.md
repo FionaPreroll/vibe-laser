@@ -8,11 +8,13 @@ Play it at https://fionapreroll.github.io/vibe-laser/.
 
 ## How to play
 
+- Pick a level pack, a skill and a level. Every level of a skill is open from the start, and solved levels carry a mark.
 - Drag pieces from the toolbox on the left onto the board. Click a piece to turn it left, right-click to turn it right.
 - A level is solved when every coin spins: each colored coin needs light of exactly its color, and dark anti-coins must stay out of the light.
 - Keep light away from explosives. One that goes off sets off its neighbours too, and the level is lost; only starting again helps.
 - Slimes, robot mines and spaceships move by themselves. With mines or ships on the board, a solution must hold for five seconds while a bar fills.
-- The buttons below the board restart the level, clean up (unlit pieces go back into the toolbox), undo, redo, and rotate the selected piece.
+- The buttons below the board lead back to the level selection, restart the level, clean up (unlit pieces go back into the toolbox), undo, redo, rotate the selected piece and open the help.
+- Each player can have a profile of their own, with their own progress and settings: the volume of sound effects and music, and less motion on the board. Profiles can be exported as a file and imported in another browser.
 - Keyboard: focus the board with Tab. The arrow keys move a frame over the toolbox and the board, Enter picks a piece up and puts it down, Escape cancels, Q and E rotate, Ctrl+Z undoes and Ctrl+Y or Ctrl+Shift+Z redoes.
 
 ## Parts
@@ -71,6 +73,7 @@ pnpm dev
 | `pnpm test`, `pnpm test:watch` | Vitest unit tests                                                                     |
 | `pnpm test:coverage`           | Unit tests with a coverage report in `coverage/`                                      |
 | `pnpm test:e2e`                | Builds, then runs the Playwright browser tests                                        |
+| `pnpm schemas`                 | Writes `packs/*.schema.json` again from the level and pack schemas                    |
 
 Playwright needs a Chromium: run `pnpm exec playwright install chromium` once, or set `CHROMIUM_PATH` to an installed Chromium binary.
 
@@ -82,18 +85,21 @@ TypeScript 7, PixiJS 8 for the board, Preact with Signals for the interface arou
 
 ```
 src/
-  core/      game rules in pure TypeScript: no DOM, PixiJS or Preact
-  game/      the game session: current state, undo and redo, solved or not
-  content/   the tutorial levels, until level packs arrive
-  i18n/      English and German texts, t() and the language setting
-  view/      PixiJS scene, art packs, pointer and keyboard input
-  ui/        Preact header, button bar and dialogs around the canvas
-  main.tsx   entry point
-tests/e2e/   Playwright browser tests
-public/      static files, copied as they are
+  core/         game rules in pure TypeScript: no DOM, PixiJS or Preact
+  game/         the game session: current state, undo and redo, solved or not
+  content/      level and pack files: their schema, the loader, puzzles from levels
+  persistence/  profiles with progress and settings, saved in IndexedDB
+  audio/        sound effects and music, synthesized with Web Audio
+  i18n/         English and German texts, t() and the language setting
+  view/         PixiJS scene, art packs, pointer and keyboard input
+  ui/           Preact screens, header, button bar and dialogs around the canvas
+  main.tsx      entry point
+packs/          the level packs, one folder each
+tests/e2e/      Playwright browser tests
+public/         static files, copied as they are
 ```
 
-Later milestones add `persistence/` (profiles and progress), `editor/` and `audio/`.
+A later milestone adds `editor/`.
 
 Two rules keep the layers apart:
 
@@ -123,7 +129,61 @@ Property tests (`src/core/properties.test.ts`, with fast-check) check the model 
 - Undo takes back only player moves. Whatever actors and explosions did stays, and an undo entry whose piece is gone or whose cell is taken is dropped.
 - The session reports what happens as events, such as `ignited`, `ate` or `fired`, for the view's effects.
 - `BoardController` in `src/view/controller.ts` holds what only the interface needs: the selected piece, the keyboard focus and a piece lifted with the keyboard.
-- Each tutorial level in `src/content/levels.ts` carries one known solution, with waits where actors must do their part first. Tests play every solution under several seeds and expect the level to be solved, and check that no level explodes or solves itself during a minute without moves.
+- Every level file carries one known solution, with waits where actors must do their part first. Tests in `src/content/packs.test.ts` play every solution under several seeds and expect the level to be solved, and check that no level explodes or solves itself during a minute without moves.
+
+## Level packs
+
+Levels live in `packs/`, a folder per pack, after the JSON proposal of the spec:
+
+```
+packs/
+  level.schema.json          JSON Schema of a level file, for editors
+  pack.schema.json           JSON Schema of pack.json
+  tutorial/
+    pack.json                title, description, place in the list, skill names
+    levels/skill1/level_001.json
+    levels/skill1/level_002.json
+    …
+```
+
+- A pack has one to four skills of up to 30 levels each. A level's id comes from its path: `tutorial/2/5` is the fifth level of the second skill. With `"selectSkill": false`, or with one skill only, the pack opens straight at its levels.
+- `pack.json` gives the title and description in English and German, the `position` in the list of packs, the skill names, and optionally `rules`: rule flags from `src/core/rules.ts` for every level of the pack.
+- A level file gives its `name` in English and German, its `size` as columns and rows (up to 32 × 26), the `objects` on the board, the `toolbox`, optionally its own `rules`, and the known `solution`. An optional `note` tells other authors what the level is about.
+- Objects name their cell as in the original, row letter and column number (`B6`), their `type` (`laser`, `mirror`, `blackHole` and so on), their rotation `rot` from 0 to 7 and their color `rgb` as the letters of the switched-on colors, so `"rb"` is magenta. Pieces on the board are fixed and toolbox pieces free; `moveable` and `rotateable` change that. A toolbox entry can repeat itself with `count`.
+- A solution step puts toolbox piece `piece` (counted from 0) on cell `pos` in rotation `rot`; `{ "wait": 10 }` lets ten ticks pass first.
+
+```json
+{
+  "$schema": "../../../level.schema.json",
+  "version": 1,
+  "name": { "en": "First Light", "de": "Erstes Licht" },
+  "size": [6, 3],
+  "objects": [
+    { "type": "coin", "pos": "A6", "rgb": "r" },
+    { "type": "laser", "pos": "B1", "rot": 2, "rgb": "r" }
+  ],
+  "toolbox": [{ "type": "mirror", "rot": 0 }],
+  "solution": [{ "piece": 0, "pos": "B6", "rot": 7 }]
+}
+```
+
+The Zod schemas in `src/content/schema.ts` check every file and name each problem with its place, such as `objects[3].pos: G2 lies outside a 6 × 3 board`. They also check what JSON Schema cannot: cells on the board and free, colors for parts that need one, rotations only for parts that turn, at least one coin. The two `*.schema.json` files are generated from them, and a test fails when they fall behind; `pnpm schemas` writes them again.
+
+The build bundles every `pack.json`, and each level file becomes a small file of its own that loads when its level list or the level opens (`src/content/packs.ts`).
+
+## Screens and saves
+
+- The address after `#` names the screen, so the browser's back button and bookmarks work: `#/` lists the packs, `#/packs/tutorial` the skills of a pack, `#/packs/tutorial/2` the levels of a skill, `#/play/tutorial/2/5` opens a level, and `#/profiles` and `#/about` the profiles and the version with the changelog.
+- Help and the settings open over the game and stop its clock while they are open.
+- `ProfileBook` in `src/persistence/profiles.ts` keeps all profiles in one record in IndexedDB (database `vibe-laser`, store `saves`), through idb-keyval. The record carries a version, and `migrate()` is where later formats will convert older saves; a record it cannot read starts afresh. Changes are saved one after another, so the last one always wins.
+- A profile holds a name, the ids of its solved levels and its settings. Reduced motion starts on when the system asks for less motion. After the first solved level the game asks the browser to keep its storage (`navigator.storage.persist()`).
+- An exported profile is a JSON file (`"format": "vibe-laser-profile"`). An imported one gets a new id, and a number after its name when the name is taken.
+- Where the browser blocks IndexedDB, as some private windows do, progress lasts until the page closes, and the game says so.
+- The language is a setting of the browser, not of a profile, and stays in `localStorage`.
+
+## Sound
+
+There are no sound files: `src/audio/synth.ts` synthesizes every effect and the music with the Web Audio API. `listen()` in `src/audio/director.ts` turns what happens in a game session into sounds: placing and turning pieces, coins starting to spin, blasts, shots, slimes eating, and the end of a level. The music is a slow, generated pentatonic melody. Browsers allow sound only after the first click or key press, so it starts then; the volumes come from the active profile.
 
 ## Game rules decided so far
 

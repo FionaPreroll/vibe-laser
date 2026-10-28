@@ -1,7 +1,8 @@
 // @vitest-environment happy-dom
 import { cleanup, render, screen, waitFor } from '@testing-library/preact'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { puzzleOf, TUTORIAL } from '../content/levels'
+import { createPuzzle } from '../core/level'
+import { parseBoard } from '../core/notation'
 import { GameSession } from '../game/session'
 import { mountBoard } from '../view/board'
 import { BoardController } from '../view/controller'
@@ -11,9 +12,7 @@ vi.mock('../view/board', () => ({ mountBoard: vi.fn() }))
 const mount = vi.mocked(mountBoard)
 
 function controller(): BoardController {
-  const level = TUTORIAL[0]
-  if (level === undefined) throw new Error('No levels')
-  return new BoardController(new GameSession(puzzleOf(level)))
+  return new BoardController(new GameSession(createPuzzle(parseBoard('L2r . Cr'), [])))
 }
 
 beforeEach(() => {

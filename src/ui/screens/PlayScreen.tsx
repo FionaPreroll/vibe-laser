@@ -1,4 +1,4 @@
-import { effect } from '@preact/signals'
+import { effect, untracked } from '@preact/signals'
 import { useEffect, useMemo, useState } from 'preact/hooks'
 import { listen, type Speaker } from '../../audio/director'
 import { puzzleOf, rulesOf } from '../../content/level'
@@ -25,7 +25,10 @@ interface Props {
 
 type Loaded = { readonly level: Level } | { readonly failed: true }
 
-/** One level in play: the board, the button bar and the dialogs for its end. */
+/**
+ * One level in play: the board, the button bar and the dialogs for its end. The game belongs to
+ * one level, so each level needs a screen of its own, keyed by the level.
+ */
 export function PlayScreen({ level: id, book, speaker, paused, onHelp }: Props) {
   const found = findLevel(id)
   const [loaded, setLoaded] = useState<Loaded>()
@@ -60,7 +63,10 @@ export function PlayScreen({ level: id, book, speaker, paused, onHelp }: Props) 
     () =>
       controller &&
       effect(() => {
-        if (controller.session.state.value.phase === 'solved') void book.markSolved(id)
+        // Only the game decides; saving reads the profile, which must not run this again.
+        if (controller.session.state.value.phase === 'solved') {
+          untracked(() => void book.markSolved(id))
+        }
       }),
     [controller, book, id],
   )
@@ -102,7 +108,6 @@ export function PlayScreen({ level: id, book, speaker, paused, onHelp }: Props) 
       </h2>
       <div class="stage">
         <BoardCanvas
-          key={id}
           controller={controller}
           label={t('board', { name, columns: puzzle.width, rows: puzzle.height })}
         />

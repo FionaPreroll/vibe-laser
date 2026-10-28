@@ -101,7 +101,7 @@ describe('packSchema', () => {
 })
 
 describe('JSON Schema for editors', () => {
-  // Generated: after changing a schema, run `pnpm vitest run src/content/schema.test.ts -u`.
+  // Generated: after changing a schema, run `pnpm schemas`.
   it('matches the level and pack schemas', async () => {
     await expect(json(levelSchema)).toMatchFileSnapshot('../../packs/level.schema.json')
     await expect(json(packSchema)).toMatchFileSnapshot('../../packs/pack.schema.json')
