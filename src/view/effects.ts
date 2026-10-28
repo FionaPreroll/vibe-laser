@@ -1,5 +1,7 @@
 import { Container, Graphics, GraphicsContext } from 'pixi.js'
+import type { GameEvent } from '../game/session'
 import { CELL, type Point } from './layout'
+import { EFFECT_COLORS } from './palette'
 
 interface Effect {
   readonly view: Graphics
@@ -20,6 +22,23 @@ const BLAST = new GraphicsContext()
 /** Short-lived animations above the board: blasts, shots and little bursts. */
 export class EffectLayer extends Container {
   readonly #effects: Effect[] = []
+
+  /** Shows what a game event looks like; `center` finds a board cell in the scene. */
+  play(event: GameEvent, center: (cell: number) => Point): void {
+    if (event.kind === 'ignited') {
+      for (const cell of event.cells) this.blast(center(cell))
+    } else if (event.kind === 'fired') {
+      this.shot(center(event.from), center(event.at))
+      this.ring(center(event.at), EFFECT_COLORS.fired)
+    } else if (event.kind === 'ate' || event.kind === 'collected' || event.kind === 'swallowed') {
+      this.ring(center(event.cell), EFFECT_COLORS[event.kind])
+    }
+  }
+
+  /** How many effects are playing. */
+  get playing(): number {
+    return this.#effects.length
+  }
 
   /** A fireball that swells over the cell and its neighbours, then fades. */
   blast(at: Point): void {

@@ -6,12 +6,12 @@ export default defineConfig({
   base: './',
   plugins: [preact()],
   test: {
-    include: ['src/**/*.test.ts'],
+    include: ['src/**/*.test.{ts,tsx}'],
     coverage: {
       provider: 'v8',
       // Every source file, so files without tests count as uncovered instead of missing.
       include: ['src/**/*.{ts,tsx}'],
-      exclude: ['src/**/*.test.ts'],
+      exclude: ['src/**/*.test.{ts,tsx}'],
       // lcov for Codecov, a table for the terminal.
       reporter: ['text', 'lcov'],
     },

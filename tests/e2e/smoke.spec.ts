@@ -21,8 +21,14 @@ interface Layout {
   toolboxColumns: number
 }
 
+/** Waits until PixiJS has mounted the board, which happens after the page has loaded. */
+async function boardReady(page: Page) {
+  await expect(page.locator('.board')).toHaveAttribute('data-layout', /"scale"/)
+}
+
 /** Screen position of a board cell (column and row from 0) or a toolbox slot. */
 async function centerOf(page: Page, place: { cell: [number, number] } | { slot: number }) {
+  await boardReady(page)
   const layout = JSON.parse(
     (await page.locator('.board').getAttribute('data-layout')) ?? '{}',
   ) as Layout
@@ -43,6 +49,7 @@ async function centerOf(page: Page, place: { cell: [number, number] } | { slot: 
 
 /** First level: carry the mirror from the toolbox to B6 and turn it once to the left. */
 async function placeMirrorWithKeyboard(page: Page) {
+  await boardReady(page)
   await page.locator('.board').focus()
   await page.keyboard.press('Enter')
   for (let step = 0; step < 7; step++) await page.keyboard.press('ArrowRight')
@@ -110,6 +117,7 @@ test('fails the level when an explosive goes off, until it starts again', async 
   const level = page.locator('option', { hasText: 'Handle with Care' })
   await page.getByLabel('Level').selectOption((await level.getAttribute('value')) ?? '')
   // The mirror in A1, turned to send the beam east, lights the explosive in A3.
+  await boardReady(page)
   await page.locator('.board').focus()
   await page.keyboard.press('Enter')
   for (let step = 0; step < 2; step++) await page.keyboard.press('ArrowRight')
