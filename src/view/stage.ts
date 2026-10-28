@@ -4,6 +4,7 @@ import { columnName, rowName } from '../core/grid'
 import type { Item, Place } from '../core/level'
 import type { ArtPack } from './art/types'
 import { BeamLayer } from './beams'
+import { ColorLabelLayer } from './colorLabels'
 import { EffectLayer } from './effects'
 import {
   CELL,
@@ -30,6 +31,8 @@ export interface BoardStage {
   readonly scene: Container
   readonly beams: BeamLayer
   readonly pieces: PieceLayer
+  /** Color-blind mode's letters on colored pieces. */
+  readonly labels: ColorLabelLayer
   readonly effects: EffectLayer
   readonly overlay: Graphics
   /** Whether the host has the keyboard focus. */
@@ -68,10 +71,11 @@ export async function createStage(
   const scene = new Container()
   const beams = new BeamLayer()
   const pieces = new PieceLayer(art)
+  const labels = new ColorLabelLayer()
   const effects = new EffectLayer()
   const overlay = new Graphics()
   const carried = new Container()
-  scene.addChild(drawBackground(geometry, art), beams, pieces, effects, overlay, carried)
+  scene.addChild(drawBackground(geometry, art), beams, pieces, labels, effects, overlay, carried)
   scene.eventMode = 'static'
   scene.hitArea = new Rectangle(0, 0, geometry.width, geometry.height)
   app.stage.addChild(scene)
@@ -142,6 +146,7 @@ export async function createStage(
     scene,
     beams,
     pieces,
+    labels,
     effects,
     overlay,
     hasFocus,

@@ -7,6 +7,7 @@ import { kindForKey } from '../editor/palette'
 import { createFlatArt } from './art/flat'
 import type { ArtPack } from './art/types'
 import type { BoardView } from './board'
+import { colorBlind } from './display'
 import { type Point, placeAt, type SceneGeometry } from './layout'
 import { BOARD_COLORS } from './palette'
 import { createStage, isTextField } from './stage'
@@ -60,7 +61,7 @@ export async function mountEditorBoard(
 ): Promise<BoardView> {
   const geometry = editor.scene.value.geometry
   const stage = await createStage(host, geometry, art)
-  const { scene, beams, pieces, overlay, hasFocus, showGhost, outline } = stage
+  const { scene, beams, pieces, labels, overlay, hasFocus, showGhost, outline } = stage
 
   let press: Press | undefined
   let hover: Place | undefined
@@ -70,7 +71,8 @@ export async function mountEditorBoard(
     if (!sameGeometry(current, geometry)) return
     const dragged = press?.dragging ? itemAt(puzzle, press.place)?.id : undefined
     pieces.show(puzzle, state.spinning, geometry, dragged)
-    beams.show(state.light, geometry)
+    labels.show(puzzle, geometry, colorBlind.value, dragged)
+    beams.show(state.light, geometry, colorBlind.value)
 
     overlay.clear()
     const selected = editor.selected.value

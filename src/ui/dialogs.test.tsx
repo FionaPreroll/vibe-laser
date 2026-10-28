@@ -111,27 +111,38 @@ describe('HelpDialog', () => {
     const parts = [...dialog.querySelectorAll('dt')].map((term) => term.textContent)
     expect(parts).toHaveLength(25)
     expect(parts.slice(0, 3)).toEqual(['Laser', 'Coin', 'Anti-coin'])
+    const wheel = screen.getByRole('img', { name: /red and green make yellow/ })
+    expect(wheel.querySelectorAll('text')).toHaveLength(7)
     expect(parts.at(-1)).toBe('Complex')
   })
 })
 
 describe('SettingsDialog', () => {
-  it('changes the volumes and motion of the active profile', async () => {
+  it('changes the volumes, motion and colors of the active profile', async () => {
     const book = await ProfileBook.open(memoryStore(), { name: 'Player' })
     render(<SettingsDialog book={book} onClose={() => {}} />)
     const sound = screen.getByLabelText('Sound effects') as HTMLInputElement
     const music = screen.getByLabelText('Music') as HTMLInputElement
     const motion = screen.getByLabelText('Reduce motion') as HTMLInputElement
-    expect([sound.value, music.value, motion.checked]).toEqual(['80', '50', false])
+    const colors = screen.getByRole('checkbox', { name: 'Color-blind mode' }) as HTMLInputElement
+    expect([sound.value, music.value, motion.checked, colors.checked]).toEqual([
+      '80',
+      '50',
+      false,
+      false,
+    ])
+    expect(colors.getAttribute('aria-describedby')).toBe('color-blind-hint')
     await act(() => {
       fireEvent.input(sound, { target: { value: '30' } })
       fireEvent.input(music, { target: { value: '0' } })
       fireEvent.click(motion)
+      fireEvent.click(colors)
     })
     expect(book.active.value.settings).toEqual({
       soundVolume: 0.3,
       musicVolume: 0,
       reducedMotion: true,
+      colorBlind: true,
     })
     expect(motion.checked).toBe(true)
     expect(screen.getByLabelText('Language')).toBeTruthy()

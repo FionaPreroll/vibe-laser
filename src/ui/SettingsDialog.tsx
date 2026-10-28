@@ -49,6 +49,20 @@ export function SettingsDialog({ book, onClose }: Props) {
           />
           <span>{t('reducedMotion')}</span>
         </label>
+        <label class="check">
+          <input
+            type="checkbox"
+            checked={settings.colorBlind}
+            aria-describedby="color-blind-hint"
+            onChange={(event) =>
+              void book.updateSettings({ colorBlind: event.currentTarget.checked })
+            }
+          />
+          <span>{t('colorBlind')}</span>
+        </label>
+        <p id="color-blind-hint" class="hint">
+          {t('colorBlindHint')}
+        </p>
         <LanguageSwitch />
       </div>
     </Modal>

@@ -8,6 +8,8 @@ const settingsSchema = z
     soundVolume: z.number().min(0).max(1),
     musicVolume: z.number().min(0).max(1),
     reducedMotion: z.boolean(),
+    // Added after the first saves, which load with it switched off.
+    colorBlind: z.boolean().default(false),
   })
   .strict()
 
@@ -48,6 +50,7 @@ export const DEFAULT_SETTINGS: Settings = {
   soundVolume: 0.8,
   musicVolume: 0.5,
   reducedMotion: false,
+  colorBlind: false,
 }
 
 const KEY = 'save'

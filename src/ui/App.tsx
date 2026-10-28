@@ -7,6 +7,7 @@ import { t } from '../i18n'
 import { PackShelf } from '../persistence/packs'
 import { ProfileBook } from '../persistence/profiles'
 import { browserStore, type KeyValueStore, memoryStore } from '../persistence/store'
+import { colorBlind } from '../view/display'
 import { HelpDialog } from './HelpDialog'
 import { LanguageSwitch } from './LanguageSwitch'
 import { followAddress, isEditorScreen, navigate, screen } from './router'
@@ -112,6 +113,14 @@ export function App({ store, audio }: Props) {
         sound.setVolumes(soundVolume, musicVolume)
       }),
     [book, sound],
+  )
+  useEffect(
+    () =>
+      book &&
+      effect(() => {
+        colorBlind.value = book.active.value.settings.colorBlind
+      }),
+    [book],
   )
 
   if (opened === undefined || book === undefined) return <p class="loading">{t('loading')}</p>

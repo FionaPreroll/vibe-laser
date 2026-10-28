@@ -34,6 +34,7 @@ All changes players can notice are listed here. The format follows [Keep a Chang
 - Once it has loaded, the game also plays offline, and browsers can install it as an app with an icon of its own. When a new version is out, a notice offers to reload into it, so a level in progress is never interrupted.
 - Touch screens: tap a piece to select it, tap it again to turn it, or tap a free place to move it there. Pinch to zoom in on the board, and drag an empty spot to look around. The hints below the board explain the touch controls.
 - On phones the header and the buttons take less room, so the board gets more of the screen.
+- Color-blind mode, in the settings: pieces show their colors as letters, R, G and B, and beams draw each of their colors as a line of its own. Help explains how colors mix, with a diagram.
 
 ### Changed
 

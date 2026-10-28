@@ -5,6 +5,7 @@ import { type Phase, STABLE_TICKS } from '../game/session'
 import { createFlatArt } from './art/flat'
 import type { ArtPack } from './art/types'
 import type { BoardController } from './controller'
+import { colorBlind } from './display'
 import { CELL, type Point, placeAt, placeCenter, type Transform } from './layout'
 import { BOARD_COLORS } from './palette'
 import { createStage, isTextField } from './stage'
@@ -79,7 +80,7 @@ export async function mountBoard(
 ): Promise<BoardView> {
   const { session, geometry } = controller
   const stage = await createStage(host, geometry, art)
-  const { scene, beams, pieces, effects, overlay, hasFocus, showGhost, outline } = stage
+  const { scene, beams, pieces, labels, effects, overlay, hasFocus, showGhost, outline } = stage
 
   const cellCenter = (cell: number) => placeCenter(geometry, { area: 'board', cell })
   const stopEffects = session.onEvents((events) => {
@@ -97,8 +98,10 @@ export async function mountBoard(
   const render = () => {
     const { puzzle, light, spinning, phase, stable } = session.state.value
     const lifted = controller.lifted.value
-    pieces.show(puzzle, spinning, geometry, press?.dragging ? press.id : lifted)
-    beams.show(light, geometry)
+    const carried = press?.dragging ? press.id : lifted
+    pieces.show(puzzle, spinning, geometry, carried)
+    labels.show(puzzle, geometry, colorBlind.value, carried)
+    beams.show(light, geometry, colorBlind.value)
 
     overlay.clear()
     const frame = frameStyle(phase, stable)

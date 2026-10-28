@@ -5,6 +5,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest'
 import type { LevelFile } from '../content/schema'
 import type { Place } from '../core/level'
 import { EditorController } from '../editor/controller'
+import { colorBlind } from './display'
 import { mountEditorBoard } from './editorBoard'
 import { placeCenter } from './layout'
 
@@ -40,6 +41,7 @@ vi.mock('pixi.js', async (importOriginal) => {
 afterEach(() => {
   document.body.innerHTML = ''
   fakes.apps.length = 0
+  colorBlind.value = false
 })
 
 const LEVEL: LevelFile = {
@@ -91,6 +93,13 @@ describe('mountEditorBoard', () => {
     expect(host.tabIndex).toBe(0)
     const pieces = scene.children[2] as Container
     expect(pieces.children).toHaveLength(3)
+  })
+
+  it('writes colors as letters in color-blind mode too', async () => {
+    const { scene } = await mount()
+    colorBlind.value = true
+    const labels = scene.children[3] as Container
+    expect(labels.children.length).toBeGreaterThan(0)
   })
 
   it('selects with a click and turns pieces right with a right click', async () => {

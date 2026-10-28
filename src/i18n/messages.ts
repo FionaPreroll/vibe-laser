@@ -72,11 +72,19 @@ export const en = {
   soundVolume: 'Sound effects',
   musicVolume: 'Music',
   reducedMotion: 'Reduce motion',
+  colorBlind: 'Color-blind mode',
+  colorBlindHint:
+    'Pieces show their colors as letters, R, G and B, and beams draw each color as a line of its own: red, green and blue side by side.',
 
   helpTitle: 'How to play',
   helpGoal:
     'Move and turn the pieces from the toolbox until every coin spins: each colored coin needs light of exactly its color, and dark anti-coins must stay out of the light. Keep light, mines and ships away from explosives.',
   helpParts: 'Parts',
+  helpColors: 'Colors',
+  helpColorsText:
+    'Light mixes: red and green make yellow, red and blue magenta, green and blue cyan, and all three white. Each part of a mixed color goes its own way through prisms and filters. Color-blind mode, in the settings, writes colors as letters and draws each color of a beam as a line of its own.',
+  colorWheel:
+    'Three overlapping lights: red and green make yellow, red and blue magenta, green and blue cyan, and all three white.',
   'parts.laser': 'Laser',
   'parts.laser.text': 'Fires a beam of its color.',
   'parts.mirror': 'Mirror',
@@ -356,11 +364,19 @@ export const de: Record<MessageKey, string> = {
   soundVolume: 'Geräusche',
   musicVolume: 'Musik',
   reducedMotion: 'Weniger Bewegung',
+  colorBlind: 'Farbenblind-Modus',
+  colorBlindHint:
+    'Teile zeigen ihre Farben als Buchstaben, R, G und B, und Strahlen zeichnen jede Farbe als eigene Linie: Rot, Grün und Blau nebeneinander.',
 
   helpTitle: 'So wird gespielt',
   helpGoal:
     'Verschiebe und drehe die Teile aus der Ablage, bis sich jede Münze dreht: Jede farbige Münze braucht Licht genau ihrer Farbe, und dunkle Anti-Münzen müssen im Dunkeln bleiben. Halte Licht, Minen und Raumschiffe von Sprengstoff fern.',
   helpParts: 'Teile',
+  helpColors: 'Farben',
+  helpColorsText:
+    'Licht mischt sich: Rot und Grün ergeben Gelb, Rot und Blau Magenta, Grün und Blau Cyan, alle drei Weiß. Jeder Anteil einer Mischfarbe geht durch Prismen und Filter seinen eigenen Weg. Der Farbenblind-Modus in den Einstellungen schreibt Farben als Buchstaben und zeichnet jede Farbe eines Strahls als eigene Linie.',
+  colorWheel:
+    'Drei Lichter, die sich überlappen: Rot und Grün ergeben Gelb, Rot und Blau Magenta, Grün und Blau Cyan, alle drei Weiß.',
   'parts.laser': 'Laser',
   'parts.laser.text': 'Sendet einen Strahl seiner Farbe aus.',
   'parts.mirror': 'Spiegel',

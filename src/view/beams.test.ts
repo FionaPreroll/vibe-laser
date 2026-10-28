@@ -1,6 +1,6 @@
 // @vitest-environment happy-dom
 import { describe, expect, it } from 'vitest'
-import { RED } from '../core/color'
+import { BLUE, GREEN, RED } from '../core/color'
 import { parseBoard } from '../core/notation'
 import { trace } from '../core/trace'
 import { BeamLayer } from './beams'
@@ -24,6 +24,35 @@ describe('BeamLayer', () => {
     expect(first?.position.x).toBe(a1.x)
     expect(first?.position.y).toBe(a1.y)
     expect(first?.width).toBe(CELL / 2)
+  })
+
+  it('draws a line per primary when split, in the same order on both halves of a segment', () => {
+    const layer = new BeamLayer()
+    layer.show(lightOf('L2rgb . . \n . . .'), geometry, true)
+    const sprites = visible(layer)
+    // Five half-segments, each with a red, a green and a blue line.
+    expect(sprites).toHaveLength(15)
+    expect(sprites.slice(0, 3).map((sprite) => sprite.tint)).toEqual([
+      BEAM_COLORS[RED],
+      BEAM_COLORS[GREEN],
+      BEAM_COLORS[BLUE],
+    ])
+    const a2 = placeCenter(geometry, { area: 'board', cell: 1 })
+    // A beam going east has red on top and blue below, on the westward half of A2 too.
+    const halves = sprites.filter((sprite) => sprite.position.x === a2.x)
+    expect(halves.map((sprite) => sprite.position.y - a2.y)).toEqual([-6, 0, 6, -6, 0, 6])
+    expect(halves[0]?.height).toBe(7)
+  })
+
+  it('splits mixed light into its primaries only', () => {
+    const layer = new BeamLayer()
+    layer.show(lightOf('L4rg . . \n . . .'), geometry, true)
+    // Three half-segments down column 1, each red and green.
+    const pair = [BEAM_COLORS[RED], BEAM_COLORS[GREEN]]
+    expect(visible(layer).map((sprite) => sprite.tint)).toEqual([...pair, ...pair, ...pair])
+    // A beam going south has red to the west of it.
+    const a1 = placeCenter(geometry, { area: 'board', cell: 0 })
+    expect(visible(layer)[0]?.position.x).toBe(a1.x - 6)
   })
 
   it('makes diagonal half-segments longer', () => {
