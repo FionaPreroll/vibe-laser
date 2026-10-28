@@ -100,7 +100,7 @@ Two rules keep the layers apart:
 - `src/core` imports nothing from outside `src/core`. Its own `tsconfig.core.json` has no DOM types, and Biome blocks imports of PixiJS, Preact and other `src/` folders there.
 - Every text players see goes through `t()` from `src/i18n`, in English and German. The German catalog is typed against the English one, so a missing text fails the type check.
 
-Unit tests sit next to the code as `*.test.ts`.
+Unit tests sit next to the code as `*.test.ts`, component tests as `*.test.tsx`. Tests that need a DOM say so in their first line (`// @vitest-environment happy-dom`) and render Preact components with Preact Testing Library. PixiJS's scene graph works without a renderer, so the view layers are tested directly, and `mountBoard` runs against a stand-in `Application` that receives pointer and keyboard events. Only WebGL drawing itself is left to the Playwright tests.
 
 ## Beam model
 

@@ -10,7 +10,7 @@ import {
 } from 'pixi.js'
 import { columnName, rowName } from '../core/grid'
 import { type Item, itemAt, itemById, type Place } from '../core/level'
-import { type GameEvent, type Phase, STABLE_TICKS } from '../game/session'
+import { type Phase, STABLE_TICKS } from '../game/session'
 import { createFlatArt } from './art/flat'
 import type { ArtPack } from './art/types'
 import { BeamLayer } from './beams'
@@ -26,7 +26,7 @@ import {
   type SceneGeometry,
   TOOLBOX_COLUMNS,
 } from './layout'
-import { BOARD_COLORS, EFFECT_COLORS } from './palette'
+import { BOARD_COLORS } from './palette'
 import { PieceLayer } from './pieces'
 
 /** Pointer travel in screen pixels before a press turns into a drag. */
@@ -37,6 +37,23 @@ const FRAME_COLORS: Partial<Record<Phase, number>> = {
   exploding: BOARD_COLORS.blocked,
   failed: BOARD_COLORS.blocked,
   solved: BOARD_COLORS.focus,
+}
+
+/** The frame for a phase, if it has one; while stabilizing it grows stronger as time passes. */
+export function frameStyle(
+  phase: Phase,
+  stable: number,
+): { color: number; alpha: number } | undefined {
+  const color = FRAME_COLORS[phase]
+  if (color === undefined) return undefined
+  return { color, alpha: phase === 'stabilizing' ? 0.3 + (0.5 * stable) / STABLE_TICKS : 0.8 }
+}
+
+/** The pointer over a piece: grab what moves, pointer for what only rotates. */
+export function cursorFor(item: Item | undefined, canPlay: boolean): string {
+  if (item === undefined || !canPlay) return 'default'
+  if (item.moveable) return 'grab'
+  return item.rotateable ? 'pointer' : 'default'
 }
 const BOARD_KEYS = new Set([
   'ArrowLeft',
@@ -95,17 +112,9 @@ export async function mountBoard(
   app.stage.addChild(scene)
 
   const cellCenter = (cell: number) => placeCenter(geometry, { area: 'board', cell })
-  const play = (event: GameEvent) => {
-    if (event.kind === 'ignited') {
-      for (const cell of event.cells) effects.blast(cellCenter(cell))
-    } else if (event.kind === 'fired') {
-      effects.shot(cellCenter(event.from), cellCenter(event.at))
-      effects.ring(cellCenter(event.at), EFFECT_COLORS.fired)
-    } else if (event.kind === 'ate' || event.kind === 'collected' || event.kind === 'swallowed') {
-      effects.ring(cellCenter(event.cell), EFFECT_COLORS[event.kind])
-    }
-  }
-  const stopEffects = session.onEvents((events) => events.forEach(play))
+  const stopEffects = session.onEvents((events) => {
+    for (const event of events) effects.play(event, cellCenter)
+  })
 
   const hasFocus = signal(document.activeElement === host)
   let press: Press | undefined
@@ -140,7 +149,7 @@ export async function mountBoard(
     beams.show(light, geometry)
 
     overlay.clear()
-    const frame = FRAME_COLORS[phase]
+    const frame = frameStyle(phase, stable)
     if (frame !== undefined) {
       overlay
         .roundRect(
@@ -150,11 +159,7 @@ export async function mountBoard(
           geometry.rows * CELL + 12,
           12,
         )
-        .stroke({
-          width: 4,
-          color: frame,
-          alpha: phase === 'stabilizing' ? 0.3 + (0.5 * stable) / STABLE_TICKS : 0.8,
-        })
+        .stroke({ width: 4, ...frame })
     }
     const selected = controller.selected.value
     const selectedItem = selected === undefined ? undefined : itemById(puzzle, selected)
@@ -182,10 +187,7 @@ export async function mountBoard(
 
   const cursorAt = (point: Point): string => {
     const place = placeAt(geometry, point)
-    const item = place && itemAt(session.state.value.puzzle, place)
-    if (item === undefined || !session.canPlay.value) return 'default'
-    if (item.moveable) return 'grab'
-    return item.rotateable ? 'pointer' : 'default'
+    return cursorFor(place && itemAt(session.state.value.puzzle, place), session.canPlay.value)
   }
 
   scene.eventMode = 'static'

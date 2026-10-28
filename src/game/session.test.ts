@@ -97,6 +97,35 @@ describe('GameSession', () => {
     expect(session.cleanup()).toBe(false)
   })
 
+  it('offers Cleanup only while an unlit piece could go back', () => {
+    const session = newSession()
+    expect(session.canCleanup.value).toBe(false)
+    session.execute({ kind: 'move', item: MIRROR, to: A1 })
+    expect(session.canCleanup.value).toBe(true)
+    session.execute({ kind: 'move', item: MIRROR, to: B3 })
+    session.execute({ kind: 'rotate', item: MIRROR, steps: -1 })
+    expect(session.state.value.phase).toBe('solved')
+    expect(session.canCleanup.value).toBe(false)
+  })
+
+  it('stops the clock once the level is solved', () => {
+    const session = newSession()
+    session.execute({ kind: 'move', item: MIRROR, to: B3 })
+    session.execute({ kind: 'rotate', item: MIRROR, steps: -1 })
+    expect(session.advance(1000)).toBe(0)
+  })
+
+  it('stops telling a listener once it unsubscribes', () => {
+    const session = new GameSession(createPuzzle(parseBoard('SH2 . .'), []))
+    let calls = 0
+    const stop = session.onEvents(() => calls++)
+    session.advance(400)
+    expect(calls).toBe(1)
+    stop()
+    session.advance(400)
+    expect(calls).toBe(1)
+  })
+
   it('keeps a level open while coins wait in the toolbox', () => {
     const session = new GameSession(createPuzzle(parseBoard('L2r . .'), [piece('Cr')]))
     expect(session.state.value.phase).toBe('playing')

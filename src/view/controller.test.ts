@@ -70,3 +70,32 @@ describe('BoardController keyboard', () => {
     expect(controller.session.state.value.puzzle.items[2]?.piece.rotation).toBe(1)
   })
 })
+
+describe('BoardController for the HUD', () => {
+  it('lets the rotate buttons work only on a selected piece that rotates, while playing', () => {
+    const controller = firstLevel()
+    expect(controller.canRotateSelected.value).toBe(false)
+    controller.select(0)
+    expect(controller.canRotateSelected.value).toBe(false)
+    controller.select(2)
+    expect(controller.canRotateSelected.value).toBe(true)
+    press(controller, 'Enter', ...Array<string>(7).fill('ArrowRight'), 'ArrowDown', 'Enter', 'q')
+    expect(controller.session.state.value.phase).toBe('solved')
+    expect(controller.canRotateSelected.value).toBe(false)
+  })
+
+  it('ignores keys it does not know', () => {
+    const controller = firstLevel()
+    expect(controller.handleKey('a', CTRL)).toBe(false)
+    expect(controller.handleKey('x', PLAIN)).toBe(false)
+  })
+
+  it('picks pieces up with the space bar too and rotates with capital letters', () => {
+    const controller = firstLevel()
+    press(controller, ' ')
+    expect(controller.lifted.value).toBe(2)
+    expect(controller.handleKey('E', PLAIN)).toBe(true)
+    expect(controller.handleKey('Q', PLAIN)).toBe(true)
+    expect(controller.session.state.value.puzzle.items[2]?.piece.rotation).toBe(0)
+  })
+})
