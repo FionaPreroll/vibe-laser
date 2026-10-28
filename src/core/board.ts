@@ -2,7 +2,7 @@ import type { Color } from './color'
 import { type Direction, DX, DY } from './direction'
 import { MAX_ROWS, parseCellName } from './grid'
 
-/** The parts known so far; later milestones add the parts of the expansion packs. */
+/** Every part: optics of the base game, then those of the expansion packs, coins, hazards and actors. */
 export type PartKind =
   | 'laser'
   | 'mirror'
@@ -16,6 +16,11 @@ export type PartKind =
   | 'colorConverter'
   | 'filter'
   | 'polarizer'
+  | 'bender'
+  | 'splicer'
+  | 'prismirror'
+  | 'selector'
+  | 'complex'
   | 'coin'
   | 'antiCoin'
   | 'explosive'
@@ -33,10 +38,12 @@ export interface Piece {
    */
   readonly rotation: Direction
   /**
-   * Color of lasers, coins, filters and polarizers; 0 for every other part. A laser with color 0
-   * is switched off.
+   * Color of lasers, coins, filters, polarizers and selectors, and the outer color of a complex; 0
+   * for every other part. A laser with color 0 is switched off.
    */
   readonly color: Color
+  /** Inner color of a complex; other parts leave it out. */
+  readonly inner?: Color
 }
 
 export interface Board {

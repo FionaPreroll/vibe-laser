@@ -66,7 +66,7 @@ test('gives a new profile progress of its own', async ({ page }) => {
   await expect(page.getByRole('button', { name: 'Profile: Fiona' })).toBeVisible()
 
   await page.getByRole('link', { name: /Vibe Laser/ }).click()
-  await expect(page.getByRole('button', { name: /^Tutorial/ })).toContainText('0 of 18 solved')
+  await expect(page.getByRole('button', { name: /^Tutorial/ })).toContainText('0 of 23 solved')
   await page.getByRole('button', { name: 'Profile: Fiona' }).click()
   await page.getByRole('button', { name: 'Play as Player' }).click()
   await expect(page.getByRole('button', { name: 'Profile: Player' })).toBeVisible()

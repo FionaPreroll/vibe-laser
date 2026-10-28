@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { cellByName } from './board'
-import { BLUE, GREEN, MAGENTA, RED } from './color'
+import { BLUE, CYAN, GREEN, MAGENTA, RED } from './color'
 import { formatBoard, parseBoard } from './notation'
 
 describe('parseBoard', () => {
@@ -40,6 +40,18 @@ describe('parseBoard', () => {
     ])
   })
 
+  it('reads the parts of the expansion packs, with the inner color of a complex', () => {
+    const board = parseBoard('BE SP4 PM1 SE2g CX3r/gb')
+    expect(board.cells).toEqual([
+      { kind: 'bender', rotation: 0, color: 0 },
+      { kind: 'splicer', rotation: 4, color: 0 },
+      { kind: 'prismirror', rotation: 1, color: 0 },
+      { kind: 'selector', rotation: 2, color: GREEN },
+      { kind: 'complex', rotation: 3, color: RED, inner: CYAN },
+    ])
+    expect(board.cells[3]).not.toHaveProperty('inner')
+  })
+
   it('reads hazards and actors, with the way each actor heads', () => {
     const board = parseBoard('T FC H SL2 MI5 SH6')
     expect(board.cells.map((piece) => piece && [piece.kind, piece.rotation])).toEqual([
@@ -67,6 +79,12 @@ describe('parseBoard', () => {
     ['L2', 'A1 "L2" needs a color'],
     ['M3r', 'A1 "M3r" cannot have a color'],
     ['Cx', 'A1 "Cx" has an unknown color'],
+    ['BE2', 'A1 "BE2" cannot rotate'],
+    ['SE0', 'A1 "SE0" needs a color'],
+    ['CX0r', 'A1 "CX0r" needs an inner color'],
+    ['CX0r/gg', 'A1 "CX0r/gg" has an unknown inner color'],
+    ['SE0r/g', 'A1 "SE0r/g" cannot have an inner color'],
+    ['M0/', 'A1 "M0/" is not a part'],
     ['. .\n.', 'Row 2 has 1 cells, but row 1 has 2'],
   ])('rejects %j', (text, message) => {
     expect(() => parseBoard(text)).toThrow(message)
@@ -76,6 +94,11 @@ describe('parseBoard', () => {
 describe('formatBoard', () => {
   it('writes aligned columns that parse back to the same board', () => {
     const text = 'L2rgb .     DM1\nA     Crb   SM7'
+    expect(formatBoard(parseBoard(text))).toBe(text)
+  })
+
+  it('writes the inner color of a complex after a slash', () => {
+    const text = 'CX0r/gb SE7b    BE'
     expect(formatBoard(parseBoard(text))).toBe(text)
   })
 })

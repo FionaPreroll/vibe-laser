@@ -68,6 +68,11 @@
               "colorConverter",
               "filter",
               "polarizer",
+              "bender",
+              "splicer",
+              "prismirror",
+              "selector",
+              "complex",
               "coin",
               "antiCoin",
               "explosive",
@@ -88,6 +93,9 @@
             "maximum": 7
           },
           "rgb": {
+            "type": "string"
+          },
+          "inner": {
             "type": "string"
           },
           "moveable": {
@@ -125,6 +133,11 @@
               "colorConverter",
               "filter",
               "polarizer",
+              "bender",
+              "splicer",
+              "prismirror",
+              "selector",
+              "complex",
               "coin",
               "antiCoin",
               "explosive",
@@ -141,6 +154,9 @@
             "maximum": 7
           },
           "rgb": {
+            "type": "string"
+          },
+          "inner": {
             "type": "string"
           },
           "moveable": {

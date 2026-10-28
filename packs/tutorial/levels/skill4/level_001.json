@@ -1,0 +1,15 @@
+{
+  "$schema": "../../../level.schema.json",
+  "version": 1,
+  "name": { "en": "Clockwise", "de": "Im Uhrzeigersinn" },
+  "note": "Both beams cross on C3, and the bender there turns each of them clockwise.",
+  "size": [5, 5],
+  "objects": [
+    { "type": "coin", "pos": "A5", "rgb": "g" },
+    { "type": "laser", "pos": "C1", "rot": 2, "rgb": "r" },
+    { "type": "laser", "pos": "E3", "rot": 0, "rgb": "g" },
+    { "type": "coin", "pos": "E5", "rgb": "r" }
+  ],
+  "toolbox": [{ "type": "bender" }],
+  "solution": [{ "piece": 0, "pos": "C3", "rot": 0 }]
+}

@@ -3,12 +3,13 @@ import { kindForKey, newPiece, PALETTE } from './palette'
 
 describe('palette', () => {
   it('has every part once, each with a key of its own and none for rotating', () => {
-    expect(new Set(PALETTE.map((entry) => entry.kind)).size).toBe(20)
+    expect(new Set(PALETTE.map((entry) => entry.kind)).size).toBe(25)
     const keys = PALETTE.map((entry) => entry.key)
-    expect(new Set(keys).size).toBe(20)
+    expect(new Set(keys).size).toBe(25)
     expect(keys).not.toContain('q')
     expect(keys).not.toContain('e')
     expect(kindForKey('H')).toBe('blackHole')
+    expect(kindForKey('5')).toBe('complex')
     expect(kindForKey('q')).toBeUndefined()
   })
 
@@ -17,5 +18,6 @@ describe('palette', () => {
     expect(newPiece('ship')).toEqual({ type: 'ship', rot: 2 })
     expect(newPiece('coin')).toEqual({ type: 'coin', rgb: 'r' })
     expect(newPiece('explosive')).toEqual({ type: 'explosive' })
+    expect(newPiece('complex')).toEqual({ type: 'complex', rot: 0, rgb: 'r', inner: 'g' })
   })
 })

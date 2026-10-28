@@ -1,12 +1,13 @@
 import { HEADINGS } from '../core/actors/kinds'
 import type { PartKind } from '../core/board'
-import { COLORED_KINDS } from '../core/notation'
+import { COLORED_KINDS, INNER_COLORED_KINDS } from '../core/notation'
 import { ROTATING_KINDS } from '../core/parts'
 import type { PieceSpec } from './draft'
 
 /**
  * Every part in the order players meet them in the tutorial, each with a key that puts it on the
- * board, as "h" puts a black hole down in the original editor. Q and E stay free for rotating.
+ * board, as "h" puts a black hole down in the original editor. Q and E stay free for rotating, and
+ * the parts of the expansion packs sit on the number keys.
  */
 export const PALETTE: readonly { readonly kind: PartKind; readonly key: string }[] = [
   { kind: 'laser', key: 'l' },
@@ -29,6 +30,11 @@ export const PALETTE: readonly { readonly kind: PartKind; readonly key: string }
   { kind: 'blackHole', key: 'h' },
   { kind: 'ship', key: 'b' },
   { kind: 'fuelCell', key: 'u' },
+  { kind: 'bender', key: '1' },
+  { kind: 'splicer', key: '2' },
+  { kind: 'prismirror', key: '3' },
+  { kind: 'selector', key: '4' },
+  { kind: 'complex', key: '5' },
 ]
 
 /** The part a key puts down, whatever its case. */
@@ -37,11 +43,15 @@ export function kindForKey(key: string): PartKind | undefined {
   return PALETTE.find((entry) => entry.key === letter)?.kind
 }
 
-/** A fresh piece of a kind: red where it needs a color, turned to its first allowed heading. */
+/**
+ * A fresh piece of a kind: red where it needs a color, green inside, turned to its first allowed
+ * heading.
+ */
 export function newPiece(kind: PartKind): PieceSpec {
   return {
     type: kind,
     ...(ROTATING_KINDS.has(kind) ? { rot: HEADINGS[kind]?.[0] ?? 0 } : {}),
     ...(COLORED_KINDS.has(kind) ? { rgb: 'r' } : {}),
+    ...(INNER_COLORED_KINDS.has(kind) ? { inner: 'g' } : {}),
   }
 }

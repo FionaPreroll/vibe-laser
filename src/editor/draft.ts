@@ -217,11 +217,12 @@ function samePiece(a: PieceSpec, b: PieceSpec): boolean {
 
 /** The piece's properties in a fixed order, without undefined ones. */
 function tidy(piece: PieceSpec): PieceSpec {
-  const { type, rot, rgb, moveable, rotateable } = piece
+  const { type, rot, rgb, inner, moveable, rotateable } = piece
   return {
     type,
     ...(rot === undefined ? {} : { rot }),
     ...(rgb === undefined ? {} : { rgb }),
+    ...(inner === undefined ? {} : { inner }),
     ...(moveable === undefined ? {} : { moveable }),
     ...(rotateable === undefined ? {} : { rotateable }),
   }

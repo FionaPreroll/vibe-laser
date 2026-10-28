@@ -1,5 +1,5 @@
 import type { PartKind, Piece } from './board'
-import { type Primary, shiftBackward, shiftForward } from './color'
+import { type Color, type Primary, shiftBackward, shiftForward, WHITE } from './color'
 import { type Direction, turn } from './direction'
 import type { Rules } from './rules'
 
@@ -61,6 +61,33 @@ const PRISM: Readonly<Record<Primary, Table>> = {
   4: [[2], [], [], [], [], [], [4], []],
 }
 
+// The prismirror is the prism's mirror image, east to west: green and blue turn to the left.
+const PRISMIRROR: Readonly<Record<Primary, Table>> = {
+  1: [[0], [], [], [], [4], [], [], []],
+  2: [[7], [], [], [4], [], [], [], []],
+  4: [[6], [], [4], [], [], [], [], []],
+}
+
+// Light that enters the narrow north end splits three ways: 90° to the left, 90° to the right and
+// straight on. The sides and the red south end stop light.
+const SPLICER: Table = [[], [], [], [], [2, 4, 6], [], [], []]
+
+/**
+ * A bar with a flat south end and a north end beveled towards the north-east. Through the flat end
+ * the outer color turns 45° clockwise and the inner color goes straight on. Straight into the
+ * bevel only the inner color passes; diagonally into it, the outer color comes back out of the flat
+ * end. Everything else stops. A selector is a complex whose inner color is white. That the outer
+ * color wins where both colors share a primary is an assumption; the selector needs it.
+ */
+function select(travel: Direction, primary: Primary, outer: Color, inner: Color): readonly Exit[] {
+  const has = (color: Color) => (color & primary) !== 0
+  const exit = (direction: Direction) => [{ direction, primary }]
+  if (travel === 0) return has(outer) ? exit(1) : has(inner) ? exit(0) : []
+  if (travel === 4) return has(inner) ? exit(4) : []
+  if (travel === 5) return has(outer) ? exit(4) : []
+  return []
+}
+
 const BEHAVIORS: Readonly<Record<PartKind, Behavior>> = {
   laser: (travel, primary, piece, rules) =>
     rules.beamIntoLaser === 'pass' ? pass(travel, primary, piece, rules) : [],
@@ -87,6 +114,13 @@ const BEHAVIORS: Readonly<Record<PartKind, Behavior>> = {
     const aligned = travel === 0 || (rules.polarizer === 'axis' && travel === 4)
     return aligned && (piece.color & primary) !== 0 ? [{ direction: travel, primary }] : []
   },
+  // Turns every beam 45° clockwise, whichever way it comes; benders do not rotate.
+  bender: (travel, primary) => [{ direction: turn(travel, 1), primary }],
+  splicer: fromTable(SPLICER),
+  prismirror: (travel, primary) =>
+    PRISMIRROR[primary][travel].map((direction) => ({ direction, primary })),
+  selector: (travel, primary, piece) => select(travel, primary, piece.color, WHITE),
+  complex: (travel, primary, piece) => select(travel, primary, piece.color, piece.inner ?? 0),
   // Beams run through coins unchanged (spec). For anti-coins that is an assumption.
   coin: pass,
   antiCoin: pass,
@@ -112,6 +146,10 @@ export const ROTATING_KINDS: ReadonlySet<PartKind> = new Set<PartKind>([
   'prism',
   'colorConverter',
   'polarizer',
+  'splicer',
+  'prismirror',
+  'selector',
+  'complex',
   'slime',
   'mine',
   'ship',

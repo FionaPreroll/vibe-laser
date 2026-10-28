@@ -51,6 +51,19 @@ describe('levelSchema', () => {
     expect(add({ type: 'unicorn' })[0]).toMatch(/^objects\[2\]\.type: /)
   })
 
+  it('wants an inner color on a complex and nowhere else', () => {
+    const add = (piece: object) =>
+      problems({ objects: [...LEVEL.objects, { pos: 'A2', ...piece }] })
+    expect(add({ type: 'complex', rot: 1, rgb: 'r', inner: 'gb' })).toEqual([])
+    expect(add({ type: 'complex', rot: 1, rgb: 'r' })).toEqual([
+      'objects[2].inner: a complex needs an inner color',
+    ])
+    expect(add({ type: 'selector', rot: 1, rgb: 'r', inner: 'g' })).toEqual([
+      'objects[2].inner: a selector has no inner color',
+    ])
+    expect(add({ type: 'bender', rot: 1 })).toEqual(['objects[2].rot: a bender does not rotate'])
+  })
+
   it('checks the toolbox and the solution against each other', () => {
     expect(
       problems({
