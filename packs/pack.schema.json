@@ -1,0 +1,118 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "version": {
+      "type": "number",
+      "const": 1
+    },
+    "title": {
+      "type": "object",
+      "properties": {
+        "en": {
+          "type": "string",
+          "minLength": 1
+        },
+        "de": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "en",
+        "de"
+      ],
+      "additionalProperties": false
+    },
+    "description": {
+      "type": "object",
+      "properties": {
+        "en": {
+          "type": "string",
+          "minLength": 1
+        },
+        "de": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "en",
+        "de"
+      ],
+      "additionalProperties": false
+    },
+    "position": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 99999
+    },
+    "skills": {
+      "minItems": 1,
+      "maxItems": 4,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "en": {
+            "type": "string",
+            "minLength": 1
+          },
+          "de": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "en",
+          "de"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "selectSkill": {
+      "default": true,
+      "type": "boolean"
+    },
+    "rules": {
+      "type": "object",
+      "properties": {
+        "coinAngles": {
+          "type": "string",
+          "enum": [
+            "single",
+            "sameColor"
+          ]
+        },
+        "beamIntoLaser": {
+          "type": "string",
+          "enum": [
+            "absorb",
+            "pass"
+          ]
+        },
+        "polarizer": {
+          "type": "string",
+          "enum": [
+            "direction",
+            "axis"
+          ]
+        },
+        "actorsBlockLight": {
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "version",
+    "title",
+    "position",
+    "skills"
+  ],
+  "additionalProperties": false
+}

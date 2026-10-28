@@ -100,12 +100,6 @@ button.primary {
   outline-offset: 2px;
 }
 
-.stage {
-  flex: 1;
-  min-height: 0;
-  padding: 12px 16px 4px;
-}
-
 .board {
   width: 100%;
   height: 100%;
@@ -192,4 +186,293 @@ button.primary {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
+}
+
+.title {
+  color: inherit;
+  text-decoration: none;
+}
+
+.top-controls button {
+  white-space: nowrap;
+}
+
+.notice {
+  margin: 0;
+  padding: 8px 16px;
+  background: var(--surface-raised);
+  color: var(--text-quiet);
+  font-size: 0.875rem;
+}
+
+.loading {
+  padding: 24px;
+  color: var(--text-quiet);
+}
+
+main.menu {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+main.play {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.screen {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 16px;
+}
+
+.screen h2 {
+  margin: 8px 0 16px;
+  font-size: 1.25rem;
+}
+
+.back {
+  margin-bottom: 8px;
+}
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+  height: 100%;
+  padding: 16px;
+  border-radius: 10px;
+  text-align: left;
+}
+
+.card-title {
+  font-size: 1.0625rem;
+  font-weight: 600;
+}
+
+.card-text,
+.card-progress {
+  color: var(--text-quiet);
+  font-size: 0.875rem;
+}
+
+.levels {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.level {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  width: 100%;
+  padding: 10px 12px;
+  text-align: left;
+}
+
+.level.solved {
+  border-color: var(--accent);
+}
+
+.level .mark {
+  color: var(--accent);
+  font-size: 0.8125rem;
+}
+
+.level-heading {
+  margin: 0;
+  padding: 8px 16px 0;
+  color: var(--text-quiet);
+  font-size: 0.9375rem;
+  font-weight: 500;
+}
+
+.play .stage {
+  flex: 1;
+  min-height: 0;
+  padding: 8px 16px 4px;
+}
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  background: rgb(5 6 10 / 0.6);
+}
+
+.modal {
+  display: flex;
+  flex-direction: column;
+  width: min(640px, 100%);
+  max-height: min(85vh, 760px);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--surface);
+  box-shadow: 0 12px 40px rgb(0 0 0 / 0.5);
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--line);
+}
+
+.modal-header h2 {
+  margin: 0;
+  font-size: 1.125rem;
+}
+
+.modal-body {
+  padding: 16px 20px 20px;
+  overflow-y: auto;
+  line-height: 1.5;
+}
+
+.modal-body h3 {
+  margin: 16px 0 8px;
+  font-size: 1rem;
+}
+
+.parts {
+  margin: 0;
+}
+
+.parts div {
+  padding: 6px 0;
+  border-top: 1px solid var(--line);
+}
+
+.parts dt {
+  font-weight: 600;
+}
+
+.parts dd {
+  margin: 2px 0 0;
+  color: var(--text-quiet);
+}
+
+.settings {
+  display: grid;
+  gap: 16px;
+}
+
+.settings label {
+  display: grid;
+  gap: 6px;
+}
+
+.settings label.check {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.profiles {
+  display: grid;
+  gap: 8px;
+  margin: 0 0 24px;
+  padding: 0;
+  list-style: none;
+}
+
+.profile {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 16px;
+  padding: 12px 16px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--surface);
+}
+
+.profile.active {
+  border-color: var(--accent);
+}
+
+.profile-name {
+  font-weight: 600;
+}
+
+.profile-info {
+  flex: 1;
+  color: var(--text-quiet);
+  font-size: 0.875rem;
+}
+
+.profile-buttons,
+.profile form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.new-profile,
+.import {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  gap: 8px 12px;
+  margin-bottom: 16px;
+}
+
+.new-profile label,
+.import {
+  display: grid;
+  gap: 6px;
+}
+
+input {
+  padding: 6px 10px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+}
+
+input[type="range"],
+input[type="checkbox"],
+input[type="file"] {
+  padding: 0;
+  border: 0;
+  background: none;
+  accent-color: var(--accent);
+}
+
+.about {
+  line-height: 1.5;
+}
+
+.about h3 {
+  margin: 20px 0 4px;
+  font-size: 1.0625rem;
+}
+
+.about h4 {
+  margin: 12px 0 4px;
+  color: var(--text-quiet);
+  font-size: 0.9375rem;
 }

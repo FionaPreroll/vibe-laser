@@ -1,0 +1,16 @@
+{
+  "$schema": "../../../level.schema.json",
+  "version": 1,
+  "name": { "en": "Fuel Run", "de": "Treibstoff" },
+  "note": "Flying over the fuel cell, the ship takes it aboard and shoots the explosive; then the beam may pass.",
+  "size": [6, 4],
+  "objects": [
+    { "type": "coin", "pos": "A1", "rgb": "r" },
+    { "type": "explosive", "pos": "A2" },
+    { "type": "ship", "pos": "A6", "rot": 6 },
+    { "type": "fuelCell", "pos": "B5" },
+    { "type": "laser", "pos": "D3", "rot": 0, "rgb": "r" }
+  ],
+  "toolbox": [{ "type": "mirror", "rot": 0 }],
+  "solution": [{ "wait": 20 }, { "piece": 0, "pos": "A3", "rot": 5 }]
+}

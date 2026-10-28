@@ -1,17 +1,18 @@
 import { describe, expect, it } from 'vitest'
-import { puzzleOf, TUTORIAL } from '../content/levels'
-import { boardOf } from '../core/level'
-import { formatBoard } from '../core/notation'
+import { boardOf, createPuzzle } from '../core/level'
+import { formatBoard, parseBoard, parsePiece } from '../core/notation'
 import { GameSession } from '../game/session'
 import { BoardController } from './controller'
 
 const PLAIN = { ctrl: false, shift: false }
 const CTRL = { ctrl: true, shift: false }
 
+/** The first tutorial level: a mirror in B6, turned to the north-west, lights the coin. */
 function firstLevel(): BoardController {
-  const level = TUTORIAL[0]
-  if (level === undefined) throw new Error('No tutorial levels')
-  return new BoardController(new GameSession(puzzleOf(level)))
+  const board = parseBoard('. . . . . Cr \n L2r . . . . . \n . . . . . .')
+  const mirror = parsePiece('M0')
+  if (mirror === undefined) throw new Error('No mirror')
+  return new BoardController(new GameSession(createPuzzle(board, [mirror])))
 }
 
 function press(controller: BoardController, ...keys: string[]): void {

@@ -19,13 +19,16 @@
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
     "test:e2e": "pnpm build && playwright test",
+    "schemas": "vitest run src/content/schema.test.ts --update",
     "check": "pnpm typecheck && pnpm lint && pnpm test"
   },
   "dependencies": {
     "@preact/signals": "^2.11.3",
     "@preact/signals-core": "^1.14.4",
+    "idb-keyval": "^6.3.0",
     "pixi.js": "^8.22.0",
-    "preact": "^11.0.2"
+    "preact": "^11.0.2",
+    "zod": "^4.6.7"
   },
   "devDependencies": {
     "@babel/core": "^7.29.7",

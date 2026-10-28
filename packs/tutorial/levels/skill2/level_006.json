@@ -1,0 +1,14 @@
+{
+  "$schema": "../../../level.schema.json",
+  "version": 1,
+  "name": { "en": "Color Shift", "de": "Farbwechsel" },
+  "size": [5, 2],
+  "objects": [
+    { "type": "laser", "pos": "A1", "rot": 2, "rgb": "r" },
+    { "type": "coin", "pos": "A5", "rgb": "g" },
+    { "type": "laser", "pos": "B1", "rot": 2, "rgb": "r" },
+    { "type": "coin", "pos": "B5", "rgb": "b" }
+  ],
+  "toolbox": [{ "type": "colorConverter", "rot": 0, "count": 2 }],
+  "solution": [{ "piece": 0, "pos": "A3", "rot": 6 }, { "piece": 1, "pos": "B3", "rot": 2 }]
+}

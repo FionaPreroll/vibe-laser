@@ -1,0 +1,17 @@
+{
+  "$schema": "../../../level.schema.json",
+  "version": 1,
+  "name": { "en": "Dark Coin", "de": "Dunkle Münze" },
+  "size": [5, 2],
+  "objects": [
+    { "type": "laser", "pos": "A1", "rot": 2, "rgb": "g" },
+    { "type": "antiCoin", "pos": "A3" },
+    { "type": "coin", "pos": "A5", "rgb": "g" }
+  ],
+  "toolbox": [{ "type": "mirror", "rot": 0, "count": 3 }],
+  "solution": [
+    { "piece": 0, "pos": "A2", "rot": 5 },
+    { "piece": 1, "pos": "B2", "rot": 1 },
+    { "piece": 2, "pos": "B5", "rot": 7 }
+  ]
+}

@@ -35,6 +35,18 @@ describe('EffectLayer', () => {
     expect(effects.playing).toBe(0)
   })
 
+  it('flashes blasts where they are when motion is reduced', () => {
+    const effects = new EffectLayer()
+    effects.reducedMotion = true
+    effects.blast({ x: 0, y: 0 })
+    const blast = effects.children[0]
+    effects.animate(0.1)
+    expect(blast?.scale.x).toBe(1.5)
+    effects.animate(0.5)
+    expect(blast?.scale.x).toBe(1.5)
+    expect(blast?.alpha).toBeLessThan(0.5)
+  })
+
   it('draws a shot from the ship to its target', () => {
     const effects = new EffectLayer()
     effects.shot({ x: 0, y: 0 }, { x: 128, y: 0 })

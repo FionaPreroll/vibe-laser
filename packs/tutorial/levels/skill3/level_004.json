@@ -1,0 +1,16 @@
+{
+  "$schema": "../../../level.schema.json",
+  "version": 1,
+  "name": { "en": "Event Horizon", "de": "Ereignishorizont" },
+  "note": "Light falls into the black hole, so it lets the ship be. Take the beam to the coin, and the dark hole pulls the ship in.",
+  "size": [5, 5],
+  "objects": [
+    { "type": "ship", "pos": "A3", "rot": 2 },
+    { "type": "laser", "pos": "B1", "rot": 2, "rgb": "r" },
+    { "type": "blackHole", "pos": "B5" },
+    { "type": "explosive", "pos": "D2" },
+    { "type": "coin", "pos": "E5", "rgb": "r" }
+  ],
+  "toolbox": [{ "type": "mirror", "rot": 0, "count": 2 }],
+  "solution": [{ "piece": 0, "pos": "B3", "rot": 5 }, { "piece": 1, "pos": "E3", "rot": 1 }]
+}

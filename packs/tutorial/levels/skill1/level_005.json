@@ -1,0 +1,14 @@
+{
+  "$schema": "../../../level.schema.json",
+  "version": 1,
+  "name": { "en": "Through the Slit", "de": "Durch den Spalt" },
+  "size": [5, 4],
+  "objects": [
+    { "type": "laser", "pos": "B1", "rot": 2, "rgb": "r" },
+    { "type": "coin", "pos": "B5", "rgb": "r" },
+    { "type": "laser", "pos": "D1", "rot": 1, "rgb": "g" },
+    { "type": "coin", "pos": "D5", "rgb": "g" }
+  ],
+  "toolbox": [{ "type": "slitMirror", "rot": 0 }],
+  "solution": [{ "piece": 0, "pos": "B3", "rot": 0 }]
+}

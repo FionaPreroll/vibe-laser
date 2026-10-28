@@ -1,0 +1,15 @@
+{
+  "$schema": "../../../level.schema.json",
+  "version": 1,
+  "name": { "en": "Hungry Slime", "de": "Hungriger Schleim" },
+  "note": "The slime eats the explosive in its way; only then may the beam pass there.",
+  "size": [5, 4],
+  "objects": [
+    { "type": "explosive", "pos": "A3" },
+    { "type": "coin", "pos": "A5", "rgb": "r" },
+    { "type": "slime", "pos": "C3", "rot": 0 },
+    { "type": "laser", "pos": "D1", "rot": 0, "rgb": "r" }
+  ],
+  "toolbox": [{ "type": "mirror", "rot": 0 }],
+  "solution": [{ "wait": 20 }, { "piece": 0, "pos": "A1", "rot": 3 }]
+}

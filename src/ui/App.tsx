@@ -1,58 +1,131 @@
-import { useMemo, useState } from 'preact/hooks'
-import { type LevelDefinition, puzzleOf, TUTORIAL } from '../content/levels'
-import { GameSession } from '../game/session'
-import { locale, t } from '../i18n'
-import { BoardController } from '../view/controller'
-import { BoardCanvas } from './BoardCanvas'
-import { FailedDialog } from './FailedDialog'
-import { Hud } from './Hud'
+import { effect } from '@preact/signals'
+import { useEffect, useMemo, useState } from 'preact/hooks'
+import type { Speaker } from '../audio/director'
+import { Synth } from '../audio/synth'
+import { t } from '../i18n'
+import { ProfileBook } from '../persistence/profiles'
+import { browserStore, type KeyValueStore, memoryStore } from '../persistence/store'
+import { HelpDialog } from './HelpDialog'
 import { LanguageSwitch } from './LanguageSwitch'
-import { LevelPicker } from './LevelPicker'
-import { SolvedDialog } from './SolvedDialog'
+import { followAddress, navigate, screen } from './router'
+import { SettingsDialog } from './SettingsDialog'
+import { AboutScreen } from './screens/AboutScreen'
+import { LevelsScreen } from './screens/LevelsScreen'
+import { PacksScreen } from './screens/PacksScreen'
+import { PlayScreen } from './screens/PlayScreen'
+import { ProfilesScreen } from './screens/ProfilesScreen'
+import { SkillsScreen } from './screens/SkillsScreen'
 
-function levelAt(index: number): LevelDefinition {
-  const level = TUTORIAL[index] ?? TUTORIAL[0]
-  if (level === undefined) throw new Error('There are no levels')
-  return level
+/** The game's sound: effects for the session, music, and volumes from the settings. */
+export interface Audio extends Speaker {
+  unlock(): void
+  setVolumes(sound: number, music: number): void
 }
 
-export function App() {
-  const [index, setIndex] = useState(0)
-  const level = levelAt(index)
-  const controller = useMemo(() => new BoardController(new GameSession(puzzleOf(level))), [level])
-  const { session } = controller
-  const { puzzle, phase } = session.state.value
-  const name = level.name[locale.value]
-  const hasNext = index + 1 < TUTORIAL.length
-  const restart = () => {
-    controller.select(undefined)
-    session.restart()
+interface Props {
+  /** Where profiles are saved; IndexedDB unless a test passes another store. */
+  readonly store?: KeyValueStore
+  readonly audio?: Audio
+}
+
+type Overlay = 'help' | 'settings' | undefined
+
+/** Opens the saves, or keeps progress in memory when the browser does not let the game save. */
+async function openBook(store: KeyValueStore): Promise<{ book: ProfileBook; blocked: boolean }> {
+  const options = {
+    name: t('defaultName'),
+    settings: { reducedMotion: matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false },
+    persist: () => navigator.storage?.persist?.() ?? Promise.resolve(false),
   }
+  try {
+    return { book: await ProfileBook.open(store, options), blocked: false }
+  } catch (error) {
+    console.warn('Saving is not possible in this browser', error)
+    return { book: await ProfileBook.open(memoryStore(), options), blocked: true }
+  }
+}
+
+export function App({ store, audio }: Props) {
+  const sound = useMemo(() => audio ?? new Synth(), [audio])
+  const [opened, setOpened] = useState<{ book: ProfileBook; blocked: boolean }>()
+  const [overlay, setOverlay] = useState<Overlay>()
+
+  useEffect(() => followAddress(), [])
+  useEffect(() => {
+    void openBook(store ?? browserStore()).then(setOpened)
+  }, [store])
+  useEffect(() => {
+    // Browsers start audio only after the player clicks or presses a key.
+    const unlock = () => sound.unlock()
+    window.addEventListener('pointerdown', unlock)
+    window.addEventListener('keydown', unlock)
+    return () => {
+      window.removeEventListener('pointerdown', unlock)
+      window.removeEventListener('keydown', unlock)
+    }
+  }, [sound])
+  const book = opened?.book
+  useEffect(
+    () =>
+      book &&
+      effect(() => {
+        const { soundVolume, musicVolume } = book.active.value.settings
+        sound.setVolumes(soundVolume, musicVolume)
+      }),
+    [book, sound],
+  )
+
+  if (opened === undefined || book === undefined) return <p class="loading">{t('loading')}</p>
+  const current = screen.value
+  const solved = book.solved.value
+  const closeOverlay = () => setOverlay(undefined)
 
   return (
     <div class="shell">
       <header class="top-bar">
-        <div>
+        <a class="title" href="#/">
           <h1>{t('appTitle')}</h1>
           <p class="tagline">{t('tagline')}</p>
-        </div>
-        <div class="top-controls">
-          <LevelPicker levels={TUTORIAL} index={index} onSelect={setIndex} />
+        </a>
+        <nav class="top-controls">
+          <button type="button" onClick={() => navigate({ name: 'profiles' })}>
+            {t('profileButton', { name: book.active.value.name })}
+          </button>
+          <button type="button" onClick={() => setOverlay('settings')}>
+            {t('settings')}
+          </button>
+          <button type="button" onClick={() => setOverlay('help')}>
+            {t('help')}
+          </button>
+          <button type="button" onClick={() => navigate({ name: 'about' })}>
+            {t('about')}
+          </button>
           <LanguageSwitch />
-        </div>
+        </nav>
       </header>
-      <main class="stage">
-        <BoardCanvas
-          key={level.id}
-          controller={controller}
-          label={t('board', { name, columns: puzzle.width, rows: puzzle.height })}
-        />
+      {opened.blocked && <p class="notice">{t('storageBlocked')}</p>}
+      <main class={current.name === 'play' ? 'play' : 'menu'}>
+        {current.name === 'packs' && <PacksScreen solved={solved} />}
+        {current.name === 'skills' && <SkillsScreen pack={current.pack} solved={solved} />}
+        {current.name === 'levels' && (
+          <LevelsScreen pack={current.pack} skill={current.skill} solved={solved} />
+        )}
+        {current.name === 'play' && (
+          // One screen per level, so nothing of a finished game carries over to the next.
+          <PlayScreen
+            key={current.level}
+            level={current.level}
+            book={book}
+            speaker={sound}
+            paused={overlay !== undefined}
+            onHelp={() => setOverlay('help')}
+          />
+        )}
+        {current.name === 'profiles' && <ProfilesScreen book={book} />}
+        {current.name === 'about' && <AboutScreen />}
       </main>
-      <Hud controller={controller} />
-      {phase === 'solved' && (
-        <SolvedDialog onNext={hasNext ? () => setIndex(index + 1) : undefined} onReplay={restart} />
-      )}
-      {phase === 'failed' && <FailedDialog onRestart={restart} />}
+      {overlay === 'help' && <HelpDialog onClose={closeOverlay} />}
+      {overlay === 'settings' && <SettingsDialog book={book} onClose={closeOverlay} />}
     </div>
   )
 }

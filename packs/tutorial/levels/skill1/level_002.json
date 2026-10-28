@@ -1,0 +1,12 @@
+{
+  "$schema": "../../../level.schema.json",
+  "version": 1,
+  "name": { "en": "Two Turns", "de": "Zwei Kurven" },
+  "size": [6, 4],
+  "objects": [
+    { "type": "laser", "pos": "A1", "rot": 2, "rgb": "b" },
+    { "type": "coin", "pos": "D1", "rgb": "b" }
+  ],
+  "toolbox": [{ "type": "mirror", "rot": 0, "count": 2 }],
+  "solution": [{ "piece": 0, "pos": "A6", "rot": 5 }, { "piece": 1, "pos": "D6", "rot": 7 }]
+}

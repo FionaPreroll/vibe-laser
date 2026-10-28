@@ -1,0 +1,248 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "version": {
+      "type": "number",
+      "const": 1
+    },
+    "name": {
+      "type": "object",
+      "properties": {
+        "en": {
+          "type": "string",
+          "minLength": 1
+        },
+        "de": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "en",
+        "de"
+      ],
+      "additionalProperties": false
+    },
+    "note": {
+      "type": "string"
+    },
+    "size": {
+      "type": "array",
+      "prefixItems": [
+        {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 32
+        },
+        {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 26
+        }
+      ],
+      "items": false,
+      "minItems": 2,
+      "maxItems": 2
+    },
+    "objects": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "laser",
+              "mirror",
+              "doubleMirror",
+              "slitMirror",
+              "refractor",
+              "oneWay",
+              "splitter",
+              "threeway",
+              "prism",
+              "colorConverter",
+              "filter",
+              "polarizer",
+              "coin",
+              "antiCoin",
+              "explosive",
+              "fuelCell",
+              "blackHole",
+              "slime",
+              "mine",
+              "ship"
+            ]
+          },
+          "rot": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 7
+          },
+          "rgb": {
+            "type": "string"
+          },
+          "moveable": {
+            "type": "boolean"
+          },
+          "rotateable": {
+            "type": "boolean"
+          },
+          "pos": {
+            "type": "string",
+            "pattern": "^[A-Z][1-9]\\d*$"
+          }
+        },
+        "required": [
+          "type",
+          "pos"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "toolbox": {
+      "default": [],
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "laser",
+              "mirror",
+              "doubleMirror",
+              "slitMirror",
+              "refractor",
+              "oneWay",
+              "splitter",
+              "threeway",
+              "prism",
+              "colorConverter",
+              "filter",
+              "polarizer",
+              "coin",
+              "antiCoin",
+              "explosive",
+              "fuelCell",
+              "blackHole",
+              "slime",
+              "mine",
+              "ship"
+            ]
+          },
+          "rot": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 7
+          },
+          "rgb": {
+            "type": "string"
+          },
+          "moveable": {
+            "type": "boolean"
+          },
+          "rotateable": {
+            "type": "boolean"
+          },
+          "count": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 32
+          }
+        },
+        "required": [
+          "type"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "rules": {
+      "type": "object",
+      "properties": {
+        "coinAngles": {
+          "type": "string",
+          "enum": [
+            "single",
+            "sameColor"
+          ]
+        },
+        "beamIntoLaser": {
+          "type": "string",
+          "enum": [
+            "absorb",
+            "pass"
+          ]
+        },
+        "polarizer": {
+          "type": "string",
+          "enum": [
+            "direction",
+            "axis"
+          ]
+        },
+        "actorsBlockLight": {
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": false
+    },
+    "solution": {
+      "type": "array",
+      "items": {
+        "anyOf": [
+          {
+            "type": "object",
+            "properties": {
+              "piece": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 9007199254740991
+              },
+              "pos": {
+                "type": "string",
+                "pattern": "^[A-Z][1-9]\\d*$"
+              },
+              "rot": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 7
+              }
+            },
+            "required": [
+              "piece",
+              "pos",
+              "rot"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "wait": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 9007199254740991
+              }
+            },
+            "required": [
+              "wait"
+            ],
+            "additionalProperties": false
+          }
+        ]
+      }
+    }
+  },
+  "required": [
+    "version",
+    "name",
+    "size",
+    "objects"
+  ],
+  "additionalProperties": false
+}

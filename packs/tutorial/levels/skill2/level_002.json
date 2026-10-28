@@ -1,0 +1,15 @@
+{
+  "$schema": "../../../level.schema.json",
+  "version": 1,
+  "name": { "en": "One-Way Street", "de": "Einbahnstraße" },
+  "note": "The one-way must let the red beam through and stop the green one in the same cell.",
+  "size": [5, 3],
+  "objects": [
+    { "type": "antiCoin", "pos": "A3" },
+    { "type": "laser", "pos": "B1", "rot": 2, "rgb": "r" },
+    { "type": "coin", "pos": "B5", "rgb": "r" },
+    { "type": "laser", "pos": "C3", "rot": 0, "rgb": "g" }
+  ],
+  "toolbox": [{ "type": "oneWay", "rot": 0 }],
+  "solution": [{ "piece": 0, "pos": "B3", "rot": 2 }]
+}

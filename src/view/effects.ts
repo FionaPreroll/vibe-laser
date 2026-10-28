@@ -22,6 +22,8 @@ const BLAST = new GraphicsContext()
 /** Short-lived animations above the board: blasts, shots and little bursts. */
 export class EffectLayer extends Container {
   readonly #effects: Effect[] = []
+  /** Blasts flash where they are instead of swelling over their neighbours. */
+  reducedMotion = false
 
   /** Shows what a game event looks like; `center` finds a board cell in the scene. */
   play(event: GameEvent, center: (cell: number) => Point): void {
@@ -45,7 +47,7 @@ export class EffectLayer extends Container {
     const view = new Graphics(BLAST)
     view.blendMode = 'add'
     this.#start(view, at, 0.7, (blast, progress) => {
-      blast.scale.set(0.4 + progress * 2.6)
+      blast.scale.set(this.reducedMotion ? 1.5 : 0.4 + progress * 2.6)
       blast.alpha = 1 - progress
     })
   }

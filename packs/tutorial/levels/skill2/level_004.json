@@ -1,0 +1,13 @@
+{
+  "$schema": "../../../level.schema.json",
+  "version": 1,
+  "name": { "en": "Three Ways", "de": "Drei Wege" },
+  "size": [5, 4],
+  "objects": [
+    { "type": "coin", "pos": "A1", "rgb": "b" },
+    { "type": "coin", "pos": "A5", "rgb": "b" },
+    { "type": "laser", "pos": "D3", "rot": 0, "rgb": "b" }
+  ],
+  "toolbox": [{ "type": "threeway", "rot": 2 }],
+  "solution": [{ "piece": 0, "pos": "C3", "rot": 0 }]
+}

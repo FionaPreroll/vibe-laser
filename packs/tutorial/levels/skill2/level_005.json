@@ -1,0 +1,14 @@
+{
+  "$schema": "../../../level.schema.json",
+  "version": 1,
+  "name": { "en": "Rainbow", "de": "Regenbogen" },
+  "size": [5, 4],
+  "objects": [
+    { "type": "coin", "pos": "A2", "rgb": "r" },
+    { "type": "coin", "pos": "A4", "rgb": "g" },
+    { "type": "coin", "pos": "C5", "rgb": "b" },
+    { "type": "laser", "pos": "D2", "rot": 0, "rgb": "rgb" }
+  ],
+  "toolbox": [{ "type": "prism", "rot": 6 }],
+  "solution": [{ "piece": 0, "pos": "C2", "rot": 0 }]
+}

@@ -28,6 +28,10 @@ export class BoardController {
   readonly keyboardActive = signal(false)
   /** Whether the rotate buttons can turn the selected piece. */
   readonly canRotateSelected: ReadonlySignal<boolean>
+  /** While help or the settings are open, the clock stands still. */
+  readonly paused = signal(false)
+  /** Actors jump instead of gliding, and blasts flash instead of swelling. */
+  readonly reducedMotion = signal(false)
 
   constructor(session: GameSession) {
     this.session = session

@@ -126,6 +126,22 @@ describe('GameSession', () => {
     expect(calls).toBe(1)
   })
 
+  it('reports every player move, undo and redo included', () => {
+    const session = newSession()
+    const events: GameEvent[] = []
+    session.onEvents((batch) => events.push(...batch))
+    const move = { kind: 'move', item: MIRROR, to: B3 } as const
+    session.execute(move)
+    session.undo()
+    expect(events).toEqual([
+      { kind: 'command', command: move },
+      {
+        kind: 'command',
+        command: { kind: 'move', item: MIRROR, to: { area: 'toolbox', slot: 0 } },
+      },
+    ])
+  })
+
   it('keeps a level open while coins wait in the toolbox', () => {
     const session = new GameSession(createPuzzle(parseBoard('L2r . .'), [piece('Cr')]))
     expect(session.state.value.phase).toBe('playing')
