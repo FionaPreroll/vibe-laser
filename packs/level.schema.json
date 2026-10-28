@@ -78,6 +78,10 @@
               "ship"
             ]
           },
+          "pos": {
+            "type": "string",
+            "pattern": "^[A-Z][1-9]\\d*$"
+          },
           "rot": {
             "type": "integer",
             "minimum": 0,
@@ -91,10 +95,6 @@
           },
           "rotateable": {
             "type": "boolean"
-          },
-          "pos": {
-            "type": "string",
-            "pattern": "^[A-Z][1-9]\\d*$"
           }
         },
         "required": [

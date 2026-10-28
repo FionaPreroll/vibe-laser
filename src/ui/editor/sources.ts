@@ -59,6 +59,12 @@ function builtInSource(pack: Pack): PackSource {
     saveLevel: (skill, slot, level) =>
       saveLevelFile(pack.id, skill, slot, { $schema: LEVEL_SCHEMA, ...level }),
     deleteLevel: (skill, slot) => deleteLevelFile(pack.id, skill, slot),
-    savePack: (file) => savePackFile(pack.id, { $schema: PACK_SCHEMA, ...file }),
+    // Skill selection is on by default, so the file only mentions it when it is off.
+    savePack: ({ selectSkill, ...file }) =>
+      savePackFile(pack.id, {
+        $schema: PACK_SCHEMA,
+        ...file,
+        ...(selectSkill ? {} : { selectSkill: false }),
+      }),
   }
 }

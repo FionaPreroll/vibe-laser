@@ -51,8 +51,19 @@ export function finishLevel(level: LevelFile): LevelFile {
       toolbox.push(entry)
     }
   }
-  const { note, ...rest } = level
-  return { ...rest, ...(note?.trim() ? { note: note.trim() } : {}), objects, toolbox }
+  // The keys in the order of the files written by hand, so a saved level differs only where it changed.
+  const { $schema, version, name, note, size, rules, solution } = level
+  return {
+    ...($schema === undefined ? {} : { $schema }),
+    version,
+    name,
+    ...(note?.trim() ? { note: note.trim() } : {}),
+    size,
+    objects,
+    toolbox,
+    ...(rules === undefined ? {} : { rules }),
+    ...(solution === undefined ? {} : { solution }),
+  }
 }
 
 export function pieceAt(level: LevelFile, place: Place): PieceSpec | undefined {
@@ -83,7 +94,9 @@ export function putPiece(level: LevelFile, place: Place, piece: PieceSpec): Leve
     return { ...level, toolbox }
   }
   const pos = nameOf(level, place.cell)
-  const object = { ...clean, pos }
+  // Type and cell first, as in the files written by hand.
+  const { type, ...rest } = clean
+  const object = { type, pos, ...rest }
   const at = level.objects.findIndex((each) => each.pos === pos)
   const objects = [...level.objects]
   if (at >= 0) objects[at] = object

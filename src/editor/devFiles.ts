@@ -1,4 +1,4 @@
-import type { LevelFile, PackFile } from '../content/schema'
+import type { LevelFile, PackInput } from '../content/schema'
 
 /**
  * While the development server runs, the editor can write built-in packs straight into packs/,
@@ -31,6 +31,6 @@ export function deleteLevelFile(pack: string, skill: number, slot: number) {
 }
 
 /** Writes packs/<pack>/pack.json. */
-export function savePackFile(pack: string, file: PackFile) {
+export function savePackFile(pack: string, file: PackInput) {
   return send(pack, 'PUT', file)
 }

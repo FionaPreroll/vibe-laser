@@ -68,6 +68,19 @@ describe('level drafts', () => {
     expect(levelSchema.safeParse(saved).success).toBe(true)
   })
 
+  it('save every built-in level just as it was written', () => {
+    const written = import.meta.glob<string>('/packs/*/levels/skill*/level_*.json', {
+      eager: true,
+      query: '?raw',
+      import: 'default',
+    })
+    expect(Object.keys(written).length).toBeGreaterThan(0)
+    for (const text of Object.values(written)) {
+      const file = levelSchema.parse(JSON.parse(text))
+      expect(JSON.stringify(finishLevel(openLevel(file)))).toBe(JSON.stringify(JSON.parse(text)))
+    }
+  })
+
   it('put pieces on cells and slots, replacing what was there', () => {
     let draft = putPiece(level(), board(5), { type: 'mirror', rot: 3 })
     expect(pieceAt(draft, board(5))).toEqual({ type: 'mirror', rot: 3 })

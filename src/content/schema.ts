@@ -64,7 +64,9 @@ const piece = {
   rotateable: z.boolean().optional(),
 }
 
-const boardObject = z.object({ ...piece, pos: cell }).strict()
+// Type and cell first: parsing keeps this order, and saved files keep the order they were written in.
+const { type: pieceType, ...traits } = piece
+const boardObject = z.object({ type: pieceType, pos: cell, ...traits }).strict()
 const toolboxEntry = z
   .object({ ...piece, count: z.number().int().min(1).max(32).optional() })
   .strict()
@@ -113,6 +115,8 @@ export const packSchema = z
 
 export type LevelFile = z.output<typeof levelSchema>
 export type PackFile = z.output<typeof packSchema>
+/** A pack file as written, where defaults such as selectSkill may be left out. */
+export type PackInput = z.input<typeof packSchema>
 export type Names = z.output<typeof names>
 export type SolutionStep = NonNullable<LevelFile['solution']>[number]
 export type BoardObject = LevelFile['objects'][number]

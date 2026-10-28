@@ -1,12 +1,13 @@
 import preact from '@preact/preset-vite'
 import { defineConfig } from 'vitest/config'
+import { packFiles } from './tools/packFiles.ts'
 
 export default defineConfig({
   // Relative asset URLs, so the build runs under any path, such as GitHub Pages' /vibe-laser/.
   base: './',
-  plugins: [preact()],
+  plugins: [preact(), packFiles()],
   test: {
-    include: ['src/**/*.test.{ts,tsx}'],
+    include: ['src/**/*.test.{ts,tsx}', 'tools/**/*.test.ts'],
     coverage: {
       provider: 'v8',
       // Every source file, so files without tests count as uncovered instead of missing.
