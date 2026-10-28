@@ -1,3 +1,4 @@
+import { computed, type ReadonlySignal, signal } from '@preact/signals-core'
 import {
   describeIssues,
   type LevelFile,
@@ -102,19 +103,57 @@ export const PACKS: readonly Pack[] = buildPacks(
   import.meta.glob('/packs/*/levels/skill*/level_*.json', { import: 'default' }),
 )
 
+const custom = signal<readonly Pack[]>([])
+
+/** The built-in packs and the player's own, in the order of their positions. */
+export const library: ReadonlySignal<readonly Pack[]> = computed(() =>
+  [...PACKS, ...custom.value].sort((a, b) => a.file.position - b.file.position),
+)
+
+/** The player's own packs, which the library lists after built-in packs of the same position. */
+export function setCustomPacks(packs: readonly Pack[]): void {
+  custom.value = packs
+}
+
+/**
+ * A pack made in the editor, as the game plays it. Its levels are checked already and wait in
+ * memory, keyed by slot as "2/17".
+ */
+export function packOfLevels(
+  id: string,
+  file: PackFile,
+  levels: Readonly<Record<string, LevelFile>>,
+): Pack {
+  return {
+    id,
+    file,
+    skills: file.skills.map((name, index) => {
+      const skill = index + 1
+      const entries: LevelEntry[] = []
+      for (let number = 1; number <= SLOTS; number++) {
+        const level = levels[`${skill}/${number}`]
+        if (level === undefined) continue
+        const place = { id: `${id}/${skill}/${number}`, pack: id, skill, number }
+        entries.push({ ...place, load: async () => ({ ...place, file: level }) })
+      }
+      return { number: skill, name, levels: entries }
+    }),
+  }
+}
+
 /** Every level of a pack, skill after skill. */
 export function levelsOf(pack: Pack): LevelEntry[] {
   return pack.skills.flatMap((skill) => skill.levels)
 }
 
-export function findPack(id: string, packs: readonly Pack[] = PACKS): Pack | undefined {
+export function findPack(id: string, packs: readonly Pack[] = library.value): Pack | undefined {
   return packs.find((pack) => pack.id === id)
 }
 
 /** A level by its id, with the pack and skill it belongs to. */
 export function findLevel(
   id: string,
-  packs: readonly Pack[] = PACKS,
+  packs: readonly Pack[] = library.value,
 ): { pack: Pack; skill: Skill; entry: LevelEntry } | undefined {
   for (const pack of packs) {
     for (const skill of pack.skills) {
@@ -136,7 +175,7 @@ export function countSolved(levels: readonly LevelEntry[], solved: ReadonlySet<s
 export function nextUnsolved(
   id: string,
   solved: ReadonlySet<string>,
-  packs: readonly Pack[] = PACKS,
+  packs: readonly Pack[] = library.value,
 ): LevelEntry | undefined {
   const found = findLevel(id, packs)
   if (found === undefined) return undefined

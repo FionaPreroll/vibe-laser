@@ -1,4 +1,4 @@
-import { countSolved, levelsOf, PACKS, type Pack } from '../../content/packs'
+import { countSolved, levelsOf, library, type Pack } from '../../content/packs'
 import { locale, t } from '../../i18n'
 import { navigate } from '../router'
 
@@ -13,7 +13,7 @@ export function PacksScreen({ solved }: { readonly solved: ReadonlySet<string> }
     <section class="screen" aria-labelledby="packs-title">
       <h2 id="packs-title">{t('packsTitle')}</h2>
       <ul class="cards">
-        {PACKS.map((pack) => {
+        {library.value.map((pack) => {
           const levels = levelsOf(pack)
           return (
             <li key={pack.id}>

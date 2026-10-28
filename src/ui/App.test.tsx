@@ -238,6 +238,38 @@ describe('App', () => {
     expect(screen.getByRole('link', { name: /Vibe Laser/ }).getAttribute('href')).toBe('#/')
   })
 
+  it('lists packs made in the editor and plays their levels', async () => {
+    const level = await findLevel('tutorial/1/1')?.entry.load()
+    const store = memoryStore({
+      packs: {
+        version: 1,
+        packs: [
+          {
+            id: 'my-pack',
+            pack: {
+              version: 1,
+              title: { en: 'My Pack', de: 'Mein Pack' },
+              position: 100,
+              skills: [{ en: 'All', de: 'Alle' }],
+              selectSkill: true,
+            },
+            levels: { '1/4': level?.file },
+          },
+        ],
+      },
+    })
+    await start('#/', store)
+    expect((await screen.findByRole('button', { name: /^My Pack/ })).textContent).toContain(
+      '0 of 1 solved',
+    )
+    await click(/^My Pack/)
+    await screen.findByRole('button', { name: '4. First Light' })
+    await click('4. First Light')
+    expect(location.hash).toBe('#/play/my-pack/1/4')
+    await solve(await mounted(), 'my-pack/1/4')
+    await waitFor(async () => expect(await solvedIn(store)).toEqual(['my-pack/1/4']))
+  })
+
   it('follows the address, as with the back button', async () => {
     await start()
     await act(() => {
