@@ -78,6 +78,10 @@
               "ship"
             ]
           },
+          "pos": {
+            "type": "string",
+            "pattern": "^[A-Z][1-9]\\d*$"
+          },
           "rot": {
             "type": "integer",
             "minimum": 0,
@@ -91,10 +95,6 @@
           },
           "rotateable": {
             "type": "boolean"
-          },
-          "pos": {
-            "type": "string",
-            "pattern": "^[A-Z][1-9]\\d*$"
           }
         },
         "required": [
@@ -217,6 +217,48 @@
               "piece",
               "pos",
               "rot"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "from": {
+                "type": "string",
+                "pattern": "^[A-Z][1-9]\\d*$"
+              },
+              "pos": {
+                "type": "string",
+                "pattern": "^[A-Z][1-9]\\d*$"
+              },
+              "rot": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 7
+              }
+            },
+            "required": [
+              "from",
+              "pos",
+              "rot"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "from": {
+                "type": "string",
+                "pattern": "^[A-Z][1-9]\\d*$"
+              },
+              "stow": {
+                "type": "boolean",
+                "const": true
+              }
+            },
+            "required": [
+              "from",
+              "stow"
             ],
             "additionalProperties": false
           },

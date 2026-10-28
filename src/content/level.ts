@@ -1,15 +1,9 @@
 import { type Board, cellByName, emptyBoard, type Piece, withPiece } from '../core/board'
 import { type Color, parseColor } from '../core/color'
-import type { Command } from '../core/commands'
 import type { Direction } from '../core/direction'
 import { createPuzzle, type Puzzle } from '../core/level'
 import { DEFAULT_RULES, type Rules } from '../core/rules'
 import type { LevelFile } from './schema'
-
-/** Ticks to wait in a known solution, while actors do their part. */
-export interface Wait {
-  readonly wait: number
-}
 
 type FilePiece = { readonly type: Piece['kind']; readonly rot?: number; readonly rgb?: string }
 
@@ -61,23 +55,4 @@ export function puzzleOf(level: LevelFile): Puzzle {
 /** The rules a level plays by: the defaults, then the pack's overrides, then the level's own. */
 export function rulesOf(level: LevelFile, packRules: Partial<Rules> = {}): Rules {
   return { ...DEFAULT_RULES, ...packRules, ...level.rules }
-}
-
-/** The player commands that carry out the level's known solution, and the waits between them. */
-export function solutionSteps(level: LevelFile): (Command | Wait)[] {
-  const puzzle = puzzleOf(level)
-  const board = boardOfFile(level)
-  return (level.solution ?? []).flatMap((step): (Command | Wait)[] => {
-    if ('wait' in step) return [step]
-    const item = puzzle.items.find(
-      ({ place }) => place.area === 'toolbox' && place.slot === step.piece,
-    )
-    if (item === undefined) throw new RangeError(`The toolbox has no piece ${step.piece}`)
-    const commands: Command[] = [
-      { kind: 'move', item: item.id, to: { area: 'board', cell: cellByName(board, step.pos) } },
-    ]
-    const steps = step.rot - item.piece.rotation
-    if (steps !== 0) commands.push({ kind: 'rotate', item: item.id, steps })
-    return commands
-  })
 }

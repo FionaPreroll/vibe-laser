@@ -1,8 +1,9 @@
 // @vitest-environment happy-dom
 import { act, cleanup, fireEvent, render, screen } from '@testing-library/preact'
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { puzzleOf, solutionSteps } from '../content/level'
+import { puzzleOf } from '../content/level'
 import { findLevel, type Level } from '../content/packs'
+import { playSolution } from '../content/solution'
 import { GameSession } from '../game/session'
 import { BoardController } from '../view/controller'
 import { Hud } from './Hud'
@@ -97,9 +98,7 @@ describe('Hud', () => {
     renderHud(controller)
     expect(screen.queryByRole('progressbar')).toBeNull()
     await act(() => {
-      for (const step of solutionSteps(level.file)) {
-        if (!('wait' in step)) controller.session.execute(step)
-      }
+      playSolution(controller.session, level.file)
       for (let tick = 0; tick < 10; tick++) controller.session.tick()
     })
     const bar = screen.getByRole('progressbar', { name: 'Stability' }) as HTMLProgressElement

@@ -1,10 +1,22 @@
 import { describe, expect, it } from 'vitest'
-import { GameSession, STABLE_TICKS } from '../game/session'
-import { puzzleOf, rulesOf, solutionSteps } from './level'
-import { buildPacks, ContentError, type Level, PACKS, SLOTS } from './packs'
+import { GameSession } from '../game/session'
+import { puzzleOf, rulesOf } from './level'
+import {
+  buildPacks,
+  ContentError,
+  findLevel,
+  findPack,
+  type Level,
+  library,
+  nextUnsolved,
+  PACKS,
+  packOfLevels,
+  SLOTS,
+  setCustomPacks,
+} from './packs'
+import type { LevelFile } from './schema'
+import { replaySolution, SEEDS } from './solution'
 
-/** Mines bounce at random, so every level is played with several seeds. */
-const SEEDS = [1, 2, 3, 4, 5, 6, 7, 8]
 /** A minute of ticks: about how long a player may look at a level before the first move. */
 const THINKING_TICKS = 600
 
@@ -15,22 +27,6 @@ const entries = PACKS.flatMap((pack) =>
 function sessionFor(level: Level, seed: number): GameSession {
   const pack = PACKS.find((candidate) => candidate.id === level.pack)
   return new GameSession(puzzleOf(level.file), rulesOf(level.file, pack?.file.rules), seed)
-}
-
-/** Plays the level's known solution, then lets the actors go on until the level is decided. */
-function playSolution(level: Level, seed: number): GameSession {
-  const session = sessionFor(level, seed)
-  for (const step of solutionSteps(level.file)) {
-    if ('wait' in step) {
-      for (let tick = 0; tick < step.wait; tick++) session.tick()
-    } else if (!session.execute(step)) {
-      throw new Error(`The solution of ${level.id} takes a step the game refuses`)
-    }
-  }
-  for (let tick = 0; tick <= STABLE_TICKS && session.state.value.phase !== 'solved'; tick++) {
-    session.tick()
-  }
-  return session
 }
 
 describe('built-in packs', () => {
@@ -55,7 +51,11 @@ describe('built-in packs', () => {
 
   it.each(entries)('%s is solved by its known solution, whatever the seed', async (_, entry) => {
     const level = await entry.load()
-    for (const seed of SEEDS) expect(playSolution(level, seed).state.value.phase).toBe('solved')
+    const pack = PACKS.find((candidate) => candidate.id === level.pack)
+    for (const seed of SEEDS) {
+      const session = replaySolution(level.file, pack?.file.rules, seed)
+      expect(session.state.value.phase, `seed ${seed}`).toBe('solved')
+    }
   })
 })
 
@@ -107,5 +107,56 @@ describe('buildPacks', () => {
     await expect(pack?.skills[0]?.levels[0]?.load()).rejects.toThrow(
       'objects[1].pos: A2 lies outside a 1 × 1 board',
     )
+  })
+})
+
+describe('library', () => {
+  const level: LevelFile = {
+    version: 1,
+    name: { en: 'Mine', de: 'Meins' },
+    size: [3, 1],
+    objects: [
+      { type: 'laser', pos: 'A1', rot: 2, rgb: 'r' },
+      { type: 'coin', pos: 'A3', rgb: 'r' },
+    ],
+    toolbox: [],
+  }
+  const pack = packOfLevels(
+    'my-pack',
+    {
+      version: 1,
+      title: { en: 'Mine', de: 'Meins' },
+      position: 100,
+      skills: [
+        { en: 'One', de: 'Eins' },
+        { en: 'Two', de: 'Zwei' },
+      ],
+      selectSkill: true,
+    },
+    { '1/3': level, '2/1': level, '1/1': level },
+  )
+
+  it('turns a pack made in the editor into one the game plays', async () => {
+    expect(pack.skills.map((skill) => skill.levels.map((entry) => entry.id))).toEqual([
+      ['my-pack/1/1', 'my-pack/1/3'],
+      ['my-pack/2/1'],
+    ])
+    expect((await pack.skills[0]?.levels[1]?.load())?.file).toBe(level)
+  })
+
+  it('lists packs made in the editor after the built-in ones and finds their levels', () => {
+    setCustomPacks([pack])
+    try {
+      expect(library.value.map((each) => each.id)).toEqual([
+        ...PACKS.map((each) => each.id),
+        'my-pack',
+      ])
+      expect(findPack('my-pack')).toBe(pack)
+      expect(findLevel('my-pack/2/1')?.skill.number).toBe(2)
+      expect(nextUnsolved('my-pack/1/3', new Set(['my-pack/1/1']))?.id).toBe('my-pack/2/1')
+    } finally {
+      setCustomPacks([])
+    }
+    expect(findPack('my-pack')).toBeUndefined()
   })
 })

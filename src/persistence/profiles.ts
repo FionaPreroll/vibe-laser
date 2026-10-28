@@ -1,5 +1,6 @@
 import { computed, type ReadonlySignal, type Signal, signal } from '@preact/signals-core'
 import { z } from 'zod'
+import { SaveQueue } from './queue'
 import type { KeyValueStore } from './store'
 
 const settingsSchema = z
@@ -75,7 +76,7 @@ export class ProfileBook {
   readonly #store: KeyValueStore
   readonly #options: Options
   readonly #data: Signal<SaveData>
-  #saving: Promise<void> = Promise.resolve()
+  readonly #queue = new SaveQueue()
 
   readonly data: ReadonlySignal<SaveData>
   readonly active: ReadonlySignal<Profile>
@@ -110,7 +111,7 @@ export class ProfileBook {
 
   /** Waits until every change so far is saved. */
   saved(): Promise<void> {
-    return this.#saving
+    return this.#queue.saved()
   }
 
   async markSolved(levelId: string): Promise<void> {
@@ -211,16 +212,9 @@ export class ProfileBook {
     await this.#save()
   }
 
-  /**
-   * Saves the current data after the saves before it, so the last change always wins. A failed
-   * save reaches its caller but does not hold up the next one.
-   */
+  /** Saves the data as it is once the saves before have run. */
   #save(): Promise<void> {
-    const next = this.#saving
-      .catch(() => undefined)
-      .then(() => this.#store.set(KEY, this.#data.value))
-    this.#saving = next
-    return next
+    return this.#queue.run(() => this.#store.set(KEY, this.#data.value))
   }
 }
 

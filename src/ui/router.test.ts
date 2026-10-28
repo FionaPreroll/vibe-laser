@@ -9,6 +9,9 @@ const SCREENS: Screen[] = [
   { name: 'play', level: 'tutorial/2/5' },
   { name: 'profiles' },
   { name: 'about' },
+  { name: 'editor' },
+  { name: 'editPack', pack: 'my-pack' },
+  { name: 'editLevel', pack: 'my-pack', skill: 4, slot: 30 },
 ]
 
 describe('router', () => {
@@ -29,6 +32,9 @@ describe('router', () => {
     '#/packs/tutorial/12',
     '#/packs',
     '#/about/more',
+    '#/editor/my-pack/5/1',
+    '#/editor/my-pack/1',
+    '#/editor/my-pack/1/100',
   ])('shows the pack list for %s', (hash) => {
     expect(parseHash(hash)).toEqual({ name: 'packs' })
   })

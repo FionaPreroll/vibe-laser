@@ -1,14 +1,10 @@
 import { expect, type Page, test } from '@playwright/test'
+import { placeMirrorWithKeyboard } from './board'
 
-/** First level: carry the mirror from the toolbox to B6 and turn it once to the left. */
+/** Solves the first level and goes back to the level selection. */
 async function solveFirstLevel(page: Page) {
   await page.goto('./#/play/tutorial/1/1')
-  await expect(page.locator('.board')).toHaveAttribute('data-layout', /"scale"/)
-  await page.locator('.board').focus()
-  await page.keyboard.press('Enter')
-  for (let step = 0; step < 7; step++) await page.keyboard.press('ArrowRight')
-  await page.keyboard.press('ArrowDown')
-  await page.keyboard.press('Enter')
+  await placeMirrorWithKeyboard(page)
   await page.keyboard.press('q')
   await page.getByRole('dialog', { name: 'Level solved' }).getByText('Level selection').click()
 }

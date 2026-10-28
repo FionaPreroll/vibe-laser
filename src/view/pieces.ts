@@ -1,5 +1,6 @@
 import { Container, Graphics } from 'pixi.js'
 import { ACTOR_KINDS } from '../core/actors/kinds'
+import type { Piece } from '../core/board'
 import type { Item, Puzzle } from '../core/level'
 import type { ArtPack } from './art/types'
 import { CELL, type Point, placeCenter, type SceneGeometry } from './layout'
@@ -9,11 +10,14 @@ const GLIDE_RATE = 14
 
 /**
  * One graphic per piece, on its cell or toolbox slot; spinning coins flip around their axis.
- * Actors glide from cell to cell instead of jumping; pieces that left the puzzle disappear.
+ * Actors glide from cell to cell instead of jumping; pieces that left the puzzle disappear. An id
+ * that stands for another kind or color of piece than before, as in the editor, gets a new graphic.
  */
 export class PieceLayer extends Container {
   readonly #art: ArtPack
   readonly #views = new Map<number, Graphics>()
+  /** The piece each graphic shows, to notice when an id stands for another piece. */
+  readonly #shown = new Map<number, Piece>()
   /** Where each gliding actor is headed. */
   readonly #targets = new Map<number, Point>()
   #spinning: ReadonlySet<number> = new Set()
@@ -34,6 +38,8 @@ export class PieceLayer extends Container {
     const present = new Set<number>()
     for (const item of puzzle.items) {
       present.add(item.id)
+      const before = this.#shown.get(item.id)
+      if (before !== undefined && !looksAlike(before, item.piece)) this.#drop(item.id)
       const existing = this.#views.get(item.id)
       const view = existing ?? this.#view(item)
       const center = placeCenter(geometry, item.place)
@@ -49,11 +55,8 @@ export class PieceLayer extends Container {
       view.alpha = item.id === dimmed ? 0.35 : 1
       if (!spinning.has(item.id)) view.scale.set(1)
     }
-    for (const [id, view] of this.#views) {
-      if (present.has(id)) continue
-      view.destroy()
-      this.#views.delete(id)
-      this.#targets.delete(id)
+    for (const id of this.#views.keys()) {
+      if (!present.has(id)) this.#drop(id)
     }
   }
 
@@ -82,6 +85,19 @@ export class PieceLayer extends Container {
     const view = new Graphics(this.#art.piece(item.piece))
     this.addChild(view)
     this.#views.set(item.id, view)
+    this.#shown.set(item.id, item.piece)
     return view
   }
+
+  #drop(id: number): void {
+    this.#views.get(id)?.destroy()
+    this.#views.delete(id)
+    this.#shown.delete(id)
+    this.#targets.delete(id)
+  }
+}
+
+/** The art depends on kind and color; rotation only turns the graphic. */
+function looksAlike(a: Piece, b: Piece): boolean {
+  return a.kind === b.kind && a.color === b.color
 }

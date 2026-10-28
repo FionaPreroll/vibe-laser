@@ -32,6 +32,11 @@ export function setLocale(next: Locale): void {
   }
 }
 
+/** A text in every language, for content that carries both, such as a new pack's skill names. */
+export function names(key: MessageKey): Record<Locale, string> {
+  return { en: format(en[key]), de: format(de[key]) }
+}
+
 /** Text in the current language, with {placeholders} filled from params. */
 export function t(key: MessageKey, params?: Readonly<Record<string, string | number>>): string {
   return format(catalogs[locale.value][key], params)

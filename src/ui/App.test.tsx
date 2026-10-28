@@ -1,8 +1,8 @@
 // @vitest-environment happy-dom
 import { act, cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/preact'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { solutionSteps } from '../content/level'
 import { findLevel, findPack, levelsOf } from '../content/packs'
+import { playSolution } from '../content/solution'
 import { DEFAULT_SETTINGS, type SaveData } from '../persistence/profiles'
 import { type KeyValueStore, memoryStore } from '../persistence/store'
 import { mountBoard } from '../view/board'
@@ -42,10 +42,7 @@ async function solve(controller: BoardController, id: string) {
   const level = await findLevel(id)?.entry.load()
   if (level === undefined) throw new Error(`No level ${id}`)
   await act(() => {
-    for (const step of solutionSteps(level.file)) {
-      if ('wait' in step) for (let tick = 0; tick < step.wait; tick++) controller.session.tick()
-      else controller.session.execute(step)
-    }
+    playSolution(controller.session, level.file)
   })
 }
 
@@ -239,6 +236,46 @@ describe('App', () => {
     expect(screen.getByRole('heading', { name: 'About Vibe Laser' })).toBeTruthy()
     // The browser follows the link to the address of the pack list.
     expect(screen.getByRole('link', { name: /Vibe Laser/ }).getAttribute('href')).toBe('#/')
+  })
+
+  it('lists packs made in the editor and plays their levels', async () => {
+    const level = await findLevel('tutorial/1/1')?.entry.load()
+    const store = memoryStore({
+      packs: {
+        version: 1,
+        packs: [
+          {
+            id: 'my-pack',
+            pack: {
+              version: 1,
+              title: { en: 'My Pack', de: 'Mein Pack' },
+              position: 100,
+              skills: [{ en: 'All', de: 'Alle' }],
+              selectSkill: true,
+            },
+            levels: { '1/4': level?.file },
+          },
+        ],
+      },
+    })
+    await start('#/', store)
+    expect((await screen.findByRole('button', { name: /^My Pack/ })).textContent).toContain(
+      '0 of 1 solved',
+    )
+    await click(/^My Pack/)
+    await screen.findByRole('button', { name: '4. First Light' })
+    await click('4. First Light')
+    expect(location.hash).toBe('#/play/my-pack/1/4')
+    await solve(await mounted(), 'my-pack/1/4')
+    await waitFor(async () => expect(await solvedIn(store)).toEqual(['my-pack/1/4']))
+  })
+
+  it('opens the level editor from the header, loading it on demand', async () => {
+    await start()
+    await click('Level editor')
+    expect(screen.getByText('Loading…')).toBeTruthy()
+    expect(await screen.findByRole('heading', { name: 'Level editor' })).toBeTruthy()
+    expect(screen.getByRole('heading', { name: 'Your packs' })).toBeTruthy()
   })
 
   it('follows the address, as with the back button', async () => {

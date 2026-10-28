@@ -2,12 +2,14 @@ import { effect } from '@preact/signals'
 import { useEffect, useMemo, useState } from 'preact/hooks'
 import type { Speaker } from '../audio/director'
 import { Synth } from '../audio/synth'
+import { packOfLevels, setCustomPacks } from '../content/packs'
 import { t } from '../i18n'
+import { PackShelf } from '../persistence/packs'
 import { ProfileBook } from '../persistence/profiles'
 import { browserStore, type KeyValueStore, memoryStore } from '../persistence/store'
 import { HelpDialog } from './HelpDialog'
 import { LanguageSwitch } from './LanguageSwitch'
-import { followAddress, navigate, screen } from './router'
+import { followAddress, isEditorScreen, navigate, screen } from './router'
 import { SettingsDialog } from './SettingsDialog'
 import { AboutScreen } from './screens/AboutScreen'
 import { LevelsScreen } from './screens/LevelsScreen'
@@ -23,36 +25,57 @@ export interface Audio extends Speaker {
 }
 
 interface Props {
-  /** Where profiles are saved; IndexedDB unless a test passes another store. */
+  /** Where profiles and packs are saved; IndexedDB unless a test passes another store. */
   readonly store?: KeyValueStore
   readonly audio?: Audio
 }
 
 type Overlay = 'help' | 'settings' | undefined
 
-/** Opens the saves, or keeps progress in memory when the browser does not let the game save. */
-async function openBook(store: KeyValueStore): Promise<{ book: ProfileBook; blocked: boolean }> {
+/** The editor loads on demand, so players who only play do not download it. */
+type EditorModule = typeof import('./editor/EditorScreens')
+const loadEditor = (): Promise<EditorModule> => import('./editor/EditorScreens')
+
+interface Saves {
+  readonly book: ProfileBook
+  readonly shelf: PackShelf
+  /** The browser does not let the game save, so everything lasts only until the page closes. */
+  readonly blocked: boolean
+}
+
+/** Opens profiles and packs, or keeps them in memory when the browser does not let the game save. */
+async function openSaves(store: KeyValueStore): Promise<Saves> {
   const options = {
     name: t('defaultName'),
     settings: { reducedMotion: matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false },
     persist: () => navigator.storage?.persist?.() ?? Promise.resolve(false),
   }
   try {
-    return { book: await ProfileBook.open(store, options), blocked: false }
+    const [book, shelf] = await Promise.all([
+      ProfileBook.open(store, options),
+      PackShelf.open(store),
+    ])
+    return { book, shelf, blocked: false }
   } catch (error) {
     console.warn('Saving is not possible in this browser', error)
-    return { book: await ProfileBook.open(memoryStore(), options), blocked: true }
+    const memory = memoryStore()
+    const [book, shelf] = await Promise.all([
+      ProfileBook.open(memory, options),
+      PackShelf.open(memory),
+    ])
+    return { book, shelf, blocked: true }
   }
 }
 
 export function App({ store, audio }: Props) {
   const sound = useMemo(() => audio ?? new Synth(), [audio])
-  const [opened, setOpened] = useState<{ book: ProfileBook; blocked: boolean }>()
+  const [opened, setOpened] = useState<Saves>()
   const [overlay, setOverlay] = useState<Overlay>()
+  const [editor, setEditor] = useState<EditorModule>()
 
   useEffect(() => followAddress(), [])
   useEffect(() => {
-    void openBook(store ?? browserStore()).then(setOpened)
+    void openSaves(store ?? browserStore()).then(setOpened)
   }, [store])
   useEffect(() => {
     // Browsers start audio only after the player clicks or presses a key.
@@ -65,6 +88,21 @@ export function App({ store, audio }: Props) {
     }
   }, [sound])
   const book = opened?.book
+  const shelf = opened?.shelf
+  const editing = isEditorScreen(screen.value)
+  useEffect(() => {
+    if (editing && editor === undefined) void loadEditor().then(setEditor)
+  }, [editing, editor])
+  useEffect(() => {
+    if (shelf === undefined) return
+    const stop = effect(() => {
+      setCustomPacks(shelf.packs.value.map((pack) => packOfLevels(pack.id, pack.pack, pack.levels)))
+    })
+    return () => {
+      stop()
+      setCustomPacks([])
+    }
+  }, [shelf])
   useEffect(
     () =>
       book &&
@@ -91,6 +129,9 @@ export function App({ store, audio }: Props) {
           <button type="button" onClick={() => navigate({ name: 'profiles' })}>
             {t('profileButton', { name: book.active.value.name })}
           </button>
+          <button type="button" onClick={() => navigate({ name: 'editor' })}>
+            {t('editorButton')}
+          </button>
           <button type="button" onClick={() => setOverlay('settings')}>
             {t('settings')}
           </button>
@@ -104,7 +145,7 @@ export function App({ store, audio }: Props) {
         </nav>
       </header>
       {opened.blocked && <p class="notice">{t('storageBlocked')}</p>}
-      <main class={current.name === 'play' ? 'play' : 'menu'}>
+      <main class={current.name === 'play' || current.name === 'editLevel' ? 'play' : 'menu'}>
         {current.name === 'packs' && <PacksScreen solved={solved} />}
         {current.name === 'skills' && <SkillsScreen pack={current.pack} solved={solved} />}
         {current.name === 'levels' && (
@@ -122,6 +163,18 @@ export function App({ store, audio }: Props) {
           />
         )}
         {current.name === 'profiles' && <ProfilesScreen book={book} />}
+        {isEditorScreen(current) &&
+          (editor && shelf ? (
+            <editor.EditorScreens
+              screen={current}
+              shelf={shelf}
+              speaker={sound}
+              paused={overlay !== undefined}
+              onHelp={() => setOverlay('help')}
+            />
+          ) : (
+            <p class="loading">{t('loading')}</p>
+          ))}
         {current.name === 'about' && <AboutScreen />}
       </main>
       {overlay === 'help' && <HelpDialog onClose={closeOverlay} />}
