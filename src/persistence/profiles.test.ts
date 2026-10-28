@@ -40,6 +40,15 @@ describe('ProfileBook', () => {
     expect(again.solved.value).toEqual(new Set(['tutorial/1/1']))
   })
 
+  it('reads saves from before color-blind mode with the mode switched off', async () => {
+    const settings = { soundVolume: 0.2, musicVolume: 0.1, reducedMotion: true }
+    const profile = { id: 'fiona', name: 'Fiona', solved: [], settings }
+    const { book } = await open(
+      memoryStore({ save: { version: 1, active: 'fiona', profiles: [profile] } }),
+    )
+    expect(book.active.value.settings).toEqual({ ...settings, colorBlind: false })
+  })
+
   it('starts afresh when the saves cannot be read', async () => {
     const { book } = await open(memoryStore({ save: { version: 7, junk: true } }))
     expect(book.data.value.profiles).toHaveLength(1)

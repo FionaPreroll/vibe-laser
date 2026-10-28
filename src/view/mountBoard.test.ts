@@ -8,6 +8,7 @@ import { itemById, type Place } from '../core/level'
 import { GameSession } from '../game/session'
 import { mountBoard } from './board'
 import { BoardController } from './controller'
+import { colorBlind } from './display'
 import { placeCenter } from './layout'
 
 // No WebGL here: a stand-in Application keeps PixiJS's real scene graph without a renderer.
@@ -42,6 +43,7 @@ vi.mock('pixi.js', async (importOriginal) => {
 afterEach(() => {
   document.body.innerHTML = ''
   fakes.apps.length = 0
+  colorBlind.value = false
 })
 
 async function mount(id = 'tutorial/1/1') {
@@ -140,6 +142,21 @@ describe('mountBoard', () => {
     expect(scene.cursor).toBe('default')
   })
 
+  it('writes colors as letters and splits beams in color-blind mode', async () => {
+    const { scene } = await mount()
+    const labels = scene.children[3] as Container
+    const beams = scene.children[1] as Container
+    const lines = () => beams.children.filter((sprite) => sprite.visible).length
+    expect(labels.children).toHaveLength(0)
+    const plain = lines()
+    colorBlind.value = true
+    // The red laser and the red coin.
+    expect(labels.children).toHaveLength(2)
+    expect(lines()).toBe(plain)
+    colorBlind.value = false
+    expect(labels.children).toHaveLength(0)
+  })
+
   it('plays the level with the keyboard while the board has the focus', async () => {
     const { controller, host, key } = await mount()
     key('Enter')
@@ -172,7 +189,7 @@ describe('mountBoard', () => {
     controller.session.execute({ kind: 'move', item: 3, to: { area: 'board', cell: 0 } })
     controller.session.execute({ kind: 'rotate', item: 3, steps: 3 })
     expect(controller.session.state.value.phase).toBe('exploding')
-    const effects = scene.children[3] as Container
+    const effects = scene.children[4] as Container
     expect(effects.children.length).toBeGreaterThan(0)
     tick(200)
     expect(controller.session.state.value.phase).toBe('failed')

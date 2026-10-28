@@ -14,7 +14,8 @@ Play it at https://fionapreroll.github.io/vibe-laser/.
 - Keep light away from explosives. One that goes off sets off its neighbours too, and the level is lost; only starting again helps.
 - Slimes, robot mines and spaceships move by themselves. With mines or ships on the board, a solution must hold for five seconds while a bar fills.
 - The buttons below the board lead back to the level selection, restart the level, clean up (unlit pieces go back into the toolbox), undo, redo, rotate the selected piece and open the help.
-- Each player can have a profile of their own, with their own progress and settings: the volume of sound effects and music, and less motion on the board. Profiles can be exported as a file and imported in another browser.
+- Each player can have a profile of their own, with their own progress and settings: the volume of sound effects and music, less motion on the board, and color-blind mode. Profiles can be exported as a file and imported in another browser.
+- Color-blind mode writes the colors of pieces as letters, R, G and B, and draws each color in a beam as a line of its own, red, green and blue always in the same order across the beam. Help explains how colors mix.
 - Keyboard: focus the board with Tab. The arrow keys move a frame over the toolbox and the board, Enter picks a piece up and puts it down, Escape cancels, Q and E rotate, Ctrl+Z undoes and Ctrl+Y or Ctrl+Shift+Z redoes.
 - The level editor in the header makes levels of your own, in packs that appear in the pack list next to the built-in ones (see [Level editor](#level-editor)).
 
@@ -177,7 +178,8 @@ The build bundles every `pack.json`, and each level file becomes a small file of
 - The address after `#` names the screen, so the browser's back button and bookmarks work: `#/` lists the packs, `#/packs/tutorial` the skills of a pack, `#/packs/tutorial/2` the levels of a skill, `#/play/tutorial/2/5` opens a level, and `#/profiles` and `#/about` the profiles and the version with the changelog. The editor lives at `#/editor`, a pack in it at `#/editor/<pack>` and a slot at `#/editor/<pack>/2/5`.
 - Help and the settings open over the game and stop its clock while they are open.
 - `ProfileBook` in `src/persistence/profiles.ts` keeps all profiles in one record in IndexedDB (database `vibe-laser`, store `saves`), through idb-keyval. The record carries a version, and `migrate()` is where later formats will convert older saves; a record it cannot read starts afresh. Changes are saved one after another, so the last one always wins.
-- A profile holds a name, the ids of its solved levels and its settings. Reduced motion starts on when the system asks for less motion. After the first solved level the game asks the browser to keep its storage (`navigator.storage.persist()`).
+- A profile holds a name, the ids of its solved levels and its settings. Reduced motion starts on when the system asks for less motion. Settings added later, such as color-blind mode, start switched off when older saves load. After the first solved level the game asks the browser to keep its storage (`navigator.storage.persist()`).
+- Color-blind mode is one signal for every board, `colorBlind` in `src/view/display.ts`, which the app sets from the active profile. The stage then shows `ColorLabelLayer` letters above the pieces, and `BeamLayer` splits each beam into its primaries.
 - An exported profile is a JSON file (`"format": "vibe-laser-profile"`). An imported one gets a new id, and a number after its name when the name is taken.
 - Where the browser blocks IndexedDB, as some private windows do, progress lasts until the page closes, and the game says so.
 - The language is a setting of the browser, not of a profile, and stays in `localStorage`.

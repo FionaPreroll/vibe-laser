@@ -7,6 +7,7 @@ import { DEFAULT_SETTINGS, type SaveData } from '../persistence/profiles'
 import { type KeyValueStore, memoryStore } from '../persistence/store'
 import { mountBoard } from '../view/board'
 import type { BoardController } from '../view/controller'
+import { colorBlind } from '../view/display'
 import { App, type Audio } from './App'
 
 vi.mock('../view/board', () => ({ mountBoard: vi.fn() }))
@@ -17,6 +18,7 @@ beforeEach(() => {
   mount.mockResolvedValue({ destroy: () => {} })
 })
 afterEach(() => {
+  colorBlind.value = false
   cleanup()
   vi.restoreAllMocks()
 })
@@ -196,6 +198,16 @@ describe('App', () => {
     expect(controller.reducedMotion.value).toBe(true)
     await click('Close')
     expect(controller.paused.value).toBe(false)
+  })
+
+  it('switches color-blind mode on every board with the setting of the profile', async () => {
+    await start('#/play/tutorial/1/1')
+    expect(colorBlind.value).toBe(false)
+    await click('Settings')
+    await act(() => {
+      fireEvent.click(screen.getByRole('checkbox', { name: 'Color-blind mode' }))
+    })
+    await waitFor(() => expect(colorBlind.value).toBe(true))
   })
 
   it('plays the sounds of the game at the volumes of the profile', async () => {
