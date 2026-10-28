@@ -136,6 +136,14 @@ describe('level drafts', () => {
     expect(pieceAt(plain, board(0))).toEqual({ type: 'laser', rot: 2 })
   })
 
+  it('keep the inner color of a complex, after its outer color', () => {
+    const draft = putPiece(level(), board(4), { type: 'complex', inner: 'g', rgb: 'r', rot: 1 })
+    expect(Object.keys(pieceAt(draft, board(4)) ?? {})).toEqual(['type', 'rot', 'rgb', 'inner'])
+    const blue = changePiece(draft, board(4), { inner: 'b' })
+    expect(pieceAt(blue, board(4))).toEqual({ type: 'complex', rot: 1, rgb: 'r', inner: 'b' })
+    expect(changePiece(blue, board(4), { inner: 'b' })).toBe(blue)
+  })
+
   it('rotate parts, run actors round their headings and leave the others', () => {
     let draft = putPiece(level(), board(4), { type: 'ship', rot: 2 })
     draft = rotatePiece(draft, board(4), 1)

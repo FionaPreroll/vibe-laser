@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import type { PartKind, Piece } from '../../core/board'
-import { type Color, RED, WHITE } from '../../core/color'
+import { BLUE, type Color, GREEN, RED, WHITE } from '../../core/color'
 import { createFlatArt } from './flat'
 
 // A record, so a new kind without art fails the type check here too.
@@ -17,6 +17,11 @@ const KINDS = Object.keys({
   colorConverter: 0,
   filter: 0,
   polarizer: 0,
+  bender: 0,
+  splicer: 0,
+  prismirror: 0,
+  selector: 0,
+  complex: 0,
   coin: 0,
   antiCoin: 0,
   explosive: 0,
@@ -47,6 +52,12 @@ describe('flat art', () => {
   it('draws a shape once per kind and color and shares it', () => {
     expect(art.piece(piece('coin'))).toBe(art.piece({ ...piece('coin'), rotation: 3 }))
     expect(art.piece(piece('coin'))).not.toBe(art.piece(piece('coin', WHITE)))
+  })
+
+  it('draws a complex anew for each inner color', () => {
+    const complex = (inner: Color): Piece => ({ ...piece('complex'), inner })
+    expect(art.piece(complex(GREEN))).toBe(art.piece(complex(GREEN)))
+    expect(art.piece(complex(GREEN))).not.toBe(art.piece(complex(BLUE)))
   })
 
   it('has a tile for board cells and a slot for the toolbox', () => {
