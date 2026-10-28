@@ -31,3 +31,7 @@ All changes players can notice are listed here. The format follows [Keep a Chang
 - Five parts from the expansion packs of the original: benders turn every beam 45° clockwise, splicers split a beam three ways, prismirrors are prisms in mirror image, selectors turn their own color aside and let the rest through, and complexes turn their outer color aside and let only their inner color through.
 - Five more tutorial levels in a fourth skill, Expansions, one for each new part, for 23 in all.
 - In the level editor the new parts sit on the keys 1 to 5, and a complex has switches for its outer and its inner color.
+
+### Changed
+
+- On computers without graphics acceleration, the board leaves out edge smoothing and so runs twice as smoothly.
