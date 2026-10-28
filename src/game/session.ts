@@ -42,6 +42,8 @@ export interface GameState {
 /** Things that happen, for animations and sounds. */
 export type GameEvent =
   | ActorEvent
+  /** A player move went through: a command, or an undo or redo, which applies an inverse. */
+  | { readonly kind: 'command'; readonly command: Command }
   | { readonly kind: 'ignited'; readonly cells: readonly number[] }
   | {
       readonly kind: 'exploded'
@@ -200,7 +202,8 @@ export class GameSession {
     const applied = applyCommand(current.puzzle, command)
     if (applied === undefined) return undefined
     const moved = { ...current, puzzle: applied.puzzle, memory: forgetPaths(current.memory) }
-    return { ...settle(moved, this.#rules, NO_CHANGE), inverse: applied.inverse }
+    const played = { ...NO_CHANGE, events: [{ kind: 'command', command } as const] }
+    return { ...settle(moved, this.#rules, played), inverse: applied.inverse }
   }
 
   #travel(from: Signal<readonly Command[]>, to: Signal<readonly Command[]>): boolean {

@@ -38,7 +38,8 @@ const ABBREVIATIONS: Record<PartKind, string> = {
 const KINDS = new Map(
   Object.entries(ABBREVIATIONS).map(([kind, abbreviation]) => [abbreviation, kind as PartKind]),
 )
-const COLORED_KINDS: ReadonlySet<PartKind> = new Set<PartKind>([
+/** Kinds that carry a color: lasers, filters, polarizers and coins. */
+export const COLORED_KINDS: ReadonlySet<PartKind> = new Set<PartKind>([
   'laser',
   'filter',
   'polarizer',

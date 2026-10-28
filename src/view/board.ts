@@ -250,6 +250,7 @@ export async function mountBoard(
     hasFocus.value = false
   }
   const onKey = (event: KeyboardEvent) => {
+    if (controller.paused.value) return
     const ctrl = event.ctrlKey || event.metaKey
     const undoKey = ctrl && ['z', 'y'].includes(event.key.toLowerCase())
     if (!undoKey && (!hasFocus.value || !BOARD_KEYS.has(event.key))) return
@@ -283,8 +284,14 @@ export async function mountBoard(
   app.renderer.on('resize', fitToHost)
   const stopRendering = effect(render)
   app.ticker.add((ticker) => {
-    session.advance(ticker.deltaMS)
-    pieces.animate(performance.now() / 1000, ticker.deltaMS / 1000)
+    if (!controller.paused.value) session.advance(ticker.deltaMS)
+    const reduced = controller.reducedMotion.value
+    // An endless time step lets gliding actors arrive at once.
+    pieces.animate(
+      performance.now() / 1000,
+      reduced ? Number.POSITIVE_INFINITY : ticker.deltaMS / 1000,
+    )
+    effects.reducedMotion = reduced
     effects.animate(ticker.deltaMS / 1000)
   })
 

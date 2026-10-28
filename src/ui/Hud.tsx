@@ -2,8 +2,14 @@ import { STABLE_TICKS } from '../game/session'
 import { t } from '../i18n'
 import type { BoardController } from '../view/controller'
 
+interface Props {
+  readonly controller: BoardController
+  readonly onExit: () => void
+  readonly onHelp: () => void
+}
+
 /** The button bar below the board, as in the original, with the stability bar above it. */
-export function Hud({ controller }: { readonly controller: BoardController }) {
+export function Hud({ controller, onExit, onHelp }: Props) {
   const { session } = controller
   const { phase, stable } = session.state.value
   return (
@@ -15,6 +21,9 @@ export function Hud({ controller }: { readonly controller: BoardController }) {
         </div>
       )}
       <div class="hud-buttons" role="toolbar" aria-label={t('actions')}>
+        <button type="button" onClick={onExit}>
+          {t('exit')}
+        </button>
         <button type="button" onClick={() => session.restart()}>
           {t('restart')}
         </button>
@@ -44,6 +53,9 @@ export function Hud({ controller }: { readonly controller: BoardController }) {
           onClick={() => controller.rotateSelected(1)}
         >
           {t('rotateRight')}
+        </button>
+        <button type="button" onClick={onHelp}>
+          {t('help')}
         </button>
       </div>
       <p id="controls-hint" class="hint">

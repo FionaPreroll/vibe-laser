@@ -1,0 +1,12 @@
+{
+  "$schema": "../../../level.schema.json",
+  "version": 1,
+  "name": { "en": "Bend", "de": "Knick" },
+  "size": [5, 4],
+  "objects": [
+    { "type": "coin", "pos": "A5", "rgb": "g" },
+    { "type": "laser", "pos": "D1", "rot": 2, "rgb": "g" }
+  ],
+  "toolbox": [{ "type": "refractor", "rot": 0 }],
+  "solution": [{ "piece": 0, "pos": "D2", "rot": 2 }]
+}

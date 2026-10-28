@@ -1,0 +1,12 @@
+{
+  "$schema": "../../../level.schema.json",
+  "version": 1,
+  "name": { "en": "First Light", "de": "Erstes Licht" },
+  "size": [6, 3],
+  "objects": [
+    { "type": "coin", "pos": "A6", "rgb": "r" },
+    { "type": "laser", "pos": "B1", "rot": 2, "rgb": "r" }
+  ],
+  "toolbox": [{ "type": "mirror", "rot": 0 }],
+  "solution": [{ "piece": 0, "pos": "B6", "rot": 7 }]
+}

@@ -1,0 +1,14 @@
+{
+  "$schema": "../../../level.schema.json",
+  "version": 1,
+  "name": { "en": "Filters", "de": "Filter" },
+  "size": [4, 2],
+  "objects": [
+    { "type": "laser", "pos": "A1", "rot": 2, "rgb": "rgb" },
+    { "type": "coin", "pos": "A4", "rgb": "r" },
+    { "type": "laser", "pos": "B1", "rot": 2, "rgb": "rgb" },
+    { "type": "coin", "pos": "B4", "rgb": "rg" }
+  ],
+  "toolbox": [{ "type": "filter", "rgb": "r" }, { "type": "filter", "rgb": "rg" }],
+  "solution": [{ "piece": 0, "pos": "A2", "rot": 0 }, { "piece": 1, "pos": "B2", "rot": 0 }]
+}

@@ -1,5 +1,7 @@
 import { expect, type Page, test } from '@playwright/test'
 
+const FIRST_LEVEL = './#/play/tutorial/1/1'
+
 /** Collects uncaught errors and console errors, so a broken start fails the test. */
 function watchErrors(page: Page): string[] {
   const errors: string[] = []
@@ -57,9 +59,12 @@ async function placeMirrorWithKeyboard(page: Page) {
   await page.keyboard.press('Enter')
 }
 
-test('shows the first level without errors', async ({ page }) => {
+test('opens the first level from the pack list without errors', async ({ page }) => {
   const errors = watchErrors(page)
   await page.goto('./')
+  await page.getByRole('button', { name: /^Tutorial/ }).click()
+  await page.getByRole('button', { name: /^1\. Mirrors/ }).click()
+  await page.getByRole('button', { name: /^1\. First Light/ }).click()
 
   await expect(page.getByRole('heading', { name: 'Vibe Laser' })).toBeVisible()
   await expect(
@@ -72,18 +77,18 @@ test('shows the first level without errors', async ({ page }) => {
 })
 
 test('solves the first level with the keyboard and moves on', async ({ page }) => {
-  await page.goto('./')
+  await page.goto(FIRST_LEVEL)
   await placeMirrorWithKeyboard(page)
   await page.keyboard.press('q')
 
   const dialog = page.getByRole('dialog', { name: 'Level solved' })
   await expect(dialog).toBeVisible()
-  await dialog.getByRole('button', { name: 'Next level' }).click()
+  await dialog.getByRole('button', { name: 'Next unsolved level' }).click()
   await expect(page.getByRole('application', { name: /^Two Turns:/ })).toBeVisible()
 })
 
 test('solves the first level with the mouse', async ({ page }) => {
-  await page.goto('./')
+  await page.goto(FIRST_LEVEL)
   const mirror = await centerOf(page, { slot: 0 })
   const target = await centerOf(page, { cell: [5, 1] })
   await page.mouse.move(mirror.x, mirror.y)
@@ -97,7 +102,7 @@ test('solves the first level with the mouse', async ({ page }) => {
 })
 
 test('undoes and redoes a move with the buttons', async ({ page }) => {
-  await page.goto('./')
+  await page.goto(FIRST_LEVEL)
   const undo = page.getByRole('button', { name: 'Undo' })
   const redo = page.getByRole('button', { name: 'Redo' })
   await expect(undo).toBeDisabled()
@@ -113,9 +118,7 @@ test('undoes and redoes a move with the buttons', async ({ page }) => {
 })
 
 test('fails the level when an explosive goes off, until it starts again', async ({ page }) => {
-  await page.goto('./')
-  const level = page.locator('option', { hasText: 'Handle with Care' })
-  await page.getByLabel('Level').selectOption((await level.getAttribute('value')) ?? '')
+  await page.goto('./#/play/tutorial/3/1')
   // The mirror in A1, turned to send the beam east, lights the explosive in A3.
   await boardReady(page)
   await page.locator('.board').focus()
@@ -133,7 +136,7 @@ test('fails the level when an explosive goes off, until it starts again', async 
 })
 
 test('switches the interface to German and remembers it', async ({ page }) => {
-  await page.goto('./')
+  await page.goto(FIRST_LEVEL)
   await page.getByLabel('Language').selectOption('de')
 
   await expect(page.locator('html')).toHaveAttribute('lang', 'de')
@@ -146,7 +149,7 @@ test.describe('with a German browser', () => {
   test.use({ locale: 'de-DE' })
 
   test('starts in German', async ({ page }) => {
-    await page.goto('./')
+    await page.goto(FIRST_LEVEL)
     await expect(
       page.getByRole('application', { name: 'Erstes Licht: Spielfeld mit 6 Spalten und 3 Zeilen' }),
     ).toBeVisible()

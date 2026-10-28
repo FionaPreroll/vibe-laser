@@ -1,0 +1,14 @@
+{
+  "$schema": "../../../level.schema.json",
+  "version": 1,
+  "name": { "en": "Handle with Care", "de": "Vorsicht, Sprengstoff" },
+  "note": "The short way to the coin runs into the explosive.",
+  "size": [5, 3],
+  "objects": [
+    { "type": "explosive", "pos": "A3" },
+    { "type": "coin", "pos": "A5", "rgb": "r" },
+    { "type": "laser", "pos": "C1", "rot": 0, "rgb": "r" }
+  ],
+  "toolbox": [{ "type": "mirror", "rot": 0, "count": 2 }],
+  "solution": [{ "piece": 0, "pos": "B1", "rot": 3 }, { "piece": 1, "pos": "B5", "rot": 7 }]
+}

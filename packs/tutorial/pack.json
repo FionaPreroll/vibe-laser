@@ -1,0 +1,15 @@
+{
+  "$schema": "../pack.schema.json",
+  "version": 1,
+  "title": { "en": "Tutorial", "de": "Einführung" },
+  "description": {
+    "en": "Every part of the game, one level at a time.",
+    "de": "Jedes Teil des Spiels, ein Level nach dem anderen."
+  },
+  "position": 1,
+  "skills": [
+    { "en": "Mirrors", "de": "Spiegel" },
+    { "en": "Optics", "de": "Optik" },
+    { "en": "Hazards", "de": "Gefahren" }
+  ]
+}

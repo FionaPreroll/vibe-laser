@@ -1,0 +1,15 @@
+{
+  "$schema": "../../../level.schema.json",
+  "version": 1,
+  "name": { "en": "Fenced In", "de": "Eingezäunt" },
+  "note": "The beam along row C keeps the mine away from the explosive, and must go on doing so.",
+  "size": [5, 5],
+  "objects": [
+    { "type": "mine", "pos": "B2", "rot": 2 },
+    { "type": "laser", "pos": "C1", "rot": 2, "rgb": "r" },
+    { "type": "explosive", "pos": "E1" },
+    { "type": "coin", "pos": "E5", "rgb": "r" }
+  ],
+  "toolbox": [{ "type": "mirror", "rot": 0 }],
+  "solution": [{ "piece": 0, "pos": "C5", "rot": 5 }]
+}

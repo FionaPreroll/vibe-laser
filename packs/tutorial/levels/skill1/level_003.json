@@ -1,0 +1,13 @@
+{
+  "$schema": "../../../level.schema.json",
+  "version": 1,
+  "name": { "en": "Meeting Point", "de": "Treffpunkt" },
+  "size": [5, 3],
+  "objects": [
+    { "type": "laser", "pos": "A1", "rot": 4, "rgb": "r" },
+    { "type": "coin", "pos": "B3", "rgb": "rb" },
+    { "type": "laser", "pos": "C5", "rot": 0, "rgb": "b" }
+  ],
+  "toolbox": [{ "type": "mirror", "rot": 0, "count": 2 }],
+  "solution": [{ "piece": 0, "pos": "B1", "rot": 1 }, { "piece": 1, "pos": "B5", "rot": 5 }]
+}
