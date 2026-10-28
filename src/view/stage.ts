@@ -46,7 +46,7 @@ export async function createStage(
   await app.init({
     resizeTo: host,
     preference: 'webgl',
-    antialias: true,
+    antialias: !rendersInSoftware(),
     autoDensity: true,
     resolution: window.devicePixelRatio,
     backgroundAlpha: 0,
@@ -134,6 +134,25 @@ export async function createStage(
       app.destroy(true, { children: true })
     },
   }
+}
+
+// Names of WebGL renderers without a graphics card: Chrome's SwiftShader, Mesa's llvmpipe and
+// softpipe, and Windows' WARP.
+const SOFTWARE_RENDERERS = /swiftshader|llvmpipe|softpipe|basic render driver/i
+
+/**
+ * Whether WebGL draws without a graphics card, as in headless browsers and many virtual machines.
+ * Antialiasing there takes longer than everything else in a frame and halves the frame rate, so
+ * the board goes without it.
+ */
+export function rendersInSoftware(): boolean {
+  const gl = document.createElement('canvas').getContext('webgl2')
+  if (gl === null) return false
+  const info = gl.getExtension('WEBGL_debug_renderer_info')
+  const renderer = String(gl.getParameter(info?.UNMASKED_RENDERER_WEBGL ?? gl.RENDERER))
+  // Browsers keep only so many contexts; this one has done its job.
+  gl.getExtension('WEBGL_lose_context')?.loseContext()
+  return SOFTWARE_RENDERERS.test(renderer)
 }
 
 /** Whether a key press belongs to a text field rather than to the board. */
