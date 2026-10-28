@@ -65,7 +65,7 @@ export function cellIndex(board: Size, x: number, y: number): number {
 }
 
 /** Index of a cell named as in the original, such as "K5"; -1 for other names or cells off the board. */
-export function cellByName(board: Board, name: string): number {
+export function cellByName(board: Size, name: string): number {
   const cell = parseCellName(name)
   return cell === undefined ? -1 : cellIndex(board, cell.x, cell.y)
 }

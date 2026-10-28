@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { z } from 'zod'
-import { describeIssues, levelSchema, packSchema } from './schema'
+import { describeIssues, levelSchema, packSchema, problemOf } from './schema'
 
 /** The smallest level that passes: a red laser shining on a red coin. */
 const LEVEL = {
@@ -63,6 +63,64 @@ describe('levelSchema', () => {
       'solution[1].rgb: a filter needs a color',
       'solution[1].rot: a filter does not rotate',
     ])
+  })
+
+  it('checks steps that move pieces from the board', () => {
+    const objects = [
+      ...LEVEL.objects,
+      { type: 'mirror', pos: 'A2', rot: 1, rotateable: true },
+      { type: 'filter', pos: 'A2', rgb: 'g' },
+    ]
+    expect(
+      problems({
+        size: [3, 2],
+        objects: [...LEVEL.objects, { type: 'mirror', pos: 'A2', rot: 1, rotateable: true }],
+        solution: [
+          { from: 'A2', pos: 'A2', rot: 3 },
+          { from: 'A2', pos: 'B2', rot: 1 },
+          { from: 'A1', stow: true },
+          { from: 'B1', pos: 'B2', rot: 0 },
+          { from: 'A2', pos: 'C9', rot: 1 },
+        ],
+      }),
+    ).toEqual([
+      'solution[1]: a mirror cannot be moved',
+      'solution[2]: a laser cannot be moved',
+      'solution[3].from: B1 holds no piece at the start',
+      'solution[4]: a mirror cannot be moved',
+      'solution[4].pos: C9 lies outside a 3 × 2 board',
+    ])
+    expect(problems({ objects, toolbox: [], solution: [] })).toEqual([
+      'objects[3].pos: A2 already holds objects[2]',
+    ])
+  })
+
+  it('stops toolbox pieces the file fixes', () => {
+    expect(
+      problems({
+        toolbox: [{ type: 'mirror', moveable: false, rotateable: false }],
+        solution: [{ piece: 0, pos: 'A2', rot: 1 }],
+      }),
+    ).toEqual([
+      'solution[0]: a mirror cannot be moved',
+      'solution[0].rot: a mirror cannot be rotated',
+    ])
+  })
+
+  it('gives every level problem a key for translated messages', () => {
+    const parsed = levelSchema.safeParse({
+      ...LEVEL,
+      objects: [{ type: 'laser', pos: 'D1', rot: 2 }],
+    })
+    expect(parsed.success).toBe(false)
+    const found = parsed.error?.issues.map(problemOf)
+    expect(found).toEqual([
+      { key: 'needsColor', kind: 'laser' },
+      { key: 'outside', place: 'D1' },
+      { key: 'noCoin' },
+    ])
+    const shape = levelSchema.safeParse({ ...LEVEL, version: 2 })
+    expect(shape.error?.issues.map(problemOf)).toEqual([undefined])
   })
 
   it('counts coins in the toolbox too', () => {

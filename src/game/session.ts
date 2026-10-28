@@ -92,6 +92,11 @@ export class GameSession {
     })
   }
 
+  /** Ticks played since the level started, or since the last restart. */
+  get ticks(): number {
+    return this.#ticks
+  }
+
   /** Runs a player command. False when it is not allowed or the level no longer takes moves. */
   execute(command: Command): boolean {
     const applied = this.#apply(command)

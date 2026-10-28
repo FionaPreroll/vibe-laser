@@ -1,10 +1,9 @@
 import { describe, expect, it } from 'vitest'
-import { GameSession, STABLE_TICKS } from '../game/session'
-import { puzzleOf, rulesOf, solutionSteps } from './level'
+import { GameSession } from '../game/session'
+import { puzzleOf, rulesOf } from './level'
 import { buildPacks, ContentError, type Level, PACKS, SLOTS } from './packs'
+import { replaySolution, SEEDS } from './solution'
 
-/** Mines bounce at random, so every level is played with several seeds. */
-const SEEDS = [1, 2, 3, 4, 5, 6, 7, 8]
 /** A minute of ticks: about how long a player may look at a level before the first move. */
 const THINKING_TICKS = 600
 
@@ -15,22 +14,6 @@ const entries = PACKS.flatMap((pack) =>
 function sessionFor(level: Level, seed: number): GameSession {
   const pack = PACKS.find((candidate) => candidate.id === level.pack)
   return new GameSession(puzzleOf(level.file), rulesOf(level.file, pack?.file.rules), seed)
-}
-
-/** Plays the level's known solution, then lets the actors go on until the level is decided. */
-function playSolution(level: Level, seed: number): GameSession {
-  const session = sessionFor(level, seed)
-  for (const step of solutionSteps(level.file)) {
-    if ('wait' in step) {
-      for (let tick = 0; tick < step.wait; tick++) session.tick()
-    } else if (!session.execute(step)) {
-      throw new Error(`The solution of ${level.id} takes a step the game refuses`)
-    }
-  }
-  for (let tick = 0; tick <= STABLE_TICKS && session.state.value.phase !== 'solved'; tick++) {
-    session.tick()
-  }
-  return session
 }
 
 describe('built-in packs', () => {
@@ -55,7 +38,11 @@ describe('built-in packs', () => {
 
   it.each(entries)('%s is solved by its known solution, whatever the seed', async (_, entry) => {
     const level = await entry.load()
-    for (const seed of SEEDS) expect(playSolution(level, seed).state.value.phase).toBe('solved')
+    const pack = PACKS.find((candidate) => candidate.id === level.pack)
+    for (const seed of SEEDS) {
+      const session = replaySolution(level.file, pack?.file.rules, seed)
+      expect(session.state.value.phase, `seed ${seed}`).toBe('solved')
+    }
   })
 })
 

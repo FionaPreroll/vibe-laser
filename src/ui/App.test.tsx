@@ -1,8 +1,8 @@
 // @vitest-environment happy-dom
 import { act, cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/preact'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { solutionSteps } from '../content/level'
 import { findLevel, findPack, levelsOf } from '../content/packs'
+import { playSolution } from '../content/solution'
 import { DEFAULT_SETTINGS, type SaveData } from '../persistence/profiles'
 import { type KeyValueStore, memoryStore } from '../persistence/store'
 import { mountBoard } from '../view/board'
@@ -42,10 +42,7 @@ async function solve(controller: BoardController, id: string) {
   const level = await findLevel(id)?.entry.load()
   if (level === undefined) throw new Error(`No level ${id}`)
   await act(() => {
-    for (const step of solutionSteps(level.file)) {
-      if ('wait' in step) for (let tick = 0; tick < step.wait; tick++) controller.session.tick()
-      else controller.session.execute(step)
-    }
+    playSolution(controller.session, level.file)
   })
 }
 
