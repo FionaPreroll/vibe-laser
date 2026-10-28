@@ -36,9 +36,10 @@ export class BoardController {
     // Play starts in the toolbox, so the keyboard focus does too.
     this.focus = signal(gridOfPlace(this.geometry, { area: 'toolbox', slot: 0 }))
     this.canRotateSelected = computed(() => {
-      const { puzzle, phase } = this.session.state.value
+      const { puzzle } = this.session.state.value
       const id = this.selected.value
-      return phase === 'playing' && id !== undefined && itemById(puzzle, id)?.rotateable === true
+      const rotateable = id !== undefined && itemById(puzzle, id)?.rotateable === true
+      return this.session.canPlay.value && rotateable
     })
   }
 
@@ -111,7 +112,7 @@ export class BoardController {
   #pickUpOrDrop(): boolean {
     const place = this.focusedPlace()
     if (place === undefined) return false
-    const { puzzle, phase } = this.session.state.value
+    const { puzzle } = this.session.state.value
     const lifted = this.lifted.value
     if (lifted !== undefined) {
       const item = itemById(puzzle, lifted)
@@ -123,7 +124,7 @@ export class BoardController {
     const item = itemAt(puzzle, place)
     if (item === undefined) return false
     this.selected.value = item.id
-    if (!item.moveable || phase !== 'playing') return false
+    if (!item.moveable || !this.session.canPlay.value) return false
     this.lifted.value = item.id
     return true
   }

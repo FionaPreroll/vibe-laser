@@ -2,7 +2,7 @@ import type { Color } from './color'
 import { type Direction, DX, DY } from './direction'
 import { MAX_ROWS, parseCellName } from './grid'
 
-/** The parts known so far; later milestones add hazards, actors and expansion parts. */
+/** The parts known so far; later milestones add the parts of the expansion packs. */
 export type PartKind =
   | 'laser'
   | 'mirror'
@@ -18,10 +18,19 @@ export type PartKind =
   | 'polarizer'
   | 'coin'
   | 'antiCoin'
+  | 'explosive'
+  | 'fuelCell'
+  | 'blackHole'
+  | 'slime'
+  | 'mine'
+  | 'ship'
 
 export interface Piece {
   readonly kind: PartKind
-  /** Clockwise 45° steps from the base orientation. A laser fires in the direction of its rotation. */
+  /**
+   * Clockwise 45° steps from the base orientation. A laser fires in the direction of its rotation,
+   * and slimes, mines and ships head that way.
+   */
   readonly rotation: Direction
   /**
    * Color of lasers, coins, filters and polarizers; 0 for every other part. A laser with color 0
@@ -47,8 +56,11 @@ export function emptyBoard(width: number, height: number): Board {
   return { width, height, cells: Array.from({ length: width * height }, () => undefined) }
 }
 
+/** The size of a board; puzzles have one too. */
+export type Size = Pick<Board, 'width' | 'height'>
+
 /** Index of the cell in column x and row y, or -1 outside the board. */
-export function cellIndex(board: Board, x: number, y: number): number {
+export function cellIndex(board: Size, x: number, y: number): number {
   return x >= 0 && x < board.width && y >= 0 && y < board.height ? y * board.width + x : -1
 }
 
@@ -59,7 +71,7 @@ export function cellByName(board: Board, name: string): number {
 }
 
 /** The neighbouring cell in a direction, or -1 beyond the board's edge. */
-export function neighbour(board: Board, cell: number, direction: Direction): number {
+export function neighbour(board: Size, cell: number, direction: Direction): number {
   const x = (cell % board.width) + DX[direction]
   const y = Math.floor(cell / board.width) + DY[direction]
   return cellIndex(board, x, y)

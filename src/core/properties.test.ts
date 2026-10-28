@@ -41,6 +41,22 @@ const piece: fc.Arbitrary<Piece> = fc.oneof(
   fc.record({ kind: fc.constant('filter' as const), rotation: fc.constant(0 as const), color }),
   fc.record({ kind: fc.constant('coin' as const), rotation: fc.constant(0 as const), color }),
   fc.record({
+    kind: fc.constantFrom<PartKind>('explosive', 'fuelCell', 'blackHole'),
+    rotation: fc.constant(0 as const),
+    color: fc.constant(0 as const),
+  }),
+  fc.record({
+    kind: fc.constant('slime' as const),
+    rotation: fc.constantFrom<Direction>(0, 2, 4, 6),
+    color: fc.constant(0 as const),
+  }),
+  fc.record({ kind: fc.constant('mine' as const), rotation, color: fc.constant(0 as const) }),
+  fc.record({
+    kind: fc.constant('ship' as const),
+    rotation: fc.constantFrom<Direction>(2, 6),
+    color: fc.constant(0 as const),
+  }),
+  fc.record({
     kind: fc.constant('antiCoin' as const),
     rotation: fc.constant(0 as const),
     color: fc.constant(0 as const),
@@ -68,6 +84,7 @@ const rules = fc.record({
   coinAngles: fc.constantFrom('single' as const, 'sameColor' as const),
   beamIntoLaser: fc.constantFrom('absorb' as const, 'pass' as const),
   polarizer: fc.constantFrom('direction' as const, 'axis' as const),
+  actorsBlockLight: fc.boolean(),
 }) satisfies fc.Arbitrary<Rules>
 
 /** Moves every cell to the index `place` gives it and turns pieces that have a rotation. */

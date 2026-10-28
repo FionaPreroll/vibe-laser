@@ -135,6 +135,22 @@ describe('trace', () => {
     expect(blocked.lit('A5')).toBe(false)
   })
 
+  it('stops beams at explosives, black holes and actors', () => {
+    for (const piece of ['T', 'FC', 'H', 'SL0', 'MI0', 'SH2']) {
+      const { half, lit } = traced(`L2r ${piece} .`)
+      expect(half('A2', W)).toBe(RED)
+      expect(lit('A3')).toBe(false)
+    }
+  })
+
+  it('lets beams pass actors when the rules say so', () => {
+    const rules = { ...DEFAULT_RULES, actorsBlockLight: false }
+    for (const piece of ['SL0', 'MI0', 'SH2']) {
+      expect(traced(`L2r ${piece} .`, rules).half('A3', W)).toBe(RED)
+    }
+    expect(traced('L2r H .', rules).lit('A3')).toBe(false)
+  })
+
   it('traces each primary of white light', () => {
     const { axis } = traced('L2rgb M5 \n .  Crgb')
     expect(axis('B2', NORTH_SOUTH)).toBe(WHITE)

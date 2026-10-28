@@ -14,6 +14,11 @@ export interface Placement {
   readonly rotation: Direction
 }
 
+/** Ticks to wait in a known solution, while actors do their part. */
+export interface Wait {
+  readonly wait: number
+}
+
 /**
  * A level until packs arrive in M5. Fixed pieces are written in the text notation of
  * src/core/notation.ts, toolbox pieces as single tokens of it.
@@ -23,7 +28,7 @@ export interface LevelDefinition {
   readonly name: Readonly<Record<Locale, string>>
   readonly board: string
   readonly toolbox: readonly string[]
-  readonly solution: readonly Placement[]
+  readonly solution: readonly (Placement | Wait)[]
 }
 
 export const TUTORIAL: readonly LevelDefinition[] = [
@@ -190,6 +195,80 @@ export const TUTORIAL: readonly LevelDefinition[] = [
     toolbox: ['PO0b'],
     solution: [{ piece: 0, cell: 'B3', rotation: 2 }],
   },
+  {
+    id: 'handle-with-care',
+    name: { en: 'Handle with Care', de: 'Vorsicht, Sprengstoff' },
+    // The short way to the coin runs into the explosive.
+    board: `
+      .   .   T   .   Cr
+      .   .   .   .   .
+      L0r .   .   .   .
+    `,
+    toolbox: ['M0', 'M0'],
+    solution: [
+      { piece: 0, cell: 'B1', rotation: 3 },
+      { piece: 1, cell: 'B5', rotation: 7 },
+    ],
+  },
+  {
+    id: 'hungry-slime',
+    name: { en: 'Hungry Slime', de: 'Hungriger Schleim' },
+    // The slime eats the explosive in its way; only then may the beam pass there.
+    board: `
+      .   .   T   .   Cr
+      .   .   .   .   .
+      .   .   SL0 .   .
+      L0r .   .   .   .
+    `,
+    toolbox: ['M0'],
+    solution: [{ wait: 20 }, { piece: 0, cell: 'A1', rotation: 3 }],
+  },
+  {
+    id: 'fenced-in',
+    name: { en: 'Fenced In', de: 'Eingezäunt' },
+    // The beam along row C keeps the mine away from the explosive, and must go on doing so.
+    board: `
+      .   .   .   .   .
+      .   MI2 .   .   .
+      L2r .   .   .   .
+      .   .   .   .   .
+      T   .   .   .   Cr
+    `,
+    toolbox: ['M0'],
+    solution: [{ piece: 0, cell: 'C5', rotation: 5 }],
+  },
+  {
+    id: 'event-horizon',
+    name: { en: 'Event Horizon', de: 'Ereignishorizont' },
+    // Light falls into the black hole, so it lets the ship be. Take the beam to the coin, and the
+    // dark hole pulls the ship in.
+    board: `
+      .   .   SH2 .   .
+      L2r .   .   .   H
+      .   .   .   .   .
+      .   T   .   .   .
+      .   .   .   .   Cr
+    `,
+    toolbox: ['M0', 'M0'],
+    solution: [
+      { piece: 0, cell: 'B3', rotation: 5 },
+      { piece: 1, cell: 'E3', rotation: 1 },
+    ],
+  },
+  {
+    id: 'fuel-run',
+    name: { en: 'Fuel Run', de: 'Treibstoff' },
+    // Flying over the fuel cell, the ship takes it aboard and shoots the explosive; then the beam
+    // may pass.
+    board: `
+      Cr  T   .   .   .   SH6
+      .   .   .   .   FC  .
+      .   .   .   .   .   .
+      .   .   L0r .   .   .
+    `,
+    toolbox: ['M0'],
+    solution: [{ wait: 20 }, { piece: 0, cell: 'A3', rotation: 5 }],
+  },
 ]
 
 function toolboxPiece(token: string, level: LevelDefinition): Piece {
@@ -205,11 +284,13 @@ export function puzzleOf(level: LevelDefinition): Puzzle {
   )
 }
 
-/** The player commands that carry out the level's known solution. */
-export function solutionCommands(level: LevelDefinition): Command[] {
+/** The player commands that carry out the level's known solution, and the waits between them. */
+export function solutionSteps(level: LevelDefinition): (Command | Wait)[] {
   const puzzle = puzzleOf(level)
   const board = parseBoard(level.board)
-  return level.solution.flatMap(({ piece, cell, rotation }) => {
+  return level.solution.flatMap((step): (Command | Wait)[] => {
+    if ('wait' in step) return [step]
+    const { piece, cell, rotation } = step
     const item = puzzle.items.find(({ place }) => place.area === 'toolbox' && place.slot === piece)
     if (item === undefined) throw new RangeError(`${level.id} has no toolbox piece ${piece}`)
     const to = cellByName(board, cell)

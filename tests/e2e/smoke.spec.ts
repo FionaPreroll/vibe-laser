@@ -105,6 +105,25 @@ test('undoes and redoes a move with the buttons', async ({ page }) => {
   await expect(undo).toBeEnabled()
 })
 
+test('fails the level when an explosive goes off, until it starts again', async ({ page }) => {
+  await page.goto('./')
+  const level = page.locator('option', { hasText: 'Handle with Care' })
+  await page.getByLabel('Level').selectOption((await level.getAttribute('value')) ?? '')
+  // The mirror in A1, turned to send the beam east, lights the explosive in A3.
+  await page.locator('.board').focus()
+  await page.keyboard.press('Enter')
+  for (let step = 0; step < 2; step++) await page.keyboard.press('ArrowRight')
+  await page.keyboard.press('Enter')
+  for (let step = 0; step < 3; step++) await page.keyboard.press('e')
+
+  const dialog = page.getByRole('alertdialog', { name: 'Explosion' })
+  await expect(dialog).toBeVisible()
+  await expect(page.getByRole('button', { name: 'Undo' })).toBeDisabled()
+  await dialog.getByRole('button', { name: 'Start again' }).click()
+  await expect(dialog).toBeHidden()
+  await expect(page.getByRole('application', { name: /^Handle with Care:/ })).toBeVisible()
+})
+
 test('switches the interface to German and remembers it', async ({ page }) => {
   await page.goto('./')
   await page.getByLabel('Language').selectOption('de')

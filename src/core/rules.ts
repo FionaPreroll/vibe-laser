@@ -13,10 +13,13 @@ export interface Rules {
    * points; 'axis' passes beams in both directions along that line.
    */
   readonly polarizer: 'direction' | 'axis'
+  /** Whether slimes, mines and ships stop beams that run into them, or let them pass. */
+  readonly actorsBlockLight: boolean
 }
 
 export const DEFAULT_RULES: Rules = {
   coinAngles: 'sameColor',
   beamIntoLaser: 'absorb',
   polarizer: 'direction',
+  actorsBlockLight: true,
 }

@@ -1,11 +1,19 @@
+import { STABLE_TICKS } from '../game/session'
 import { t } from '../i18n'
 import type { BoardController } from '../view/controller'
 
-/** The button bar below the board, as in the original. */
+/** The button bar below the board, as in the original, with the stability bar above it. */
 export function Hud({ controller }: { readonly controller: BoardController }) {
   const { session } = controller
+  const { phase, stable } = session.state.value
   return (
     <div class="hud">
+      {phase === 'stabilizing' && (
+        <div class="stability">
+          <span>{t('stabilizing')}</span>
+          <progress max={STABLE_TICKS} value={stable} aria-label={t('stability')} />
+        </div>
+      )}
       <div class="hud-buttons" role="toolbar" aria-label={t('actions')}>
         <button type="button" onClick={() => session.restart()}>
           {t('restart')}

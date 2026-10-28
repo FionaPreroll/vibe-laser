@@ -1,12 +1,12 @@
 import { turn } from './direction'
 import {
   freeSlot,
-  type Item,
   isInside,
   itemAt,
   itemById,
   type Place,
   type Puzzle,
+  replaceItem,
   samePlace,
 } from './level'
 import { ROTATING_KINDS } from './parts'
@@ -51,7 +51,7 @@ function move(puzzle: Puzzle, id: number, to: Place): Applied | undefined {
   if (!item?.moveable || samePlace(item.place, to) || !isInside(puzzle, to)) return undefined
   if (itemAt(puzzle, to) !== undefined) return undefined
   return {
-    puzzle: replace(puzzle, { ...item, place: to }),
+    puzzle: replaceItem(puzzle, { ...item, place: to }),
     inverse: { kind: 'move', item: id, to: item.place },
   }
 }
@@ -62,15 +62,8 @@ function rotate(puzzle: Puzzle, id: number, steps: number): Applied | undefined 
   if (!Number.isInteger(steps) || steps % 8 === 0) return undefined
   const piece = { ...item.piece, rotation: turn(item.piece.rotation, steps) }
   return {
-    puzzle: replace(puzzle, { ...item, piece }),
+    puzzle: replaceItem(puzzle, { ...item, piece }),
     inverse: { kind: 'rotate', item: id, steps: -steps },
-  }
-}
-
-function replace(puzzle: Puzzle, changed: Item): Puzzle {
-  return {
-    ...puzzle,
-    items: puzzle.items.map((item) => (item.id === changed.id ? changed : item)),
   }
 }
 
