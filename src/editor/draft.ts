@@ -74,6 +74,8 @@ export function pieceAt(level: LevelFile, place: Place): PieceSpec | undefined {
  */
 export function putPiece(level: LevelFile, place: Place, piece: PieceSpec): LevelFile {
   const clean = tidy(piece)
+  const there = pieceAt(level, place)
+  if (there !== undefined && samePiece(there, clean)) return level
   if (place.area === 'toolbox') {
     const toolbox = [...level.toolbox]
     if (place.slot < toolbox.length) toolbox[place.slot] = clean

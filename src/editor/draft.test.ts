@@ -80,6 +80,7 @@ describe('level drafts', () => {
     draft = putPiece(draft, slot(0), { type: 'splitter' })
     expect(pieceAt(draft, slot(0))).toEqual({ type: 'splitter' })
     expect(pieceAt(draft, slot(2))).toBeUndefined()
+    expect(putPiece(draft, slot(0), { type: 'splitter' })).toBe(draft)
   })
 
   it('take pieces off, closing gaps in the toolbox', () => {

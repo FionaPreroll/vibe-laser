@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { createPuzzle, type Puzzle, replaceItem } from '../core/level'
+import { createPuzzle, type Item, type Puzzle, replaceItem } from '../core/level'
 import { parseBoard, parsePiece } from '../core/notation'
 import { createFlatArt } from './art/flat'
 import { CELL, placeCenter, sceneGeometry } from './layout'
@@ -90,6 +90,22 @@ describe('PieceLayer', () => {
     expect(layer.children).toHaveLength(4)
     layer.show(puzzle, new Set(), geometry)
     expect(layer.children).toHaveLength(5)
+  })
+
+  it('draws an id anew once it stands for another kind or color of piece', () => {
+    const layer = new PieceLayer(createFlatArt())
+    layer.show(puzzle, new Set(), geometry)
+    const coin = layer.children[3]
+    const recolored = replaceItem(puzzle, {
+      ...(puzzle.items[3] as Item),
+      piece: { kind: 'coin', rotation: 0, color: 2 },
+    })
+    layer.show(recolored, new Set(), geometry)
+    expect(layer.children).toHaveLength(5)
+    expect(layer.children).not.toContain(coin)
+    const turned = layer.children.at(-1)
+    layer.show(moved(recolored, 3, 0), new Set(), geometry)
+    expect(layer.children.at(-1)).toBe(turned)
   })
 
   it('makes a turned, see-through copy of a piece for dragging', () => {
