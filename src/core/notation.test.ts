@@ -40,8 +40,24 @@ describe('parseBoard', () => {
     ])
   })
 
+  it('reads hazards and actors, with the way each actor heads', () => {
+    const board = parseBoard('T FC H SL2 MI5 SH6')
+    expect(board.cells.map((piece) => piece && [piece.kind, piece.rotation])).toEqual([
+      ['explosive', 0],
+      ['fuelCell', 0],
+      ['blackHole', 0],
+      ['slime', 2],
+      ['mine', 5],
+      ['ship', 6],
+    ])
+  })
+
   it.each([
     ['', 'no rows'],
+    ['SL1', 'A1 "SL1" cannot head that way'],
+    ['SH0', 'A1 "SH0" cannot head that way'],
+    ['T2', 'A1 "T2" cannot rotate'],
+    ['MI', 'A1 "MI" needs a rotation from 0 to 7'],
     ['F2r', 'A1 "F2r" cannot rotate'],
     ['PO2', 'A1 "PO2" needs a color'],
     ['P3r', 'A1 "P3r" cannot have a color'],

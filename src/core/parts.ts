@@ -21,6 +21,9 @@ type Table = readonly [Exits, Exits, Exits, Exits, Exits, Exits, Exits, Exits]
 type Behavior = (travel: Direction, primary: Primary, piece: Piece, rules: Rules) => readonly Exit[]
 
 const pass: Behavior = (travel, primary) => [{ direction: travel, primary }]
+const stop: Behavior = () => []
+const actor: Behavior = (travel, primary, piece, rules) =>
+  rules.actorsBlockLight ? [] : pass(travel, primary, piece, rules)
 
 function fromTable(table: Table): Behavior {
   return (travel, primary) => table[travel].map((direction) => ({ direction, primary }))
@@ -87,9 +90,16 @@ const BEHAVIORS: Readonly<Record<PartKind, Behavior>> = {
   // Beams run through coins unchanged (spec). For anti-coins that is an assumption.
   coin: pass,
   antiCoin: pass,
+  // Light that reaches an explosive or a fuel cell ignites it and goes no further.
+  explosive: stop,
+  fuelCell: stop,
+  blackHole: stop,
+  slime: actor,
+  mine: actor,
+  ship: actor,
 }
 
-/** Kinds whose rotation changes how they act on beams. */
+/** Kinds with a rotation: it turns how a part acts on beams, or the way an actor heads. */
 export const ROTATING_KINDS: ReadonlySet<PartKind> = new Set<PartKind>([
   'laser',
   'mirror',
@@ -102,6 +112,9 @@ export const ROTATING_KINDS: ReadonlySet<PartKind> = new Set<PartKind>([
   'prism',
   'colorConverter',
   'polarizer',
+  'slime',
+  'mine',
+  'ship',
 ])
 
 /** Where a primary goes after entering a cell while traveling in `travel`; [] if the cell stops it. */

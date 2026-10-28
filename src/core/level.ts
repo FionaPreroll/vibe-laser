@@ -91,6 +91,27 @@ export function itemById(puzzle: Puzzle, id: number): Item | undefined {
   return puzzle.items.find((item) => item.id === id)
 }
 
+/** The item on a board cell, if any. */
+export function itemOnCell(puzzle: Puzzle, cell: number): Item | undefined {
+  return itemAt(puzzle, { area: 'board', cell })
+}
+
+/** The puzzle with `changed` in place of the item with its id. */
+export function replaceItem(puzzle: Puzzle, changed: Item): Puzzle {
+  return {
+    ...puzzle,
+    items: puzzle.items.map((item) => (item.id === changed.id ? changed : item)),
+  }
+}
+
+/** The puzzle without the items with these ids: eaten, shot or blown up. */
+export function removeItems(puzzle: Puzzle, ids: Iterable<number>): Puzzle {
+  const gone = new Set(ids)
+  return gone.size === 0
+    ? puzzle
+    : { ...puzzle, items: puzzle.items.filter((item) => !gone.has(item.id)) }
+}
+
 /** The first empty toolbox slot, or undefined when the toolbox is full. */
 export function freeSlot(puzzle: Puzzle): number | undefined {
   for (let slot = 0; slot < puzzle.toolboxSize; slot++) {

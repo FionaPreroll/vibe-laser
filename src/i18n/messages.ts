@@ -19,6 +19,11 @@ export const en = {
   lastLevel: 'Every coin is spinning. That was the last level for now.',
   nextLevel: 'Next level',
   playAgain: 'Play again',
+  stabilizing: 'System stable: every coin spins. Wait until the bar is full.',
+  stability: 'Stability',
+  failedTitle: 'Explosion',
+  failedText: 'An explosive went off, and undo cannot bring it back. Start the level again.',
+  startAgain: 'Start again',
 } as const satisfies Record<string, string>
 
 export type MessageKey = keyof typeof en
@@ -45,4 +50,10 @@ export const de: Record<MessageKey, string> = {
   lastLevel: 'Alle Münzen drehen sich. Das war fürs Erste das letzte Level.',
   nextLevel: 'Nächstes Level',
   playAgain: 'Noch einmal',
+  stabilizing: 'System stabil: Alle Münzen drehen sich. Warte, bis der Balken voll ist.',
+  stability: 'Stabilität',
+  failedTitle: 'Explosion',
+  failedText:
+    'Ein Sprengstoff ist explodiert, und Rückgängig hilft nicht mehr. Starte das Level neu.',
+  startAgain: 'Neu starten',
 }

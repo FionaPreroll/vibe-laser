@@ -9,6 +9,10 @@ All changes players can notice are listed here. The format follows [Keep a Chang
 - Five tutorial levels: guide red, green and blue laser beams onto coins of their color with mirrors, double mirrors and slit mirrors, and keep dark anti-coins out of the light. Every level is open from the start.
 - Eight new optical parts. Refractors bend beams by 45°, one-way pieces let light through in one direction only, splitters and threeways split a beam in two, prisms split white light into red, green and blue and merge them again, color converters change a beam's color, filters let only their own colors through, and polarizers also demand a direction.
 - Eight more tutorial levels, one for each new part, for 13 in all.
+- Explosives: light that reaches one, or a mine or a ship running into it, sets off a chain reaction that fails the level. Undo cannot help; start again.
+- Slimes, robot mines and spaceships move by themselves. Slimes eat explosives and unlit mirrors, mines bounce off beams and pieces, ships take fuel cells aboard and shoot explosives, and dark black holes pull ships in.
+- With mines or ships on the board, a solution must hold for five seconds while a bar fills.
+- Five more tutorial levels for the hazards and actors, for 18 in all.
 - Drag pieces from the toolbox onto the board. Click a piece to turn it left, right-click to turn it right.
 - Buttons below the board: Restart, Clean up, Undo, Redo, Rotate left and Rotate right.
 - Keyboard play: the arrow keys move a frame over the toolbox and the board, Enter picks a piece up and puts it down, Q and E rotate, Ctrl+Z and Ctrl+Y undo and redo.

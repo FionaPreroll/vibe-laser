@@ -13,6 +13,26 @@ const GLASS_EDGE = 0xbfeaff
 const SHADE = 0x3a4255
 // Trapezoid of one-way pieces and color converters: broad side south, narrow side north.
 const TRAPEZOID = [-20, 20, 20, 20, 9, -20, -9, -20]
+const TNT = 0xd9433b
+const TNT_EDGE = 0x8f1f1a
+const BAND = 0x2b1d16
+const FUSE = 0xc9b28a
+const SPARK = 0xffd166
+const FUEL = 0x6fdc6b
+const FUEL_EDGE = 0x2f7a32
+const HOLE_GLOW = 0x8b5cf6
+const HOLE_RIM = 0xb69cff
+const SLIME = 0x7ed957
+const SLIME_EDGE = 0x3f8f2a
+const EYE = 0xffffff
+const PUPIL = 0x0b0e14
+const MINE = 0x3b4152
+const MINE_EDGE = 0x5b6378
+const MINE_SPIKE = 0x8b93a7
+const MINE_LIGHT = 0xff4d4d
+const SHIP = 0xc7d2e8
+const SHIP_EDGE = 0x6b778f
+const COCKPIT = 0x59d6ff
 
 /** The first art pack: flat vector shapes drawn in code, shared by every piece of a kind. */
 export function createFlatArt(): ArtPack {
@@ -146,6 +166,54 @@ function draw(piece: Piece): GraphicsContext {
     case 'antiCoin':
       shape.circle(0, 0, 19).fill(PIECE_COLORS[0]).stroke({ width: 3, color: ANTI_EDGE })
       shape.circle(0, 0, 11).stroke({ width: 2, color: ANTI_EDGE })
+      break
+    case 'explosive':
+      // A bundle of red sticks with a band and a lit fuse. Packs may show barrels or crystals.
+      for (const x of [-15, -5, 5]) {
+        shape.roundRect(x, -14, 10, 32, 3).fill(TNT).stroke({ width: 1.5, color: TNT_EDGE })
+      }
+      shape.rect(-16, -1, 32, 6).fill(BAND)
+      shape.moveTo(0, -14).quadraticCurveTo(3, -22, 10, -23).stroke({ width: 2, color: FUSE })
+      shape.circle(10, -23, 3).fill(SPARK)
+      break
+    case 'fuelCell':
+      // A glowing capsule with a terminal on top and a bolt on its side.
+      shape.rect(-5, -22, 10, 6).fill(FUEL_EDGE)
+      shape.roundRect(-12, -17, 24, 36, 7).fill(FUEL).stroke({ width: 2, color: FUEL_EDGE })
+      shape.poly([3, -11, -5, 3, 0, 3, -3, 13, 6, -1, 1, -1]).fill(EYE)
+      break
+    case 'blackHole':
+      shape.circle(0, 0, 25).fill({ color: HOLE_GLOW, alpha: 0.22 })
+      shape.circle(0, 0, 19).fill({ color: HOLE_GLOW, alpha: 0.35 })
+      shape.circle(0, 0, 13).fill(PUPIL).stroke({ width: 2, color: HOLE_RIM })
+      break
+    case 'slime':
+      // A blob whose eyes look the way it heads, north in rotation 0.
+      shape.ellipse(0, 3, 21, 17).fill(SLIME).stroke({ width: 2, color: SLIME_EDGE })
+      shape.circle(-7, -6, 5).fill(EYE)
+      shape.circle(7, -6, 5).fill(EYE)
+      shape.circle(-7, -8, 2.5).fill(PUPIL)
+      shape.circle(7, -8, 2.5).fill(PUPIL)
+      break
+    case 'mine': {
+      // A spiked sphere with a red light, the same from every side.
+      for (let spike = 0; spike < 8; spike++) {
+        const angle = (spike * Math.PI) / 4
+        shape.moveTo(Math.sin(angle) * 12, -Math.cos(angle) * 12)
+        shape.lineTo(Math.sin(angle) * 23, -Math.cos(angle) * 23)
+      }
+      shape.stroke({ width: 4, color: MINE_SPIKE })
+      shape.circle(0, 0, 15).fill(MINE).stroke({ width: 2, color: MINE_EDGE })
+      shape.circle(0, 0, 5).fill(MINE_LIGHT)
+      break
+    }
+    case 'ship':
+      // Its nose points the way it flies, north in rotation 0.
+      shape
+        .poly([0, -24, 11, 6, 21, 18, 0, 11, -21, 18, -11, 6])
+        .fill(SHIP)
+        .stroke({ width: 2, color: SHIP_EDGE })
+      shape.circle(0, -5, 5).fill(COCKPIT)
       break
     default: {
       const missing: never = piece.kind

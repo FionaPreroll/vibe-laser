@@ -8,6 +8,8 @@ Play it at https://fionapreroll.github.io/vibe-laser/.
 
 - Drag pieces from the toolbox on the left onto the board. Click a piece to turn it left, right-click to turn it right.
 - A level is solved when every coin spins: each colored coin needs light of exactly its color, and dark anti-coins must stay out of the light.
+- Keep light away from explosives. One that goes off sets off its neighbours too, and the level is lost; only starting again helps.
+- Slimes, robot mines and spaceships move by themselves. With mines or ships on the board, a solution must hold for five seconds while a bar fills.
 - The buttons below the board restart the level, clean up (unlit pieces go back into the toolbox), undo, redo, and rotate the selected piece.
 - Keyboard: focus the board with Tab. The arrow keys move a frame over the toolbox and the board, Enter picks a piece up and puts it down, Escape cancels, Q and E rotate, Ctrl+Z undoes and Ctrl+Y or Ctrl+Shift+Z redoes.
 
@@ -31,6 +33,17 @@ The abbreviations are those of the board notation (see [Beam model](#beam-model)
 | Polarizer       | `PO`         | A filter that also lets light through only in the direction its marker points.                                                                |
 | Coin            | `C`          | Spins when the light on its line has exactly its color.                                                                                       |
 | Anti-coin       | `A`          | Spins as long as no light touches it.                                                                                                         |
+
+Hazards and actors stop beams. Actors also have a heading, written as a digit after the abbreviation, so `SL0` is a slime heading north.
+
+| Part       | Abbreviation | What it does                                                                                                                                                |
+| ---------- | ------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Explosive  | `T`          | Explodes when light, a mine or a ship reaches it, and destroys everything on its eight neighbours. Explosives among them go off as well.                    |
+| Fuel cell  | `FC`         | Explodes like an explosive. A ship flying over it takes it aboard and can fire once.                                                                        |
+| Black hole | `H`          | Swallows light. While no light falls into it, it pulls in ships in line with it and destroys them.                                                          |
+| Slime      | `SL`         | Walks ahead and turns right where something is in its way. It eats the first explosive, or the first plain mirror without light, that it runs into.         |
+| Robot mine | `MI`         | Jumps around in all eight directions and bounces off beams, pieces and the edge. Running into an explosive sets it off.                                     |
+| Spaceship  | `SH`         | Flies east or west and drops a row when something is in its way. With a fuel cell aboard, it shoots the next explosive ahead; running into one sets it off. |
 
 ## Getting started
 
@@ -93,7 +106,7 @@ Unit tests sit next to the code as `*.test.ts`.
 - `trace()` in `src/core/trace.ts` follows each primary color from each laser and records the light on every half-segment, the line from a cell's center toward one of its eight neighbours. Parts act on each primary on its own, so mixed light needs no second pass.
 - Each part is described once, in rotation 0, in `src/core/parts.ts`: as a table of exits for each direction of travel, or as a small function where the color matters. Other rotations turn the beam into the part's frame and turn its exits back.
 - Tests and levels write boards in a text notation (`src/core/notation.ts`): an abbreviation, then the rotation for parts that rotate, then the color letters. `L2r . M5 Fg PO2b` is a red laser firing east, an empty cell, a mirror in rotation 5, a green filter and a blue polarizer pointing east.
-- Rules the spec leaves open are flags in `src/core/rules.ts`. `coinAngles` is decided; `beamIntoLaser: absorb` and `polarizer: direction` are assumptions until they are checked against the original.
+- Rules the spec leaves open are flags in `src/core/rules.ts`. `coinAngles` is decided; `beamIntoLaser: absorb`, `polarizer: direction` and `actorsBlockLight: true` are assumptions until they are checked against the original.
 
 Property tests (`src/core/properties.test.ts`, with fast-check) check the model on random boards: tracing ends within its bound, the light of all lasers is the sum of each laser alone, turning a board turns its light, and mirroring a board mirrors its light. The mirror test leaves out prisms, which bend light one way round; a mirrored refractor is the same refractor turned by 45°.
 
@@ -102,8 +115,12 @@ Property tests (`src/core/properties.test.ts`, with fast-check) check the model 
 - `GameSession` in `src/game/session.ts` is the only writer of game state. Views and buttons send it commands (`move`, `rotate`, or a `batch` of them, as Cleanup does) from `src/core/commands.ts`.
 - Every command stores its inverse. Undo applies that inverse to the current puzzle instead of restoring a snapshot, so that later the work of slimes, mines and ships survives undo, as the spec demands.
 - Once every coin spins, the session locks the level; only Restart and the next level remain.
+- Time runs in fixed ticks of 100 ms. The view feeds the session elapsed time with `advance()`; tests call `tick()`. On each tick the actors in `src/core/actors/` take their steps in id order, slimes every 8 ticks, mines and ships every 4. Mines bounce at random, from a generator seeded per session, so a level plays the same way for the same moves.
+- The phases are `playing`, `stabilizing`, `exploding`, `failed` and `solved`. With mines or ships about, every coin spinning first means `stabilizing`, and the level counts as solved once that has held for 50 ticks. A lit explosive means `exploding`: the chain from `src/core/explosions.ts` spreads one ring per tick, then the level has `failed`.
+- Undo takes back only player moves. Whatever actors and explosions did stays, and an undo entry whose piece is gone or whose cell is taken is dropped.
+- The session reports what happens as events, such as `ignited`, `ate` or `fired`, for the view's effects.
 - `BoardController` in `src/view/controller.ts` holds what only the interface needs: the selected piece, the keyboard focus and a piece lifted with the keyboard.
-- Each tutorial level in `src/content/levels.ts` carries one known solution; a test plays every solution and expects the level to be solved.
+- Each tutorial level in `src/content/levels.ts` carries one known solution, with waits where actors must do their part first. Tests play every solution under several seeds and expect the level to be solved, and check that no level explodes or solves itself during a minute without moves.
 
 ## Game rules decided so far
 
@@ -127,6 +144,13 @@ Property tests (`src/core/properties.test.ts`, with fast-check) check the model 
 - Cleanup returns unlit moveable pieces to the first free toolbox slots, in reading order; pieces that find no free slot stay on the board.
 - The toolbox has two slots per board row.
 - A dragged piece stays where it was until it is dropped, so carrying it around never changes the beams.
+- An explosion destroys everything on the eight cells around it except black holes.
+- Slimes, mines and ships stop beams that run into them (`actorsBlockLight: true`). Actors may not step onto a lit cell, and not diagonally across a beam through the shared corner.
+- A slime heads north unless it starts another way, and tries ahead, then right, then back, then left. It eats the first food it runs into and is then gone with it; that is how this game reads "a nearer unlit mirror is eaten instead". It remembers its steps since the board last changed and avoids repeating one, which keeps it from circling.
+- A robot mine keeps its heading while the way is open and otherwise jumps in a random open direction. It treats fuel cells as obstacles.
+- A ship takes a fuel cell aboard when it is right above it, and fires at the next explosive or fuel cell ahead in its row, through other pieces. Black holes pull ships along rows and columns only.
+- Slimes take 0.8 s per cell, mines and ships 0.4 s. Actors start moving as the level opens.
+- Only mines and ships call for the five seconds of stability, as the spec says; slimes do not. Once a level is solved, mines stay where they are instead of vanishing, so the beams stay as they were.
 
 ## CI and deployment
 

@@ -1,3 +1,4 @@
+import { HEADINGS } from './actors/kinds'
 import { type Board, emptyBoard, type PartKind, type Piece } from './board'
 import { colorLetters, parseColor } from './color'
 import type { Direction } from './direction'
@@ -27,6 +28,12 @@ const ABBREVIATIONS: Record<PartKind, string> = {
   polarizer: 'PO',
   coin: 'C',
   antiCoin: 'A',
+  explosive: 'T',
+  fuelCell: 'FC',
+  blackHole: 'H',
+  slime: 'SL',
+  mine: 'MI',
+  ship: 'SH',
 }
 const KINDS = new Map(
   Object.entries(ABBREVIATIONS).map(([kind, abbreviation]) => [abbreviation, kind as PartKind]),
@@ -78,7 +85,11 @@ export function parsePiece(token: string, where = `"${token}"`): Piece | undefin
   if (colored !== (color !== 0)) {
     throw new SyntaxError(colored ? `${where} needs a color` : `${where} cannot have a color`)
   }
-  return { kind, rotation: rotates ? (Number(digit) as Direction) : 0, color }
+  const rotation = rotates ? (Number(digit) as Direction) : 0
+  if (HEADINGS[kind]?.includes(rotation) === false) {
+    throw new SyntaxError(`${where} cannot head that way`)
+  }
+  return { kind, rotation, color }
 }
 
 /** The text form of a board, columns aligned; parseBoard reads it back. */

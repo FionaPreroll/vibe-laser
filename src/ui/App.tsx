@@ -4,6 +4,7 @@ import { GameSession } from '../game/session'
 import { locale, t } from '../i18n'
 import { BoardController } from '../view/controller'
 import { BoardCanvas } from './BoardCanvas'
+import { FailedDialog } from './FailedDialog'
 import { Hud } from './Hud'
 import { LanguageSwitch } from './LanguageSwitch'
 import { LevelPicker } from './LevelPicker'
@@ -23,6 +24,10 @@ export function App() {
   const { puzzle, phase } = session.state.value
   const name = level.name[locale.value]
   const hasNext = index + 1 < TUTORIAL.length
+  const restart = () => {
+    controller.select(undefined)
+    session.restart()
+  }
 
   return (
     <div class="shell">
@@ -45,14 +50,9 @@ export function App() {
       </main>
       <Hud controller={controller} />
       {phase === 'solved' && (
-        <SolvedDialog
-          onNext={hasNext ? () => setIndex(index + 1) : undefined}
-          onReplay={() => {
-            controller.select(undefined)
-            session.restart()
-          }}
-        />
+        <SolvedDialog onNext={hasNext ? () => setIndex(index + 1) : undefined} onReplay={restart} />
       )}
+      {phase === 'failed' && <FailedDialog onRestart={restart} />}
     </div>
   )
 }

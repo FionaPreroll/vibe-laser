@@ -35,3 +35,11 @@ export const BOARD_COLORS = {
   blocked: 0xff5566,
   selection: 0xffffff,
 } as const
+
+/** Rings and lines for what actors do. */
+export const EFFECT_COLORS = {
+  ate: 0x7ed957,
+  collected: 0x6fdc6b,
+  swallowed: 0xb69cff,
+  fired: 0x59d6ff,
+} as const

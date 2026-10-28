@@ -10,10 +10,12 @@ import {
 } from 'pixi.js'
 import { columnName, rowName } from '../core/grid'
 import { type Item, itemAt, itemById, type Place } from '../core/level'
+import { type GameEvent, type Phase, STABLE_TICKS } from '../game/session'
 import { createFlatArt } from './art/flat'
 import type { ArtPack } from './art/types'
 import { BeamLayer } from './beams'
 import type { BoardController } from './controller'
+import { EffectLayer } from './effects'
 import {
   CELL,
   fitScene,
@@ -24,11 +26,18 @@ import {
   type SceneGeometry,
   TOOLBOX_COLUMNS,
 } from './layout'
-import { BOARD_COLORS } from './palette'
+import { BOARD_COLORS, EFFECT_COLORS } from './palette'
 import { PieceLayer } from './pieces'
 
 /** Pointer travel in screen pixels before a press turns into a drag. */
 const DRAG_THRESHOLD = 6
+/** The frame around the board tells the phase: stable, blown up or solved. */
+const FRAME_COLORS: Partial<Record<Phase, number>> = {
+  stabilizing: BOARD_COLORS.target,
+  exploding: BOARD_COLORS.blocked,
+  failed: BOARD_COLORS.blocked,
+  solved: BOARD_COLORS.focus,
+}
 const BOARD_KEYS = new Set([
   'ArrowLeft',
   'ArrowRight',
@@ -79,10 +88,24 @@ export async function mountBoard(
   const scene = new Container()
   const beams = new BeamLayer()
   const pieces = new PieceLayer(art)
+  const effects = new EffectLayer()
   const overlay = new Graphics()
   const carried = new Container()
-  scene.addChild(drawBackground(geometry, art), beams, pieces, overlay, carried)
+  scene.addChild(drawBackground(geometry, art), beams, pieces, effects, overlay, carried)
   app.stage.addChild(scene)
+
+  const cellCenter = (cell: number) => placeCenter(geometry, { area: 'board', cell })
+  const play = (event: GameEvent) => {
+    if (event.kind === 'ignited') {
+      for (const cell of event.cells) effects.blast(cellCenter(cell))
+    } else if (event.kind === 'fired') {
+      effects.shot(cellCenter(event.from), cellCenter(event.at))
+      effects.ring(cellCenter(event.at), EFFECT_COLORS.fired)
+    } else if (event.kind === 'ate' || event.kind === 'collected' || event.kind === 'swallowed') {
+      effects.ring(cellCenter(event.cell), EFFECT_COLORS[event.kind])
+    }
+  }
+  const stopEffects = session.onEvents((events) => events.forEach(play))
 
   const hasFocus = signal(document.activeElement === host)
   let press: Press | undefined
@@ -111,13 +134,14 @@ export async function mountBoard(
   }
 
   const render = () => {
-    const { puzzle, light, spinning, phase } = session.state.value
+    const { puzzle, light, spinning, phase, stable } = session.state.value
     const lifted = controller.lifted.value
     pieces.show(puzzle, spinning, geometry, press?.dragging ? press.id : lifted)
     beams.show(light, geometry)
 
     overlay.clear()
-    if (phase === 'solved') {
+    const frame = FRAME_COLORS[phase]
+    if (frame !== undefined) {
       overlay
         .roundRect(
           geometry.boardLeft - 6,
@@ -126,7 +150,11 @@ export async function mountBoard(
           geometry.rows * CELL + 12,
           12,
         )
-        .stroke({ width: 4, color: BOARD_COLORS.focus, alpha: 0.8 })
+        .stroke({
+          width: 4,
+          color: frame,
+          alpha: phase === 'stabilizing' ? 0.3 + (0.5 * stable) / STABLE_TICKS : 0.8,
+        })
     }
     const selected = controller.selected.value
     const selectedItem = selected === undefined ? undefined : itemById(puzzle, selected)
@@ -155,7 +183,7 @@ export async function mountBoard(
   const cursorAt = (point: Point): string => {
     const place = placeAt(geometry, point)
     const item = place && itemAt(session.state.value.puzzle, place)
-    if (item === undefined || session.state.value.phase !== 'playing') return 'default'
+    if (item === undefined || !session.canPlay.value) return 'default'
     if (item.moveable) return 'grab'
     return item.rotateable ? 'pointer' : 'default'
   }
@@ -187,8 +215,7 @@ export async function mountBoard(
     const item = press.id === undefined ? undefined : itemById(session.state.value.puzzle, press.id)
     if (!press.dragging) {
       const travel = Math.hypot(event.global.x - press.x, event.global.y - press.y)
-      if (travel < DRAG_THRESHOLD || !item?.moveable || session.state.value.phase !== 'playing')
-        return
+      if (travel < DRAG_THRESHOLD || !item?.moveable || !session.canPlay.value) return
       press.dragging = true
       scene.cursor = 'grabbing'
     }
@@ -253,10 +280,15 @@ export async function mountBoard(
   fitToHost()
   app.renderer.on('resize', fitToHost)
   const stopRendering = effect(render)
-  app.ticker.add(() => pieces.animate(performance.now() / 1000))
+  app.ticker.add((ticker) => {
+    session.advance(ticker.deltaMS)
+    pieces.animate(performance.now() / 1000, ticker.deltaMS / 1000)
+    effects.animate(ticker.deltaMS / 1000)
+  })
 
   return {
     destroy() {
+      stopEffects()
       stopRendering()
       window.removeEventListener('keydown', onKey)
       host.removeEventListener('focus', onFocus)
