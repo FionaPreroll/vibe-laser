@@ -16,6 +16,7 @@ Play it at https://fionapreroll.github.io/vibe-laser/.
 - The buttons below the board lead back to the level selection, restart the level, clean up (unlit pieces go back into the toolbox), undo, redo, rotate the selected piece and open the help.
 - Each player can have a profile of their own, with their own progress and settings: the volume of sound effects and music, and less motion on the board. Profiles can be exported as a file and imported in another browser.
 - Keyboard: focus the board with Tab. The arrow keys move a frame over the toolbox and the board, Enter picks a piece up and puts it down, Escape cancels, Q and E rotate, Ctrl+Z undoes and Ctrl+Y or Ctrl+Shift+Z redoes.
+- The level editor in the header makes levels of your own, in packs that appear in the pack list next to the built-in ones (see [Level editor](#level-editor)).
 
 ## Parts
 
@@ -87,26 +88,26 @@ TypeScript 7, PixiJS 8 for the board, Preact with Signals for the interface arou
 src/
   core/         game rules in pure TypeScript: no DOM, PixiJS or Preact
   game/         the game session: current state, undo and redo, solved or not
-  content/      level and pack files: their schema, the loader, puzzles from levels
-  persistence/  profiles with progress and settings, saved in IndexedDB
+  content/      level and pack files: their schema, the loader, solutions
+  editor/       the level editor's logic: palette, level edits, history, controller
+  persistence/  profiles and the player's own packs, saved in IndexedDB
   audio/        sound effects and music, synthesized with Web Audio
   i18n/         English and German texts, t() and the language setting
-  view/         PixiJS scene, art packs, pointer and keyboard input
+  view/         PixiJS scene, art packs, pointer and keyboard input for game and editor
   ui/           Preact screens, header, button bar and dialogs around the canvas
   main.tsx      entry point
 packs/          the level packs, one folder each
+tools/          the dev server's endpoint that writes built-in packs
 tests/e2e/      Playwright browser tests
 public/         static files, copied as they are
 ```
-
-A later milestone adds `editor/`.
 
 Two rules keep the layers apart:
 
 - `src/core` imports nothing from outside `src/core`. Its own `tsconfig.core.json` has no DOM types, and Biome blocks imports of PixiJS, Preact and other `src/` folders there.
 - Every text players see goes through `t()` from `src/i18n`, in English and German. The German catalog is typed against the English one, so a missing text fails the type check.
 
-Unit tests sit next to the code as `*.test.ts`, component tests as `*.test.tsx`. Tests that need a DOM say so in their first line (`// @vitest-environment happy-dom`) and render Preact components with Preact Testing Library. PixiJS's scene graph works without a renderer, so the view layers are tested directly, and `mountBoard` runs against a stand-in `Application` that receives pointer and keyboard events. Only WebGL drawing itself is left to the Playwright tests.
+Unit tests sit next to the code as `*.test.ts`, component tests as `*.test.tsx`. Tests that need a DOM say so in their first line (`// @vitest-environment happy-dom`) and render Preact components with Preact Testing Library. PixiJS's scene graph works without a renderer, so the view layers are tested directly, and `mountBoard` and `mountEditorBoard` run against a stand-in `Application` that receives pointer and keyboard events. Only WebGL drawing itself is left to the Playwright tests.
 
 ## Beam model
 
@@ -129,7 +130,7 @@ Property tests (`src/core/properties.test.ts`, with fast-check) check the model 
 - Undo takes back only player moves. Whatever actors and explosions did stays, and an undo entry whose piece is gone or whose cell is taken is dropped.
 - The session reports what happens as events, such as `ignited`, `ate` or `fired`, for the view's effects.
 - `BoardController` in `src/view/controller.ts` holds what only the interface needs: the selected piece, the keyboard focus and a piece lifted with the keyboard.
-- Every level file carries one known solution, with waits where actors must do their part first. Tests in `src/content/packs.test.ts` play every solution under several seeds and expect the level to be solved, and check that no level explodes or solves itself during a minute without moves.
+- Every level file carries one known solution, with waits where actors must do their part first. `playSolution` and `replaySolution` in `src/content/solution.ts` play it; tests in `src/content/packs.test.ts` play every solution under eight seeds and expect the level to be solved, and check that no level explodes or solves itself during a minute without moves.
 
 ## Level packs
 
@@ -150,7 +151,7 @@ packs/
 - `pack.json` gives the title and description in English and German, the `position` in the list of packs, the skill names, and optionally `rules`: rule flags from `src/core/rules.ts` for every level of the pack.
 - A level file gives its `name` in English and German, its `size` as columns and rows (up to 32 × 26), the `objects` on the board, the `toolbox`, optionally its own `rules`, and the known `solution`. An optional `note` tells other authors what the level is about.
 - Objects name their cell as in the original, row letter and column number (`B6`), their `type` (`laser`, `mirror`, `blackHole` and so on), their rotation `rot` from 0 to 7 and their color `rgb` as the letters of the switched-on colors, so `"rb"` is magenta. Pieces on the board are fixed and toolbox pieces free; `moveable` and `rotateable` change that. A toolbox entry can repeat itself with `count`.
-- A solution step puts toolbox piece `piece` (counted from 0) on cell `pos` in rotation `rot`; `{ "wait": 10 }` lets ten ticks pass first.
+- A solution step puts toolbox piece `piece` (counted from 0) on cell `pos` in rotation `rot`. A piece that starts on the board is named by its cell instead: `{ "from": "C3", "pos": "B6", "rot": 7 }` moves or turns it, `{ "from": "C3", "stow": true }` puts it into the toolbox. `{ "wait": 10 }` lets ten ticks pass. Steps say where a piece ends up, so the same piece may appear twice.
 
 ```json
 {
@@ -173,13 +174,29 @@ The build bundles every `pack.json`, and each level file becomes a small file of
 
 ## Screens and saves
 
-- The address after `#` names the screen, so the browser's back button and bookmarks work: `#/` lists the packs, `#/packs/tutorial` the skills of a pack, `#/packs/tutorial/2` the levels of a skill, `#/play/tutorial/2/5` opens a level, and `#/profiles` and `#/about` the profiles and the version with the changelog.
+- The address after `#` names the screen, so the browser's back button and bookmarks work: `#/` lists the packs, `#/packs/tutorial` the skills of a pack, `#/packs/tutorial/2` the levels of a skill, `#/play/tutorial/2/5` opens a level, and `#/profiles` and `#/about` the profiles and the version with the changelog. The editor lives at `#/editor`, a pack in it at `#/editor/<pack>` and a slot at `#/editor/<pack>/2/5`.
 - Help and the settings open over the game and stop its clock while they are open.
 - `ProfileBook` in `src/persistence/profiles.ts` keeps all profiles in one record in IndexedDB (database `vibe-laser`, store `saves`), through idb-keyval. The record carries a version, and `migrate()` is where later formats will convert older saves; a record it cannot read starts afresh. Changes are saved one after another, so the last one always wins.
 - A profile holds a name, the ids of its solved levels and its settings. Reduced motion starts on when the system asks for less motion. After the first solved level the game asks the browser to keep its storage (`navigator.storage.persist()`).
 - An exported profile is a JSON file (`"format": "vibe-laser-profile"`). An imported one gets a new id, and a number after its name when the name is taken.
 - Where the browser blocks IndexedDB, as some private windows do, progress lasts until the page closes, and the game says so.
 - The language is a setting of the browser, not of a profile, and stays in `localStorage`.
+- `PackShelf` in `src/persistence/packs.ts` keeps the player's own packs in the same store, as one versioned record of pack settings and levels by slot. The library in `src/content/packs.ts` lists them after the built-in packs, so they play like any other.
+
+## Level editor
+
+The editor is a mode of the game: the same board with different input. Its logic is in `src/editor/` without any drawing, its board in `src/view/editorBoard.ts`, and its screens in `src/ui/editor/`, which load only when a player opens the editor.
+
+- **Packs.** The editor starts with the player's own packs: a new pack, an imported `.vlpack.json` file, or one made before. A pack has one to four skills with 30 slots each, and its settings: titles, descriptions, skill names and whether players choose a skill first. A pack exports as one `.vlpack.json` file with every level inside (`"format": "vibe-laser-pack"`).
+- **Board.** A click uses the tool: Select, Paint, Clone or Eraser. Select drags pieces, also between board and toolbox; Paint and Eraser paint along a drag, which undoes as one step; Clone picks up a piece to paint copies of it. A right click turns a piece. Each part has a key, as `H` for a black hole in the original: it puts the part where the pointer or the keyboard frame is, Q and E turn, Delete removes, Ctrl+Z and Ctrl+Y undo and redo.
+- **Panels.** The selected piece's colors, direction or heading, and whether players may move and turn it; the level's names, note and size; its problems; and its solution.
+- **Problems** show live, in the player's language, and keep a level from being saved: a missing name or coin, a color missing, light on an explosive or every coin spinning before the first move, or a solution that no longer works. A problem with a place selects it.
+- **Test** plays the level as players will. Solved, its moves can become the level's solution: where the player left each piece, in the order of the last moves, with waits where actors make timing matter, and without the steps the level did not need. The editor then replays the solution with every random seed the golden tests use.
+- **Slots.** Copy, Paste, Swap with the copied level, Clear and Delete work as in the original's level actions; Export and Import read and write single level files. Unsaved changes survive leaving the editor while the page stays open, and closing the page asks first.
+
+### Built-in levels
+
+While `pnpm dev` runs, the editor also lists the built-in packs. Saving one of their levels sends it to an endpoint of the dev server (`tools/packFiles.ts`), which checks the level with the game's own schema and writes it to `packs/<pack>/levels/skill<n>/level_<nnn>.json`, formatted by Biome, so a level saved unchanged stays byte for byte the same. The endpoint only answers the page it serves, and only writes into packs that exist. Production builds have no such endpoint. The game's own levels are made this way and committed with git; the golden tests then demand a solution for each.
 
 ## Sound
 

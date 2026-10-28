@@ -97,8 +97,9 @@ export function PackEditor({ pack: id, shelf }: Props) {
             onClick={() => {
               if (!confirm(t('confirmDeletePack', { name: source.file.title[locale.value] })))
                 return
-              void shelf.remove(source.id)
+              // Away first, so this screen never shows the pack gone.
               navigate({ name: 'editor' })
+              void shelf.remove(source.id)
             }}
           >
             {t('deletePack')}
