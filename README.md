@@ -17,6 +17,7 @@ Play it at https://fionapreroll.github.io/vibe-laser/.
 - Each player can have a profile of their own, with their own progress and settings: the volume of sound effects and music, and less motion on the board. Profiles can be exported as a file and imported in another browser.
 - Keyboard: focus the board with Tab. The arrow keys move a frame over the toolbox and the board, Enter picks a piece up and puts it down, Escape cancels, Q and E rotate, Ctrl+Z undoes and Ctrl+Y or Ctrl+Shift+Z redoes.
 - The level editor in the header makes levels of your own, in packs that appear in the pack list next to the built-in ones (see [Level editor](#level-editor)).
+- Once it has loaded, the game also plays offline, and browsers can install it as an app. When a new version is out, a notice below the header offers to reload into it.
 
 ## Parts
 
@@ -75,6 +76,7 @@ pnpm dev
 | `pnpm test:coverage`           | Unit tests with a coverage report in `coverage/`                                      |
 | `pnpm test:e2e`                | Builds, then runs the Playwright browser tests                                        |
 | `pnpm schemas`                 | Writes `packs/*.schema.json` again from the level and pack schemas                    |
+| `pnpm icons`                   | Renders the app icons in `public/icons/` from `public/favicon.svg` with Chromium      |
 
 Playwright needs a Chromium: run `pnpm exec playwright install chromium` once, or set `CHROMIUM_PATH` to an installed Chromium binary.
 
@@ -97,7 +99,7 @@ src/
   ui/           Preact screens, header, button bar and dialogs around the canvas
   main.tsx      entry point
 packs/          the level packs, one folder each
-tools/          the dev server's endpoint that writes built-in packs
+tools/          Vite plugins for the service worker and for writing built-in packs, the icon renderer
 tests/e2e/      Playwright browser tests
 public/         static files, copied as they are
 ```
@@ -201,6 +203,13 @@ While `pnpm dev` runs, the editor also lists the built-in packs. Saving one of t
 ## Sound
 
 There are no sound files: `src/audio/synth.ts` synthesizes every effect and the music with the Web Audio API. `listen()` in `src/audio/director.ts` turns what happens in a game session into sounds: placing and turning pieces, coins starting to spin, blasts, shots, slimes eating, and the end of a level. The music is a slow, generated pentatonic melody. Browsers allow sound only after the first click or key press, so it starts then; the volumes come from the active profile.
+
+## Offline and installing
+
+- `public/manifest.webmanifest` gives the game's name, colors and icons, so browsers can install it as an app. `pnpm icons` renders the icons in `public/icons/` from `public/favicon.svg`; the maskable one keeps its picture in the middle 80 %, which launchers show whatever shape they cut.
+- Production builds get a service worker from `tools/serviceWorker.ts`. Once the build is written, the plugin lists every file in `dist/` and writes `dist/sw.js` with that list and a version made from the files' contents. The worker keeps every file in a cache named after its scope and version, serves requests in its scope from there and answers page loads with `index.html`. So once the game has loaded, it starts and plays offline, every level included.
+- A new version installs in the background and then waits. `src/ui/updates.ts` shows a notice, and only when the player chooses to reload does the new version take over and remove the old version's cache. While the page stays open, it looks for a new version every hour.
+- The worker leaves requests outside its scope alone and removes only its own older caches, so other sites on the same origin, such as other projects on github.io, are not touched. The dev server has no service worker.
 
 ## Game rules decided so far
 
