@@ -53,22 +53,26 @@ async function mount(id = 'tutorial/1/1') {
   const view = await mountBoard(host, controller)
   const app = fakes.apps.at(-1)
   const scene = app?.stage.children[0] as Container
-  const layout = JSON.parse(host.dataset.layout ?? '{}') as { scale: number; x: number; y: number }
-  /** A pointer event over a place on the board or in the toolbox, nudged by some pixels. */
-  const at = (place: Place, button = 0, nudge = 0) => {
+  const layout = () =>
+    JSON.parse(host.dataset.layout ?? '{}') as { scale: number; x: number; y: number }
+  /** Where a place is on the screen, nudged to the right by some pixels. */
+  const screenAt = (place: Place, nudge = 0) => {
+    const { scale, x, y } = layout()
     const center = placeCenter(controller.geometry, place)
-    const global = new Point(
-      layout.x + center.x * layout.scale + nudge,
-      layout.y + center.y * layout.scale,
-    )
-    return { global, button } as unknown as FederatedPointerEvent
+    return new Point(x + center.x * scale + nudge, y + center.y * scale)
   }
+  /** A pointer event over a place on the board or in the toolbox, nudged by some pixels. */
+  const at = (place: Place, button = 0, nudge = 0) =>
+    ({ global: screenAt(place, nudge), button }) as unknown as FederatedPointerEvent
+  /** A finger on the screen, by its pointer id. */
+  const finger = (id: number, global: Point) =>
+    ({ global, button: 0, pointerType: 'touch', pointerId: id }) as unknown as FederatedPointerEvent
   const key = (key: string, init: KeyboardEventInit = {}) =>
     window.dispatchEvent(new KeyboardEvent('keydown', { key, cancelable: true, ...init }))
   const tick = (deltaMS: number) => {
     for (const callback of app?.ticker.callbacks ?? []) callback({ deltaMS })
   }
-  return { controller, host, view, scene, at, key, tick, app }
+  return { controller, host, view, scene, at, screenAt, finger, layout, key, tick, app }
 }
 
 const SLOT: Place = { area: 'toolbox', slot: 0 }
@@ -138,6 +142,77 @@ describe('mountBoard', () => {
     expect(scene.cursor).toBe('grab')
     scene.emit('globalpointermove', at(B1))
     expect(scene.cursor).toBe('default')
+  })
+
+  it('selects with a tap, moves to a tapped free cell, and turns with a second tap', async () => {
+    const { controller, scene, screenAt, finger } = await mount()
+    const tap = (place: Place) => {
+      scene.emit('pointerdown', finger(1, screenAt(place)))
+      scene.emit('pointerup', finger(1, screenAt(place)))
+    }
+    tap(SLOT)
+    expect(controller.selected.value).toBe(MIRROR)
+    expect(itemById(controller.session.state.value.puzzle, MIRROR)?.piece.rotation).toBe(0)
+    tap(B6)
+    expect(itemById(controller.session.state.value.puzzle, MIRROR)?.place).toEqual(B6)
+    tap(B6)
+    expect(controller.session.state.value.phase).toBe('solved')
+  })
+
+  it('lets a finger wobble more than a mouse before it drags', async () => {
+    const { controller, scene, screenAt, finger } = await mount()
+    scene.emit('pointerdown', finger(1, screenAt(SLOT)))
+    scene.emit('globalpointermove', finger(1, screenAt(SLOT, 8)))
+    scene.emit('pointerup', finger(1, screenAt(SLOT, 8)))
+    expect(controller.selected.value).toBe(MIRROR)
+    controller.select(undefined)
+    scene.emit('pointerdown', finger(1, screenAt(SLOT)))
+    scene.emit('globalpointermove', finger(1, screenAt(SLOT, 20)))
+    scene.emit('globalpointermove', finger(1, screenAt(B6)))
+    scene.emit('pointerup', finger(1, screenAt(B6)))
+    expect(itemById(controller.session.state.value.puzzle, MIRROR)?.place).toEqual(B6)
+    expect(controller.selected.value).toBe(MIRROR)
+  })
+
+  it('zooms with two fingers, and pans a zoomed board with one', async () => {
+    const { controller, scene, screenAt, finger, layout } = await mount()
+    const fitted = layout()
+    const middle = screenAt({ area: 'board', cell: 8 })
+    const left = (by: number) => new Point(middle.x - by, middle.y)
+    const right = (by: number) => new Point(middle.x + by, middle.y)
+    // One finger on an empty cell of a fitted board does nothing.
+    scene.emit('pointerdown', finger(1, left(0)))
+    scene.emit('globalpointermove', finger(1, left(40)))
+    scene.emit('pointerup', finger(1, left(40)))
+    expect(layout()).toEqual(fitted)
+
+    scene.emit('pointerdown', finger(1, left(20)))
+    scene.emit('pointerdown', finger(2, right(20)))
+    scene.emit('globalpointermove', finger(1, left(40)))
+    scene.emit('globalpointermove', finger(2, right(40)))
+    scene.emit('pointerup', finger(2, right(40)))
+    const zoomed = layout()
+    expect(zoomed.scale).toBeCloseTo(fitted.scale * 2)
+    // The finger still down neither taps nor pans.
+    scene.emit('globalpointermove', finger(1, left(100)))
+    scene.emit('pointerup', finger(1, left(100)))
+    expect(layout()).toEqual(zoomed)
+    expect(controller.selected.value).toBeUndefined()
+
+    scene.emit('pointerdown', finger(3, middle))
+    scene.emit('globalpointermove', finger(3, new Point(middle.x + 30, middle.y + 5)))
+    scene.emit('pointerup', finger(3, new Point(middle.x + 30, middle.y + 5)))
+    expect(layout()).toMatchObject({ scale: zoomed.scale, x: zoomed.x + 30, y: zoomed.y + 5 })
+  })
+
+  it('drops a dragged piece back when a second finger comes down', async () => {
+    const { controller, scene, screenAt, finger } = await mount()
+    scene.emit('pointerdown', finger(1, screenAt(SLOT)))
+    scene.emit('globalpointermove', finger(1, screenAt(B6)))
+    scene.emit('pointerdown', finger(2, screenAt(B1)))
+    scene.emit('pointercancel', finger(2, screenAt(B1)))
+    scene.emit('pointerup', finger(1, screenAt(B6)))
+    expect(itemById(controller.session.state.value.puzzle, MIRROR)?.place).toEqual(SLOT)
   })
 
   it('plays the level with the keyboard while the board has the focus', async () => {

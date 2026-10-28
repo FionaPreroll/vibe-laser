@@ -28,3 +28,5 @@ All changes players can notice are listed here. The format follows [Keep a Chang
 - A level editor, in the header: make packs of your own with up to four skills of 30 levels each, and play them from the pack list. Paint parts onto the board and into the toolbox with the mouse or with a key for each part, set their colors, directions and whether players may move and turn them, and name and size the level.
 - The editor checks a level as you go, and test-plays it: solve it, and your moves become its solution, which the editor replays to make sure it works.
 - Copy, paste, swap, clear and delete levels in a pack, and export and import single levels or whole packs as files.
+- Touch screens: tap a piece to select it, tap it again to turn it, or tap a free place to move it there. Pinch to zoom in on the board, and drag an empty spot to look around. The hints below the board explain the touch controls.
+- On phones the header and the buttons take less room, so the board gets more of the screen.

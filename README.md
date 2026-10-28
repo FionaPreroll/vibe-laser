@@ -10,6 +10,7 @@ Play it at https://fionapreroll.github.io/vibe-laser/.
 
 - Pick a level pack, a skill and a level. Every level of a skill is open from the start, and solved levels carry a mark.
 - Drag pieces from the toolbox on the left onto the board. Click a piece to turn it left, right-click to turn it right.
+- On a touch screen, tap a piece to select it and tap it again to turn it left, or tap a free place to move the selected piece there; dragging works too. Pinch to zoom in on the board, up to four times its size, and drag an empty spot to look around.
 - A level is solved when every coin spins: each colored coin needs light of exactly its color, and dark anti-coins must stay out of the light.
 - Keep light away from explosives. One that goes off sets off its neighbours too, and the level is lost; only starting again helps.
 - Slimes, robot mines and spaceships move by themselves. With mines or ships on the board, a solution must hold for five seconds while a bar fills.
@@ -129,7 +130,8 @@ Property tests (`src/core/properties.test.ts`, with fast-check) check the model 
 - The phases are `playing`, `stabilizing`, `exploding`, `failed` and `solved`. With mines or ships about, every coin spinning first means `stabilizing`, and the level counts as solved once that has held for 50 ticks. A lit explosive means `exploding`: the chain from `src/core/explosions.ts` spreads one ring per tick, then the level has `failed`.
 - Undo takes back only player moves. Whatever actors and explosions did stays, and an undo entry whose piece is gone or whose cell is taken is dropped.
 - The session reports what happens as events, such as `ignited`, `ate` or `fired`, for the view's effects.
-- `BoardController` in `src/view/controller.ts` holds what only the interface needs: the selected piece, the keyboard focus and a piece lifted with the keyboard.
+- `BoardController` in `src/view/controller.ts` holds what only the interface needs: the selected piece, the keyboard focus and a piece lifted with the keyboard. Its `tap()` decides what a tap on a touch screen does.
+- The stage keeps the scene's transform on the screen (`src/view/layout.ts`): fitted at first, zoomed and panned by fingers within bounds, and when the screen changes size, as when a phone's address bar hides, zoomed as far as before with the same middle.
 - Every level file carries one known solution, with waits where actors must do their part first. `playSolution` and `replaySolution` in `src/content/solution.ts` play it; tests in `src/content/packs.test.ts` play every solution under eight seeds and expect the level to be solved, and check that no level explodes or solves itself during a minute without moves.
 
 ## Level packs

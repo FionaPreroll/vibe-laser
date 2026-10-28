@@ -66,6 +66,24 @@ export class BoardController {
     return this.session.execute({ kind: 'move', item: id, to })
   }
 
+  /**
+   * A tap on a touch screen, on a place or beside the board. The first tap on a piece selects it
+   * and the next one turns it to the left; a tap on a free place moves the selected piece there.
+   * Anything else lets go of the selection.
+   */
+  tap(place: Place | undefined): boolean {
+    const item = place && itemAt(this.session.state.value.puzzle, place)
+    const selected = this.selected.value
+    if (item !== undefined) {
+      if (item.id === selected) return this.rotate(item.id, -1)
+      this.selected.value = item.id
+      return true
+    }
+    if (place !== undefined && selected !== undefined && this.move(selected, place)) return true
+    this.selected.value = undefined
+    return false
+  }
+
   /** Handles a key pressed on the board; true when the key did something on the board. */
   handleKey(key: string, modifiers: KeyModifiers): boolean {
     if (modifiers.ctrl) {
