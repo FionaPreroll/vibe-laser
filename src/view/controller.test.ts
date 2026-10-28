@@ -100,3 +100,33 @@ describe('BoardController for the HUD', () => {
     expect(controller.session.state.value.puzzle.items[2]?.piece.rotation).toBe(0)
   })
 })
+
+describe('BoardController taps', () => {
+  const SLOT = { area: 'toolbox', slot: 0 } as const
+  const B6 = { area: 'board', cell: 11 } as const
+  const B1 = { area: 'board', cell: 6 } as const
+
+  it('selects with a first tap, moves to a free place, and turns with the next tap', () => {
+    const controller = firstLevel()
+    const mirror = 2
+    expect(controller.tap(SLOT)).toBe(true)
+    expect(controller.selected.value).toBe(mirror)
+    expect(controller.tap(B6)).toBe(true)
+    expect(controller.selected.value).toBe(mirror)
+    expect(controller.tap(B6)).toBe(true)
+    expect(controller.session.state.value.phase).toBe('solved')
+  })
+
+  it('selects another piece instead of moving onto it, and lets go of the selection', () => {
+    const controller = firstLevel()
+    controller.tap(SLOT)
+    expect(controller.tap(B1)).toBe(true)
+    expect(controller.selected.value).toBe(1)
+    // The laser is fixed: a free place lets go of it instead.
+    expect(controller.tap({ area: 'board', cell: 8 })).toBe(false)
+    expect(controller.selected.value).toBeUndefined()
+    controller.tap(SLOT)
+    expect(controller.tap(undefined)).toBe(false)
+    expect(controller.selected.value).toBeUndefined()
+  })
+})

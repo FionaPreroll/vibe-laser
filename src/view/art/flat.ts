@@ -1,5 +1,6 @@
 import { GraphicsContext } from 'pixi.js'
 import type { Piece } from '../../core/board'
+import { type Color, WHITE } from '../../core/color'
 import { BOARD_COLORS, PIECE_COLORS } from '../palette'
 import type { ArtPack } from './types'
 
@@ -11,8 +12,15 @@ const ANTI_EDGE = 0x4a5268
 const GLASS = 0x7fd6ff
 const GLASS_EDGE = 0xbfeaff
 const SHADE = 0x3a4255
-// Trapezoid of one-way pieces and color converters: broad side south, narrow side north.
+// Trapezoid of one-way pieces, color converters and splicers: broad side south, narrow side north.
 const TRAPEZOID = [-20, 20, 20, 20, 9, -20, -9, -20]
+const SPLICER_END = 0xd9433b
+const PRISMIRROR_GLASS = 0xff8f8f
+const PRISMIRROR_EDGE = 0xffc6c6
+// Selectors and complexes: a bar with a flat south end and a north end beveled towards the
+// north-east. The shell shows the outer color, the core the inner one.
+const SELECTOR_SHELL = [-10, -24, 10, -4, 10, 24, -10, 24]
+const SELECTOR_CORE = [-4, -18, 4, -10, 4, 24, -4, 24]
 const TNT = 0xd9433b
 const TNT_EDGE = 0x8f1f1a
 const BAND = 0x2b1d16
@@ -45,7 +53,7 @@ export function createFlatArt(): ArtPack {
       .fill(BOARD_COLORS.slot)
       .stroke({ width: 2, color: BOARD_COLORS.slotEdge }),
     piece(piece) {
-      const key = `${piece.kind}:${piece.color}`
+      const key = `${piece.kind}:${piece.color}:${piece.inner ?? 0}`
       let shape = shapes.get(key)
       if (shape === undefined) {
         shape = draw(piece)
@@ -156,6 +164,56 @@ function draw(piece: Piece): GraphicsContext {
       shape.poly([0, -31, 7, -24, -7, -24]).fill(tint)
       break
     }
+    case 'bender': {
+      // A round lens with an arrow running clockwise, the way it turns every beam.
+      shape
+        .circle(0, 0, 21)
+        .fill({ color: GLASS, alpha: 0.35 })
+        .stroke({ width: 2, color: GLASS_EDGE })
+      const [start, end, radius] = [-0.9 * Math.PI, 0.4 * Math.PI, 12]
+      shape
+        .moveTo(Math.cos(start) * radius, Math.sin(start) * radius)
+        .arc(0, 0, radius, start, end)
+        .stroke({ width: 3, color: SILVER })
+      // The arrowhead points along the arc at its end.
+      const [x, y] = [Math.cos(end) * radius, Math.sin(end) * radius]
+      const [dx, dy] = [-Math.sin(end), Math.cos(end)]
+      shape
+        .poly([x + dx * 6, y + dy * 6, x - dy * 5, y + dx * 5, x + dy * 5, y - dx * 5])
+        .fill(SILVER)
+      break
+    }
+    case 'splicer':
+      // Light enters the narrow north end and leaves west, east and south; the red end stops it.
+      shape
+        .poly(TRAPEZOID)
+        .fill({ color: GLASS, alpha: 0.35 })
+        .stroke({ width: 2, color: GLASS_EDGE })
+      shape.poly([-20, 20, 20, 20, 18.4, 14, -18.4, 14]).fill(SPLICER_END)
+      shape
+        .moveTo(0, -13)
+        .lineTo(0, 10)
+        .moveTo(-12, 0)
+        .lineTo(12, 0)
+        .stroke({ width: 3, color: SILVER })
+      break
+    case 'prismirror':
+      // The prism's mirror image, slightly reddish, with its thick base to the east.
+      shape
+        .poly([20, -22, 20, 20, -22, 20])
+        .fill({ color: PRISMIRROR_GLASS, alpha: 0.24 })
+        .stroke({ width: 2, color: PRISMIRROR_EDGE })
+      shape.moveTo(20, -22).lineTo(20, 20).stroke({ width: 6, color: SHADE })
+      shape.moveTo(9, 14).lineTo(9, 0).stroke({ width: 3, color: PIECE_COLORS[1] })
+      shape.moveTo(7, 14).lineTo(-3, 4).stroke({ width: 3, color: PIECE_COLORS[2] })
+      shape.moveTo(5, 15).lineTo(-9, 15).stroke({ width: 3, color: PIECE_COLORS[4] })
+      break
+    case 'selector':
+      selector(shape, piece.color, WHITE)
+      break
+    case 'complex':
+      selector(shape, piece.color, piece.inner ?? 0)
+      break
     case 'coin':
       shape
         .circle(0, 0, 19)
@@ -221,4 +279,10 @@ function draw(piece: Piece): GraphicsContext {
     }
   }
   return shape
+}
+
+function selector(shape: GraphicsContext, outer: Color, inner: Color): void {
+  const tint = PIECE_COLORS[outer]
+  shape.poly(SELECTOR_SHELL).fill({ color: tint, alpha: 0.45 }).stroke({ width: 2, color: tint })
+  shape.poly(SELECTOR_CORE).fill({ color: PIECE_COLORS[inner], alpha: 0.9 })
 }

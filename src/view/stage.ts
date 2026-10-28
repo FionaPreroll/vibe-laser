@@ -8,12 +8,16 @@ import { ColorLabelLayer } from './colorLabels'
 import { EffectLayer } from './effects'
 import {
   CELL,
+  clampTransform,
   fitScene,
   GUTTER,
   type Point,
+  pinchTransform,
   placeCenter,
+  refitTransform,
   type SceneGeometry,
   TOOLBOX_COLUMNS,
+  type Transform,
 } from './layout'
 import { BOARD_COLORS } from './palette'
 import { PieceLayer } from './pieces'
@@ -37,6 +41,14 @@ export interface BoardStage {
   showGhost(item: Item | undefined, at: Point | undefined): void
   /** Draws a frame around a cell or slot on the overlay. */
   outline(place: Place, color: number, alpha?: number): void
+  /** Where the scene sits on the screen: fitted at first, then zoomed and panned by touch. */
+  transform(): Transform
+  /** How far the scene is zoomed in over its fitted size; 1 when it is not. */
+  zoom(): number
+  /** Zooms and pans the scene along with two fingers; see pinchTransform. */
+  pinch(start: Transform, from: readonly [Point, Point], to: readonly [Point, Point]): void
+  /** Moves a zoomed scene by some pixels on the screen, as far as it goes. */
+  pan(dx: number, dy: number): void
   destroy(): void
 }
 
@@ -102,15 +114,17 @@ export async function createStage(
   host.addEventListener('focus', onFocus)
   host.addEventListener('blur', onBlur)
 
-  const fitToHost = () => {
-    const { scale, x, y } = fitScene(geometry, app.screen.width, app.screen.height)
-    scene.scale.set(scale)
-    scene.position.set(x, y)
+  let screen = { width: app.screen.width, height: app.screen.height }
+  let transform = fitScene(geometry, screen.width, screen.height)
+  const show = (next: Transform) => {
+    transform = next
+    scene.scale.set(next.scale)
+    scene.position.set(next.x, next.y)
     // Browser tests read the layout to find cells and slots on the canvas.
     host.dataset.layout = JSON.stringify({
-      scale,
-      x,
-      y,
+      scale: next.scale,
+      x: next.x,
+      y: next.y,
       cell: CELL,
       boardLeft: geometry.boardLeft,
       toolboxLeft: geometry.toolboxLeft,
@@ -118,7 +132,13 @@ export async function createStage(
       toolboxColumns: TOOLBOX_COLUMNS,
     })
   }
-  fitToHost()
+  show(transform)
+  // A zoomed view stays zoomed when the screen changes, as when a phone's address bar hides.
+  const fitToHost = () => {
+    const resized = { width: app.screen.width, height: app.screen.height }
+    show(refitTransform(geometry, transform, screen, resized))
+    screen = resized
+  }
   app.renderer.on('resize', fitToHost)
 
   return {
@@ -132,6 +152,15 @@ export async function createStage(
     hasFocus,
     showGhost,
     outline,
+    transform: () => transform,
+    zoom: () => transform.scale / (fitScene(geometry, screen.width, screen.height).scale || 1),
+    pinch(start, from, to) {
+      show(pinchTransform(geometry, screen.width, screen.height, start, from, to))
+    },
+    pan(dx, dy) {
+      const moved = { ...transform, x: transform.x + dx, y: transform.y + dy }
+      show(clampTransform(geometry, screen.width, screen.height, moved))
+    },
     destroy() {
       host.removeEventListener('focus', onFocus)
       host.removeEventListener('blur', onBlur)

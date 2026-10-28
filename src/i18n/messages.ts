@@ -7,6 +7,9 @@ export const en = {
   loading: 'Loading…',
   storageBlocked:
     'This browser does not let the game save, so progress lasts only until the page is closed.',
+  updateReady: 'A new version of the game is ready.',
+  updateReload: 'Reload now',
+  updateLater: 'Later',
   back: 'Back',
   help: 'Help',
   settings: 'Settings',
@@ -32,6 +35,8 @@ export const en = {
   rotateRight: 'Rotate right',
   controls:
     'Drag pieces from the toolbox onto the board. Click a piece to rotate it left, right-click to rotate it right. Keyboard: arrow keys, Enter to pick up and drop, Q and E to rotate, Ctrl+Z to undo.',
+  touchControls:
+    'Drag pieces from the toolbox onto the board, or tap a piece and then a free place. Tap a selected piece to rotate it left; the buttons rotate it either way. Pinch to zoom, and drag an empty spot to move the zoomed board.',
   stabilizing: 'System stable: every coin spins. Wait until the bar is full.',
   stability: 'Stability',
 
@@ -111,6 +116,20 @@ export const en = {
   'parts.polarizer': 'Polarizer',
   'parts.polarizer.text':
     'A filter that also lets light through only in the direction its marker points.',
+  'parts.bender': 'Bender',
+  'parts.bender.text': 'Turns every beam 45° clockwise, whichever way it comes from.',
+  'parts.splicer': 'Splicer',
+  'parts.splicer.text':
+    'Splits light that enters its narrow end three ways: to the left, to the right and straight on. Its sides and its red end stop light.',
+  'parts.prismirror': 'Prismirror',
+  'parts.prismirror.text':
+    'A prism in mirror image: red goes straight on, while green and blue turn the other way.',
+  'parts.selector': 'Selector',
+  'parts.selector.text':
+    'Through its flat end, its own color turns 45° clockwise and the rest goes straight on. Straight through its bevel, all light passes.',
+  'parts.complex': 'Complex',
+  'parts.complex.text':
+    'A selector with an outer and an inner color: through the flat end the outer color turns and the inner color goes straight on. Straight through the bevel, only the inner color passes.',
   'parts.coin': 'Coin',
   'parts.coin.text': 'Spins when the light on its line has exactly its color.',
   'parts.antiCoin': 'Anti-coin',
@@ -206,6 +225,8 @@ export const en = {
   pieceOn: '{name} on {place}',
   toolboxSlot: 'toolbox slot {number}',
   colorLabel: 'Color',
+  outerColorLabel: 'Outer color',
+  innerColorLabel: 'Inner color',
   red: 'Red',
   green: 'Green',
   blue: 'Blue',
@@ -245,6 +266,8 @@ export const en = {
   'problem.taken': '{place} holds two pieces.',
   'problem.needsColor': '{part} needs a color.',
   'problem.noColor': '{part} has no color.',
+  'problem.needsInner': '{part} needs an inner color.',
+  'problem.noInner': '{part} has no inner color.',
   'problem.noRotation': '{part} does not turn.',
   'problem.heading': '{part} cannot head that way.',
   'problem.noPiece': 'The toolbox holds only {count} pieces.',
@@ -275,6 +298,9 @@ export const de: Record<MessageKey, string> = {
   loading: 'Lädt …',
   storageBlocked:
     'Dieser Browser lässt das Spiel nicht speichern, der Fortschritt hält also nur, bis die Seite geschlossen wird.',
+  updateReady: 'Eine neue Version des Spiels ist bereit.',
+  updateReload: 'Jetzt neu laden',
+  updateLater: 'Später',
   back: 'Zurück',
   help: 'Hilfe',
   settings: 'Einstellungen',
@@ -300,6 +326,8 @@ export const de: Record<MessageKey, string> = {
   rotateRight: 'Nach rechts drehen',
   controls:
     'Ziehe Teile aus der Ablage auf das Spielfeld. Ein Klick dreht ein Teil nach links, ein Rechtsklick nach rechts. Tastatur: Pfeiltasten, Enter zum Aufnehmen und Ablegen, Q und E zum Drehen, Strg+Z zum Rückgängigmachen.',
+  touchControls:
+    'Ziehe Teile aus der Ablage auf das Spielfeld, oder tippe ein Teil und dann einen freien Platz an. Tippe ein ausgewähltes Teil an, um es nach links zu drehen; die Knöpfe drehen in beide Richtungen. Mit zwei Fingern zoomst du, und auf einem leeren Feld verschiebst du das gezoomte Spielfeld.',
   stabilizing: 'System stabil: Alle Münzen drehen sich. Warte, bis der Balken voll ist.',
   stability: 'Stabilität',
 
@@ -381,6 +409,20 @@ export const de: Record<MessageKey, string> = {
   'parts.polarizer': 'Polarisator',
   'parts.polarizer.text':
     'Ein Filter, der Licht außerdem nur in die Richtung seiner Markierung durchlässt.',
+  'parts.bender': 'Bender',
+  'parts.bender.text': 'Lenkt jeden Strahl um 45° im Uhrzeigersinn ab, egal woher er kommt.',
+  'parts.splicer': 'Splicer',
+  'parts.splicer.text':
+    'Teilt Licht, das durch sein schmales Ende eintritt, dreifach: nach links, nach rechts und geradeaus. Seine Seiten und sein rotes Ende sperren.',
+  'parts.prismirror': 'Prismirror',
+  'parts.prismirror.text':
+    'Ein Prisma im Spiegelbild: Rot läuft geradeaus, Grün und Blau knicken zur anderen Seite ab.',
+  'parts.selector': 'Selektor',
+  'parts.selector.text':
+    'Durch das flache Ende knickt seine eigene Farbe um 45° im Uhrzeigersinn ab, der Rest läuft geradeaus. Gerade durch das abgeschrägte Ende läuft alles Licht.',
+  'parts.complex': 'Komplex',
+  'parts.complex.text':
+    'Ein Selektor mit Außen- und Innenfarbe: Durch das flache Ende knickt die Außenfarbe ab und die Innenfarbe läuft geradeaus. Gerade durch das abgeschrägte Ende kommt nur die Innenfarbe.',
   'parts.coin': 'Münze',
   'parts.coin.text': 'Dreht sich, wenn das Licht auf ihrer Linie genau ihre Farbe hat.',
   'parts.antiCoin': 'Anti-Münze',
@@ -479,6 +521,8 @@ export const de: Record<MessageKey, string> = {
   pieceOn: '{name} auf {place}',
   toolboxSlot: 'Werkzeugkasten-Platz {number}',
   colorLabel: 'Farbe',
+  outerColorLabel: 'Außenfarbe',
+  innerColorLabel: 'Innenfarbe',
   red: 'Rot',
   green: 'Grün',
   blue: 'Blau',
@@ -518,6 +562,8 @@ export const de: Record<MessageKey, string> = {
   'problem.taken': 'Auf {place} liegen zwei Teile.',
   'problem.needsColor': '{part} braucht eine Farbe.',
   'problem.noColor': '{part} hat keine Farbe.',
+  'problem.needsInner': '{part} braucht eine Innenfarbe.',
+  'problem.noInner': '{part} hat keine Innenfarbe.',
   'problem.noRotation': '{part} lässt sich nicht drehen.',
   'problem.heading': '{part} kann nicht in diese Richtung.',
   'problem.noPiece': 'Der Werkzeugkasten hat nur {count} Teile.',

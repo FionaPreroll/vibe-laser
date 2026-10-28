@@ -5,13 +5,21 @@ import { createPuzzle, type Puzzle } from '../core/level'
 import { DEFAULT_RULES, type Rules } from '../core/rules'
 import type { LevelFile } from './schema'
 
-type FilePiece = { readonly type: Piece['kind']; readonly rot?: number; readonly rgb?: string }
+type FilePiece = {
+  readonly type: Piece['kind']
+  readonly rot?: number
+  readonly rgb?: string
+  readonly inner?: string
+}
 
-function pieceOf({ type, rot, rgb }: FilePiece): Piece {
+function pieceOf({ type, rot, rgb, inner }: FilePiece): Piece {
+  const colorOf = (letters: string | undefined) =>
+    (letters === undefined ? 0 : (parseColor(letters) ?? 0)) as Color
   return {
     kind: type,
     rotation: (rot ?? 0) as Direction,
-    color: (rgb === undefined ? 0 : (parseColor(rgb) ?? 0)) as Color,
+    color: colorOf(rgb),
+    ...(inner === undefined ? {} : { inner: colorOf(inner) }),
   }
 }
 

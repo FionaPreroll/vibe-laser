@@ -28,4 +28,14 @@ All changes players can notice are listed here. The format follows [Keep a Chang
 - A level editor, in the header: make packs of your own with up to four skills of 30 levels each, and play them from the pack list. Paint parts onto the board and into the toolbox with the mouse or with a key for each part, set their colors, directions and whether players may move and turn them, and name and size the level.
 - The editor checks a level as you go, and test-plays it: solve it, and your moves become its solution, which the editor replays to make sure it works.
 - Copy, paste, swap, clear and delete levels in a pack, and export and import single levels or whole packs as files.
+- Five parts from the expansion packs of the original: benders turn every beam 45° clockwise, splicers split a beam three ways, prismirrors are prisms in mirror image, selectors turn their own color aside and let the rest through, and complexes turn their outer color aside and let only their inner color through.
+- Five more tutorial levels in a fourth skill, Expansions, one for each new part, for 23 in all.
+- In the level editor the new parts sit on the keys 1 to 5, and a complex has switches for its outer and its inner color.
+- Once it has loaded, the game also plays offline, and browsers can install it as an app with an icon of its own. When a new version is out, a notice offers to reload into it, so a level in progress is never interrupted.
+- Touch screens: tap a piece to select it, tap it again to turn it, or tap a free place to move it there. Pinch to zoom in on the board, and drag an empty spot to look around. The hints below the board explain the touch controls.
+- On phones the header and the buttons take less room, so the board gets more of the screen.
 - Color-blind mode, in the settings: pieces show their colors as letters, R, G and B, and beams draw each of their colors as a line of its own. Help explains how colors mix, with a diagram.
+
+### Changed
+
+- On computers without graphics acceleration, the board leaves out edge smoothing and so runs twice as smoothly.

@@ -109,11 +109,11 @@ describe('HelpDialog', () => {
     expect(dialog.textContent).toContain('until every coin spins')
     expect(dialog.textContent).toContain('Ctrl+Z')
     const parts = [...dialog.querySelectorAll('dt')].map((term) => term.textContent)
-    expect(parts).toHaveLength(20)
+    expect(parts).toHaveLength(25)
     expect(parts.slice(0, 3)).toEqual(['Laser', 'Coin', 'Anti-coin'])
     const wheel = screen.getByRole('img', { name: /red and green make yellow/ })
     expect(wheel.querySelectorAll('text')).toHaveLength(7)
-    expect(parts.at(-1)).toBe('Fuel cell')
+    expect(parts.at(-1)).toBe('Complex')
   })
 })
 

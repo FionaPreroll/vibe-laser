@@ -10,6 +10,7 @@ Play it at https://fionapreroll.github.io/vibe-laser/.
 
 - Pick a level pack, a skill and a level. Every level of a skill is open from the start, and solved levels carry a mark.
 - Drag pieces from the toolbox on the left onto the board. Click a piece to turn it left, right-click to turn it right.
+- On a touch screen, tap a piece to select it and tap it again to turn it left, or tap a free place to move the selected piece there; dragging works too. Pinch to zoom in on the board, up to four times its size, and drag an empty spot to look around.
 - A level is solved when every coin spins: each colored coin needs light of exactly its color, and dark anti-coins must stay out of the light.
 - Keep light away from explosives. One that goes off sets off its neighbours too, and the level is lost; only starting again helps.
 - Slimes, robot mines and spaceships move by themselves. With mines or ships on the board, a solution must hold for five seconds while a bar fills.
@@ -18,6 +19,7 @@ Play it at https://fionapreroll.github.io/vibe-laser/.
 - Color-blind mode writes the colors of pieces as letters, R, G and B, and draws each color in a beam as a line of its own, red, green and blue always in the same order across the beam. Help explains how colors mix.
 - Keyboard: focus the board with Tab. The arrow keys move a frame over the toolbox and the board, Enter picks a piece up and puts it down, Escape cancels, Q and E rotate, Ctrl+Z undoes and Ctrl+Y or Ctrl+Shift+Z redoes.
 - The level editor in the header makes levels of your own, in packs that appear in the pack list next to the built-in ones (see [Level editor](#level-editor)).
+- Once it has loaded, the game also plays offline, and browsers can install it as an app. When a new version is out, a notice below the header offers to reload into it.
 
 ## Parts
 
@@ -39,6 +41,16 @@ The abbreviations are those of the board notation (see [Beam model](#beam-model)
 | Polarizer       | `PO`         | A filter that also lets light through only in the direction its marker points.                                                                |
 | Coin            | `C`          | Spins when the light on its line has exactly its color.                                                                                       |
 | Anti-coin       | `A`          | Spins as long as no light touches it.                                                                                                         |
+
+Five more parts come from the expansion packs of the original. A complex has a second color inside, written after a slash: `CX0r/gb` is a complex with a red outer and a cyan inner color.
+
+| Part       | Abbreviation | What it does                                                                                                                                                                        |
+| ---------- | ------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Bender     | `BE`         | Turns every beam 45° clockwise, whichever way it comes from. Benders do not rotate.                                                                                                 |
+| Splicer    | `SP`         | Splits light that enters its narrow end three ways: 90° to the left, 90° to the right and straight on. Its sides and its red end stop light.                                        |
+| Prismirror | `PM`         | A prism in mirror image, slightly reddish: red goes straight, green turns 45° and blue 90° to the left.                                                                             |
+| Selector   | `SE`         | Through its flat end, its own color turns 45° clockwise and the rest goes straight on. Straight through its bevel, all light passes.                                                |
+| Complex    | `CX`         | A selector with an outer and an inner color. Through the flat end the outer color turns and the inner one goes straight on; straight through the bevel only the inner color passes. |
 
 Hazards and actors stop beams. Actors also have a heading, written as a digit after the abbreviation, so `SL0` is a slime heading north.
 
@@ -76,6 +88,7 @@ pnpm dev
 | `pnpm test:coverage`           | Unit tests with a coverage report in `coverage/`                                      |
 | `pnpm test:e2e`                | Builds, then runs the Playwright browser tests                                        |
 | `pnpm schemas`                 | Writes `packs/*.schema.json` again from the level and pack schemas                    |
+| `pnpm icons`                   | Renders the app icons in `public/icons/` from `public/favicon.svg` with Chromium      |
 
 Playwright needs a Chromium: run `pnpm exec playwright install chromium` once, or set `CHROMIUM_PATH` to an installed Chromium binary.
 
@@ -98,7 +111,7 @@ src/
   ui/           Preact screens, header, button bar and dialogs around the canvas
   main.tsx      entry point
 packs/          the level packs, one folder each
-tools/          the dev server's endpoint that writes built-in packs
+tools/          Vite plugins for the service worker and for writing built-in packs, the icon renderer
 tests/e2e/      Playwright browser tests
 public/         static files, copied as they are
 ```
@@ -116,10 +129,10 @@ Unit tests sit next to the code as `*.test.ts`, component tests as `*.test.tsx`.
 - A color is three bits, red 1, green 2 and blue 4. Mixing is OR, filtering is AND.
 - `trace()` in `src/core/trace.ts` follows each primary color from each laser and records the light on every half-segment, the line from a cell's center toward one of its eight neighbours. Parts act on each primary on its own, so mixed light needs no second pass.
 - Each part is described once, in rotation 0, in `src/core/parts.ts`: as a table of exits for each direction of travel, or as a small function where the color matters. Other rotations turn the beam into the part's frame and turn its exits back.
-- Tests and levels write boards in a text notation (`src/core/notation.ts`): an abbreviation, then the rotation for parts that rotate, then the color letters. `L2r . M5 Fg PO2b` is a red laser firing east, an empty cell, a mirror in rotation 5, a green filter and a blue polarizer pointing east.
+- Tests and levels write boards in a text notation (`src/core/notation.ts`): an abbreviation, then the rotation for parts that rotate, then the color letters, and for a complex a slash and its inner color. `L2r . M5 Fg PO2b` is a red laser firing east, an empty cell, a mirror in rotation 5, a green filter and a blue polarizer pointing east.
 - Rules the spec leaves open are flags in `src/core/rules.ts`. `coinAngles` is decided; `beamIntoLaser: absorb`, `polarizer: direction` and `actorsBlockLight: true` are assumptions until they are checked against the original.
 
-Property tests (`src/core/properties.test.ts`, with fast-check) check the model on random boards: tracing ends within its bound, the light of all lasers is the sum of each laser alone, turning a board turns its light, and mirroring a board mirrors its light. The mirror test leaves out prisms, which bend light one way round; a mirrored refractor is the same refractor turned by 45°.
+Property tests (`src/core/properties.test.ts`, with fast-check) check the model on random boards: tracing ends within its bound, the light of all lasers is the sum of each laser alone, turning a board turns its light, and mirroring a board mirrors its light. In the mirrored board prisms become prismirrors and the other way round; a mirrored refractor is the same refractor turned by 45°. The mirror test leaves out benders, selectors and complexes, which turn light clockwise only and have no mirror image among the parts.
 
 ## Game session
 
@@ -130,7 +143,8 @@ Property tests (`src/core/properties.test.ts`, with fast-check) check the model 
 - The phases are `playing`, `stabilizing`, `exploding`, `failed` and `solved`. With mines or ships about, every coin spinning first means `stabilizing`, and the level counts as solved once that has held for 50 ticks. A lit explosive means `exploding`: the chain from `src/core/explosions.ts` spreads one ring per tick, then the level has `failed`.
 - Undo takes back only player moves. Whatever actors and explosions did stays, and an undo entry whose piece is gone or whose cell is taken is dropped.
 - The session reports what happens as events, such as `ignited`, `ate` or `fired`, for the view's effects.
-- `BoardController` in `src/view/controller.ts` holds what only the interface needs: the selected piece, the keyboard focus and a piece lifted with the keyboard.
+- `BoardController` in `src/view/controller.ts` holds what only the interface needs: the selected piece, the keyboard focus and a piece lifted with the keyboard. Its `tap()` decides what a tap on a touch screen does.
+- The stage keeps the scene's transform on the screen (`src/view/layout.ts`): fitted at first, zoomed and panned by fingers within bounds, and when the screen changes size, as when a phone's address bar hides, zoomed as far as before with the same middle.
 - Every level file carries one known solution, with waits where actors must do their part first. `playSolution` and `replaySolution` in `src/content/solution.ts` play it; tests in `src/content/packs.test.ts` play every solution under eight seeds and expect the level to be solved, and check that no level explodes or solves itself during a minute without moves.
 
 ## Level packs
@@ -151,7 +165,7 @@ packs/
 - A pack has one to four skills of up to 30 levels each. A level's id comes from its path: `tutorial/2/5` is the fifth level of the second skill. With `"selectSkill": false`, or with one skill only, the pack opens straight at its levels.
 - `pack.json` gives the title and description in English and German, the `position` in the list of packs, the skill names, and optionally `rules`: rule flags from `src/core/rules.ts` for every level of the pack.
 - A level file gives its `name` in English and German, its `size` as columns and rows (up to 32 × 26), the `objects` on the board, the `toolbox`, optionally its own `rules`, and the known `solution`. An optional `note` tells other authors what the level is about.
-- Objects name their cell as in the original, row letter and column number (`B6`), their `type` (`laser`, `mirror`, `blackHole` and so on), their rotation `rot` from 0 to 7 and their color `rgb` as the letters of the switched-on colors, so `"rb"` is magenta. Pieces on the board are fixed and toolbox pieces free; `moveable` and `rotateable` change that. A toolbox entry can repeat itself with `count`.
+- Objects name their cell as in the original, row letter and column number (`B6`), their `type` (`laser`, `mirror`, `blackHole` and so on), their rotation `rot` from 0 to 7 and their color `rgb` as the letters of the switched-on colors, so `"rb"` is magenta. A complex gives its outer color as `rgb` and its inner color as `inner`. Pieces on the board are fixed and toolbox pieces free; `moveable` and `rotateable` change that. A toolbox entry can repeat itself with `count`.
 - A solution step puts toolbox piece `piece` (counted from 0) on cell `pos` in rotation `rot`. A piece that starts on the board is named by its cell instead: `{ "from": "C3", "pos": "B6", "rot": 7 }` moves or turns it, `{ "from": "C3", "stow": true }` puts it into the toolbox. `{ "wait": 10 }` lets ten ticks pass. Steps say where a piece ends up, so the same piece may appear twice.
 
 ```json
@@ -169,7 +183,7 @@ packs/
 }
 ```
 
-The Zod schemas in `src/content/schema.ts` check every file and name each problem with its place, such as `objects[3].pos: G2 lies outside a 6 × 3 board`. They also check what JSON Schema cannot: cells on the board and free, colors for parts that need one, rotations only for parts that turn, at least one coin. The two `*.schema.json` files are generated from them, and a test fails when they fall behind; `pnpm schemas` writes them again.
+The Zod schemas in `src/content/schema.ts` check every file and name each problem with its place, such as `objects[3].pos: G2 lies outside a 6 × 3 board`. They also check what JSON Schema cannot: cells on the board and free, colors for parts that need one, an inner color for complexes only, rotations only for parts that turn, at least one coin. The two `*.schema.json` files are generated from them, and a test fails when they fall behind; `pnpm schemas` writes them again.
 
 The build bundles every `pack.json`, and each level file becomes a small file of its own that loads when its level list or the level opens (`src/content/packs.ts`).
 
@@ -190,7 +204,7 @@ The build bundles every `pack.json`, and each level file becomes a small file of
 The editor is a mode of the game: the same board with different input. Its logic is in `src/editor/` without any drawing, its board in `src/view/editorBoard.ts`, and its screens in `src/ui/editor/`, which load only when a player opens the editor.
 
 - **Packs.** The editor starts with the player's own packs: a new pack, an imported `.vlpack.json` file, or one made before. A pack has one to four skills with 30 slots each, and its settings: titles, descriptions, skill names and whether players choose a skill first. A pack exports as one `.vlpack.json` file with every level inside (`"format": "vibe-laser-pack"`).
-- **Board.** A click uses the tool: Select, Paint, Clone or Eraser. Select drags pieces, also between board and toolbox; Paint and Eraser paint along a drag, which undoes as one step; Clone picks up a piece to paint copies of it. A right click turns a piece. Each part has a key, as `H` for a black hole in the original: it puts the part where the pointer or the keyboard frame is, Q and E turn, Delete removes, Ctrl+Z and Ctrl+Y undo and redo.
+- **Board.** A click uses the tool: Select, Paint, Clone or Eraser. Select drags pieces, also between board and toolbox; Paint and Eraser paint along a drag, which undoes as one step; Clone picks up a piece to paint copies of it. A right click turns a piece. Each part has a key, as `H` for a black hole in the original, and the parts of the expansion packs have the keys 1 to 5: a key puts the part where the pointer or the keyboard frame is, Q and E turn, Delete removes, Ctrl+Z and Ctrl+Y undo and redo.
 - **Panels.** The selected piece's colors, direction or heading, and whether players may move and turn it; the level's names, note and size; its problems; and its solution.
 - **Problems** show live, in the player's language, and keep a level from being saved: a missing name or coin, a color missing, light on an explosive or every coin spinning before the first move, or a solution that no longer works. A problem with a place selects it.
 - **Test** plays the level as players will. Solved, its moves can become the level's solution: where the player left each piece, in the order of the last moves, with waits where actors make timing matter, and without the steps the level did not need. The editor then replays the solution with every random seed the golden tests use.
@@ -203,6 +217,13 @@ While `pnpm dev` runs, the editor also lists the built-in packs. Saving one of t
 ## Sound
 
 There are no sound files: `src/audio/synth.ts` synthesizes every effect and the music with the Web Audio API. `listen()` in `src/audio/director.ts` turns what happens in a game session into sounds: placing and turning pieces, coins starting to spin, blasts, shots, slimes eating, and the end of a level. The music is a slow, generated pentatonic melody. Browsers allow sound only after the first click or key press, so it starts then; the volumes come from the active profile.
+
+## Offline and installing
+
+- `public/manifest.webmanifest` gives the game's name, colors and icons, so browsers can install it as an app. `pnpm icons` renders the icons in `public/icons/` from `public/favicon.svg`; the maskable one keeps its picture in the middle 80 %, which launchers show whatever shape they cut.
+- Production builds get a service worker from `tools/serviceWorker.ts`. Once the build is written, the plugin lists every file in `dist/` and writes `dist/sw.js` with that list and a version made from the files' contents. The worker keeps every file in a cache named after its scope and version, serves requests in its scope from there and answers page loads with `index.html`. So once the game has loaded, it starts and plays offline, every level included.
+- A new version installs in the background and then waits. `src/ui/updates.ts` shows a notice, and only when the player chooses to reload does the new version take over and remove the old version's cache. While the page stays open, it looks for a new version every hour.
+- The worker leaves requests outside its scope alone and removes only its own older caches, so other sites on the same origin, such as other projects on github.io, are not touched. The dev server has no service worker.
 
 ## Game rules decided so far
 
@@ -223,6 +244,11 @@ There are no sound files: `src/audio/synth.ts` synthesizes every effect and the 
 - A color converter passes light only straight through its ends; its sides stop light.
 - A filter lets its colors through from every direction, diagonals included.
 - A polarizer passes light only in the direction its marker points (`polarizer: direction`); the rule flag `polarizer: axis` also passes the opposite direction.
+- The spec says a bender turns every beam 45° clockwise; as that holds for every direction, a bender has no rotation. A beam sent back the way it left therefore does not retrace its path.
+- A splicer in rotation 0 has its narrow end to the north, like a splitter's tip, and splits only light traveling south into it. Its red south end lets the straight beam out but stops light coming in.
+- A prismirror is a prism mirrored east to west: in rotation 0 it takes light through its south side and sends green and blue to the left.
+- In rotation 0 a selector or complex has its flat end to the south and its north end beveled towards the north-east, so its outer color turns from north to north-east. A diagonal beam enters the bevel only traveling south-west, the way the turned color leaves, and only the outer color comes back out of the flat end. The long sides stop light.
+- A selector is a complex whose inner color is white. A primary of both colors counts as outer color and turns. Light of a primary in neither color stops at a complex.
 - Cleanup returns unlit moveable pieces to the first free toolbox slots, in reading order; pieces that find no free slot stay on the board.
 - The toolbox has two slots per board row.
 - A dragged piece stays where it was until it is dropped, so carrying it around never changes the beams.

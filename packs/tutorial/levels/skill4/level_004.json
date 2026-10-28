@@ -1,0 +1,14 @@
+{
+  "$schema": "../../../level.schema.json",
+  "version": 1,
+  "name": { "en": "Color Fork", "de": "Farbweiche" },
+  "note": "The green selector turns green off the white beam and lets magenta on.",
+  "size": [5, 4],
+  "objects": [
+    { "type": "coin", "pos": "A2", "rgb": "rb" },
+    { "type": "coin", "pos": "A4", "rgb": "g" },
+    { "type": "laser", "pos": "D2", "rot": 0, "rgb": "rgb" }
+  ],
+  "toolbox": [{ "type": "selector", "rot": 4, "rgb": "g" }],
+  "solution": [{ "piece": 0, "pos": "C2", "rot": 0 }]
+}

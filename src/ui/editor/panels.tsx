@@ -1,7 +1,7 @@
 import { HEADINGS } from '../../core/actors/kinds'
 import { colorLetters, parseColor } from '../../core/color'
 import type { Place } from '../../core/level'
-import { COLORED_KINDS } from '../../core/notation'
+import { COLORED_KINDS, INNER_COLORED_KINDS } from '../../core/notation'
 import { ROTATING_KINDS } from '../../core/parts'
 import type { EditorController, Problem, Tool } from '../../editor/controller'
 import { MAX_COLUMNS, MAX_ROWS, nameOf } from '../../editor/draft'
@@ -94,16 +94,8 @@ export function PiecePanel({ editor }: { readonly editor: EditorController }) {
   const onBoard = place.area === 'board'
   const moveable = piece.moveable ?? !onBoard
   const rotateable = piece.rotateable ?? (!onBoard && ROTATING_KINDS.has(kind))
-  const color = parseColor(piece.rgb ?? '') ?? 0
+  const twoColored = INNER_COLORED_KINDS.has(kind)
   const headings = HEADINGS[kind]
-  const setColor = (letter: string, on: boolean) => {
-    // The color as it is now, which another switch may have changed since this render.
-    const current = editor.pieceAt(place)?.rgb ?? ''
-    const letters = PRIMARIES.map((primary) => primary.letter).filter((each) =>
-      each === letter ? on : current.includes(each),
-    )
-    editor.change(place, { rgb: letters.length > 0 ? letters.join('') : undefined })
-  }
   // A flag that matches the default for its area is left out of the file.
   const setFlag = (flag: 'moveable' | 'rotateable', value: boolean, standard: boolean) =>
     editor.change(place, { [flag]: value === standard ? undefined : value })
@@ -113,19 +105,15 @@ export function PiecePanel({ editor }: { readonly editor: EditorController }) {
       <h3>{t('pieceLabel')}</h3>
       <p>{t('pieceOn', { name: t(`parts.${kind}`), place: where })}</p>
       {COLORED_KINDS.has(kind) && (
-        <fieldset class="colors">
-          <legend>{t('colorLabel')}</legend>
-          {PRIMARIES.map(({ letter, label }) => (
-            <label key={letter} class="check">
-              <input
-                type="checkbox"
-                checked={colorLetters(color).includes(letter)}
-                onChange={(event) => setColor(letter, event.currentTarget.checked)}
-              />
-              <span>{t(label)}</span>
-            </label>
-          ))}
-        </fieldset>
+        <ColorSwitches
+          editor={editor}
+          place={place}
+          field="rgb"
+          legend={t(twoColored ? 'outerColorLabel' : 'colorLabel')}
+        />
+      )}
+      {twoColored && (
+        <ColorSwitches editor={editor} place={place} field="inner" legend={t('innerColorLabel')} />
       )}
       {headings !== undefined ? (
         <label class="field">
@@ -179,6 +167,42 @@ export function PiecePanel({ editor }: { readonly editor: EditorController }) {
         {t('removePiece')}
       </button>
     </section>
+  )
+}
+
+interface ColorProps {
+  readonly editor: EditorController
+  readonly place: Place
+  /** The color of the piece, or the inner color of a complex. */
+  readonly field: 'rgb' | 'inner'
+  readonly legend: string
+}
+
+/** A switch for each primary of one color of the piece, as in the original editor. */
+function ColorSwitches({ editor, place, field, legend }: ColorProps) {
+  const color = parseColor(editor.pieceAt(place)?.[field] ?? '') ?? 0
+  const setColor = (letter: string, on: boolean) => {
+    // The color as it is now, which another switch may have changed since this render.
+    const current = editor.pieceAt(place)?.[field] ?? ''
+    const letters = PRIMARIES.map((primary) => primary.letter).filter((each) =>
+      each === letter ? on : current.includes(each),
+    )
+    editor.change(place, { [field]: letters.length > 0 ? letters.join('') : undefined })
+  }
+  return (
+    <fieldset class="colors">
+      <legend>{legend}</legend>
+      {PRIMARIES.map(({ letter, label }) => (
+        <label key={letter} class="check">
+          <input
+            type="checkbox"
+            checked={colorLetters(color).includes(letter)}
+            onChange={(event) => setColor(letter, event.currentTarget.checked)}
+          />
+          <span>{t(label)}</span>
+        </label>
+      ))}
+    </fieldset>
   )
 }
 

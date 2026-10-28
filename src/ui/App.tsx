@@ -18,6 +18,7 @@ import { PacksScreen } from './screens/PacksScreen'
 import { PlayScreen } from './screens/PlayScreen'
 import { ProfilesScreen } from './screens/ProfilesScreen'
 import { SkillsScreen } from './screens/SkillsScreen'
+import { UpdateNotice } from './UpdateNotice'
 
 /** The game's sound: effects for the session, music, and volumes from the settings. */
 export interface Audio extends Speaker {
@@ -154,6 +155,7 @@ export function App({ store, audio }: Props) {
         </nav>
       </header>
       {opened.blocked && <p class="notice">{t('storageBlocked')}</p>}
+      <UpdateNotice />
       <main class={current.name === 'play' || current.name === 'editLevel' ? 'play' : 'menu'}>
         {current.name === 'packs' && <PacksScreen solved={solved} />}
         {current.name === 'skills' && <SkillsScreen pack={current.pack} solved={solved} />}
