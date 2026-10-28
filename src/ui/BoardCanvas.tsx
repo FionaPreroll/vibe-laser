@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'preact/hooks'
 import { t } from '../i18n'
 import type { BoardView } from '../view/board'
 import type { BoardController } from '../view/controller'
+import { artStyle } from '../view/display'
 
 interface HostProps {
   /** Puts a board into the host; it is destroyed when the host goes or `mount` changes. */
@@ -55,13 +56,21 @@ interface Props {
 }
 
 /**
- * The game's board for one controller; the view mounts once and is destroyed with it. The board
- * and PixiJS load with the first level, so the menus before it come up without them.
+ * The game's board for one controller; the view mounts once and is destroyed with it. A new look
+ * mounts it afresh, and the game goes on where it was. The board, its art and PixiJS load with the
+ * first level, so the menus before it come up without them.
  */
 export function BoardCanvas({ controller, label }: Props) {
+  const style = artStyle.value
   const mount = useCallback(
-    async (element: HTMLElement) => (await import('../view/board')).mountBoard(element, controller),
-    [controller],
+    async (element: HTMLElement) => {
+      const [{ mountBoard }, { createArt }] = await Promise.all([
+        import('../view/board'),
+        import('../view/art'),
+      ])
+      return mountBoard(element, controller, createArt(style))
+    },
+    [controller, style],
   )
   return <CanvasHost mount={mount} label={label} describedBy="controls-hint" />
 }

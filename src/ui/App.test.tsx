@@ -7,7 +7,7 @@ import { DEFAULT_SETTINGS, type SaveData } from '../persistence/profiles'
 import { type KeyValueStore, memoryStore } from '../persistence/store'
 import { mountBoard } from '../view/board'
 import type { BoardController } from '../view/controller'
-import { colorBlind } from '../view/display'
+import { artStyle, colorBlind } from '../view/display'
 import { App, type Audio } from './App'
 
 vi.mock('../view/board', () => ({ mountBoard: vi.fn() }))
@@ -19,6 +19,7 @@ beforeEach(() => {
 })
 afterEach(() => {
   colorBlind.value = false
+  artStyle.value = 'flat'
   cleanup()
   vi.restoreAllMocks()
 })
@@ -208,6 +209,19 @@ describe('App', () => {
       fireEvent.click(screen.getByRole('checkbox', { name: 'Color-blind mode' }))
     })
     await waitFor(() => expect(colorBlind.value).toBe(true))
+  })
+
+  it('draws the board anew in the look of the profile', async () => {
+    await start('#/play/tutorial/1/1')
+    await waitFor(() => expect(mount).toHaveBeenCalledOnce())
+    expect(mount.mock.calls[0]?.[2]).toMatchObject({ id: 'flat' })
+    await click('Settings')
+    await act(() => {
+      fireEvent.change(screen.getByLabelText('Look'), { target: { value: 'neon' } })
+    })
+    await waitFor(() => expect(mount).toHaveBeenCalledTimes(2))
+    expect(mount.mock.calls[1]?.[2]).toMatchObject({ id: 'neon' })
+    expect(artStyle.value).toBe('neon')
   })
 
   it('plays the sounds of the game at the volumes of the profile', async () => {

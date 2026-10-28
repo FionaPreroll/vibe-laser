@@ -15,7 +15,7 @@ Play it at https://fionapreroll.github.io/vibe-laser/.
 - Keep light away from explosives. One that goes off sets off its neighbours too, and the level is lost; only starting again helps.
 - Slimes, robot mines and spaceships move by themselves. With mines or ships on the board, a solution must hold for five seconds while a bar fills.
 - The buttons below the board lead back to the level selection, restart the level, clean up (unlit pieces go back into the toolbox), undo, redo, rotate the selected piece and open the help.
-- Each player can have a profile of their own, with their own progress and settings: the volume of sound effects and music, less motion on the board, and color-blind mode. Profiles can be exported as a file and imported in another browser.
+- Each player can have a profile of their own, with their own progress and settings: the volume of sound effects and music, less motion on the board, color-blind mode, and the look of the board, Plain or Neon. Profiles can be exported as a file and imported in another browser.
 - Color-blind mode writes the colors of pieces as letters, R, G and B, with a complex's inner color after a slash, as in R/GB, and draws each color in a beam as a line of its own, red, green and blue always in the same order across the beam. Help explains how colors mix.
 - Keyboard: focus the board with Tab. The arrow keys move a frame over the toolbox and the board, Enter picks a piece up and puts it down, Escape cancels, Q and E rotate, Ctrl+Z undoes and Ctrl+Y or Ctrl+Shift+Z redoes.
 - The level editor in the header makes levels of your own, in packs that appear in the pack list next to the built-in ones (see [Level editor](#level-editor)).
@@ -96,7 +96,7 @@ Playwright needs a Chromium: run `pnpm exec playwright install chromium` once, o
 
 TypeScript 7, PixiJS 8 for the board, Preact with Signals for the interface around it, Vite 8, Vitest 5, Playwright and Biome 2.
 
-The first download holds the menus only. The board with PixiJS loads when the first level opens (`BoardCanvas` imports `src/view/board.ts` on demand), and the editor when it opens; the service worker keeps both for later visits.
+The first download holds the menus only. The board with PixiJS loads when the first level opens (`BoardCanvas` imports `src/view/board.ts` and the art packs on demand), and the editor when it opens; the service worker keeps both for later visits.
 
 ## Project layout
 
@@ -194,7 +194,7 @@ The build bundles every `pack.json`, and each level file becomes a small file of
 - The address after `#` names the screen, so the browser's back button and bookmarks work: `#/` lists the packs, `#/packs/tutorial` the skills of a pack, `#/packs/tutorial/2` the levels of a skill, `#/play/tutorial/2/5` opens a level, and `#/profiles` and `#/about` the profiles and the version with the changelog. The editor lives at `#/editor`, a pack in it at `#/editor/<pack>` and a slot at `#/editor/<pack>/2/5`.
 - Help and the settings open over the game and stop its clock while they are open.
 - `ProfileBook` in `src/persistence/profiles.ts` keeps all profiles in one record in IndexedDB (database `vibe-laser`, store `saves`), through idb-keyval. The record carries a version, and `migrate()` is where later formats will convert older saves; a record it cannot read starts afresh. Changes are saved one after another, so the last one always wins.
-- A profile holds a name, the ids of its solved levels and its settings. Reduced motion starts on when the system asks for less motion. Settings added later, such as color-blind mode, start switched off when older saves load. After the first solved level the game asks the browser to keep its storage (`navigator.storage.persist()`).
+- A profile holds a name, the ids of its solved levels and its settings. Reduced motion starts on when the system asks for less motion. Settings added later start at their defaults when older saves load: color-blind mode off, the plain look. After the first solved level the game asks the browser to keep its storage (`navigator.storage.persist()`).
 - Color-blind mode is one signal for every board, `colorBlind` in `src/view/display.ts`, which the app sets from the active profile. The stage then shows `ColorLabelLayer` letters above the pieces, and `BeamLayer` splits each beam into its primaries.
 - An exported profile is a JSON file (`"format": "vibe-laser-profile"`). An imported one gets a new id, and a number after its name when the name is taken.
 - Where the browser blocks IndexedDB, as some private windows do, progress lasts until the page closes, and the game says so.
@@ -216,6 +216,12 @@ The editor is a mode of the game: the same board with different input. Its logic
 
 While `pnpm dev` runs, the editor also lists the built-in packs. Saving one of their levels sends it to an endpoint of the dev server (`tools/packFiles.ts`), which checks the level with the game's own schema and writes it to `packs/<pack>/levels/skill<n>/level_<nnn>.json`, formatted by Biome, so a level saved unchanged stays byte for byte the same. The endpoint only answers the page it serves, and only writes into packs that exist. Production builds have no such endpoint. The game's own levels are made this way and committed with git; the golden tests then demand a solution for each.
 
+## Art
+
+- An art pack (`ArtPack` in `src/view/art/types.ts`) draws a tile, a toolbox slot and every part in rotation 0, as PixiJS `GraphicsContext`s that all pieces of the same kind and colors share. The stage turns them; beams, letters and effects look the same in every pack.
+- There are two packs, both drawn in code: Plain (`flat.ts`), flat shapes in muted colors, and Neon (`neon.ts`), outlines that glow on a dark board, each stroke drawn twice, wide and faint and then thin and bright. Both use the outlines in `common.ts`, so a part takes the same room in each.
+- The look is a setting of the profile. `artStyle` in `src/view/display.ts` follows it as `colorBlind` does, `createArt()` in `src/view/art/index.ts` makes the pack, and a board in a new look mounts afresh while its game goes on.
+
 ## Sound
 
 There are no sound files: `src/audio/synth.ts` synthesizes every effect and the music with the Web Audio API. `listen()` in `src/audio/director.ts` turns what happens in a game session into sounds: placing and turning pieces, coins starting to spin, blasts, shots, slimes eating, and the end of a level. The music is a slow, generated pentatonic melody. Browsers allow sound only after the first click or key press, so it starts then; the volumes come from the active profile.
@@ -231,7 +237,7 @@ There are no sound files: `src/audio/synth.ts` synthesizes every effect and the 
 
 - A coin hit by beams from several angles spins only if every beam carries exactly the coin's color (rule flag `coinAngles: sameColor`).
 - All levels of a skill are open from the start.
-- Art comes in switchable art packs. The first one is flat vector art drawn in code.
+- Art comes in switchable art packs drawn in code: Plain, flat vector shapes, and Neon, glowing outlines.
 - The interface speaks English and German.
 
 ## Assumptions until checked against the original

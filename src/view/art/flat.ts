@@ -2,6 +2,19 @@ import { GraphicsContext } from 'pixi.js'
 import type { Piece } from '../../core/board'
 import { type Color, WHITE } from '../../core/color'
 import { BOARD_COLORS, PIECE_COLORS } from '../palette'
+import {
+  BOLT,
+  PRISM,
+  PRISMIRROR,
+  REFRACTOR,
+  SELECTOR_CORE,
+  SELECTOR_SHELL,
+  SHIP_HULL,
+  SPLITTER,
+  shapeCache,
+  THREEWAY,
+  TRAPEZOID,
+} from './common'
 import type { ArtPack } from './types'
 
 const SILVER = 0xdfe8ff
@@ -12,15 +25,9 @@ const ANTI_EDGE = 0x4a5268
 const GLASS = 0x7fd6ff
 const GLASS_EDGE = 0xbfeaff
 const SHADE = 0x3a4255
-// Trapezoid of one-way pieces, color converters and splicers: broad side south, narrow side north.
-const TRAPEZOID = [-20, 20, 20, 20, 9, -20, -9, -20]
 const SPLICER_END = 0xd9433b
 const PRISMIRROR_GLASS = 0xff8f8f
 const PRISMIRROR_EDGE = 0xffc6c6
-// Selectors and complexes: a bar with a flat south end and a north end beveled towards the
-// north-east. The shell shows the outer color, the core the inner one.
-const SELECTOR_SHELL = [-10, -24, 10, -4, 10, 24, -10, 24]
-const SELECTOR_CORE = [-4, -18, 4, -10, 4, 24, -4, 24]
 const TNT = 0xd9433b
 const TNT_EDGE = 0x8f1f1a
 const BAND = 0x2b1d16
@@ -44,7 +51,6 @@ const COCKPIT = 0x59d6ff
 
 /** The first art pack: flat vector shapes drawn in code, shared by every piece of a kind. */
 export function createFlatArt(): ArtPack {
-  const shapes = new Map<string, GraphicsContext>()
   return {
     id: 'flat',
     tile: new GraphicsContext().roundRect(-30, -30, 60, 60, 6).fill(BOARD_COLORS.tile),
@@ -52,15 +58,7 @@ export function createFlatArt(): ArtPack {
       .roundRect(-30, -30, 60, 60, 6)
       .fill(BOARD_COLORS.slot)
       .stroke({ width: 2, color: BOARD_COLORS.slotEdge }),
-    piece(piece) {
-      const key = `${piece.kind}:${piece.color}:${piece.inner ?? 0}`
-      let shape = shapes.get(key)
-      if (shape === undefined) {
-        shape = draw(piece)
-        shapes.set(key, shape)
-      }
-      return shape
-    },
+    piece: shapeCache(draw),
   }
 }
 
@@ -94,7 +92,7 @@ function draw(piece: Piece): GraphicsContext {
     case 'refractor':
       // A glass bar with slanted ends; the shaded long sides stop light.
       shape
-        .poly([-9, -26, 9, -18, 9, 26, -9, 18])
+        .poly(REFRACTOR)
         .fill({ color: GLASS, alpha: 0.35 })
         .stroke({ width: 2, color: GLASS_EDGE })
       shape
@@ -110,13 +108,13 @@ function draw(piece: Piece): GraphicsContext {
       break
     case 'splitter':
       // The tip faces north; the dark base stops light.
-      shape.poly([0, -24, 22, 14, -22, 14]).fill(SILVER)
+      shape.poly(SPLITTER).fill(SILVER)
       shape.rect(-22, 14, 44, 6).fill(MIRROR_BACK)
       break
     case 'threeway':
       // Flat side south, two bevels facing north-east and north-west.
       shape
-        .poly([-20, 20, 20, 20, 20, 2, 0, -20, -20, 2])
+        .poly(THREEWAY)
         .fill({ color: GLASS, alpha: 0.35 })
         .stroke({ width: 2, color: GLASS_EDGE })
       break
@@ -124,7 +122,7 @@ function draw(piece: Piece): GraphicsContext {
       // Light enters the south side and leaves through the long side facing north-east; the thick
       // western base stops it. The strokes hint where red, green and blue go.
       shape
-        .poly([-20, -22, -20, 20, 22, 20])
+        .poly(PRISM)
         .fill({ color: 0xffffff, alpha: 0.18 })
         .stroke({ width: 2, color: GLASS_EDGE })
       shape.moveTo(-20, -22).lineTo(-20, 20).stroke({ width: 6, color: SHADE })
@@ -200,7 +198,7 @@ function draw(piece: Piece): GraphicsContext {
     case 'prismirror':
       // The prism's mirror image, slightly reddish, with its thick base to the east.
       shape
-        .poly([20, -22, 20, 20, -22, 20])
+        .poly(PRISMIRROR)
         .fill({ color: PRISMIRROR_GLASS, alpha: 0.24 })
         .stroke({ width: 2, color: PRISMIRROR_EDGE })
       shape.moveTo(20, -22).lineTo(20, 20).stroke({ width: 6, color: SHADE })
@@ -238,7 +236,7 @@ function draw(piece: Piece): GraphicsContext {
       // A glowing capsule with a terminal on top and a bolt on its side.
       shape.rect(-5, -22, 10, 6).fill(FUEL_EDGE)
       shape.roundRect(-12, -17, 24, 36, 7).fill(FUEL).stroke({ width: 2, color: FUEL_EDGE })
-      shape.poly([3, -11, -5, 3, 0, 3, -3, 13, 6, -1, 1, -1]).fill(EYE)
+      shape.poly(BOLT).fill(EYE)
       break
     case 'blackHole':
       shape.circle(0, 0, 25).fill({ color: HOLE_GLOW, alpha: 0.22 })
@@ -267,10 +265,7 @@ function draw(piece: Piece): GraphicsContext {
     }
     case 'ship':
       // Its nose points the way it flies, north in rotation 0.
-      shape
-        .poly([0, -24, 11, 6, 21, 18, 0, 11, -21, 18, -11, 6])
-        .fill(SHIP)
-        .stroke({ width: 2, color: SHIP_EDGE })
+      shape.poly(SHIP_HULL).fill(SHIP).stroke({ width: 2, color: SHIP_EDGE })
       shape.circle(0, -5, 5).fill(COCKPIT)
       break
     default: {
