@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'preact/hooks'
 import { t } from '../i18n'
-import { type BoardView, mountBoard } from '../view/board'
+import type { BoardView } from '../view/board'
 import type { BoardController } from '../view/controller'
 
 interface HostProps {
@@ -54,8 +54,14 @@ interface Props {
   readonly label: string
 }
 
-/** The game's board for one controller; the view mounts once and is destroyed with it. */
+/**
+ * The game's board for one controller; the view mounts once and is destroyed with it. The board
+ * and PixiJS load with the first level, so the menus before it come up without them.
+ */
 export function BoardCanvas({ controller, label }: Props) {
-  const mount = useCallback((element: HTMLElement) => mountBoard(element, controller), [controller])
+  const mount = useCallback(
+    async (element: HTMLElement) => (await import('../view/board')).mountBoard(element, controller),
+    [controller],
+  )
   return <CanvasHost mount={mount} label={label} describedBy="controls-hint" />
 }
