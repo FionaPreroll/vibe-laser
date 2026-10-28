@@ -7,6 +7,9 @@ export const en = {
   loading: 'Loading…',
   storageBlocked:
     'This browser does not let the game save, so progress lasts only until the page is closed.',
+  updateReady: 'A new version of the game is ready.',
+  updateReload: 'Reload now',
+  updateLater: 'Later',
   back: 'Back',
   help: 'Help',
   settings: 'Settings',
@@ -285,6 +288,9 @@ export const de: Record<MessageKey, string> = {
   loading: 'Lädt …',
   storageBlocked:
     'Dieser Browser lässt das Spiel nicht speichern, der Fortschritt hält also nur, bis die Seite geschlossen wird.',
+  updateReady: 'Eine neue Version des Spiels ist bereit.',
+  updateReload: 'Jetzt neu laden',
+  updateLater: 'Später',
   back: 'Zurück',
   help: 'Hilfe',
   settings: 'Einstellungen',
