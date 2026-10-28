@@ -315,6 +315,16 @@ describe('LevelEditor', () => {
     expect(screen.getByText('The solution solves the level.')).toBeTruthy()
   })
 
+  it('draws the level in the look of its pack, while editing and while testing', async () => {
+    await shelf.updatePack('my-1', { ...PACK, skin: 'neon' })
+    open()
+    await editorShown()
+    expect(editorMount.mock.lastCall?.[2]).toMatchObject({ id: 'neon' })
+    await click('Test')
+    await testRun()
+    expect(gameMount.mock.lastCall?.[2]).toMatchObject({ id: 'neon' })
+  })
+
   it('goes back to editing from a test, with Exit, the banner or the dialog', async () => {
     open()
     await editorShown()

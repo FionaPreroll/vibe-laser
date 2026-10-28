@@ -109,6 +109,7 @@ export function PlayScreen({ level: id, book, speaker, paused, onHelp }: Props) 
       <div class="stage">
         <BoardCanvas
           controller={controller}
+          skin={pack.file.skin}
           label={t('board', { name, columns: puzzle.width, rows: puzzle.height })}
         />
       </div>

@@ -1,6 +1,5 @@
 import { t } from '../i18n'
-import type { ProfileBook } from '../persistence/profiles'
-import { ART_STYLES } from '../view/display'
+import { LOOKS, type ProfileBook } from '../persistence/profiles'
 import { LanguageSwitch } from './LanguageSwitch'
 import { Modal } from './Modal'
 
@@ -68,18 +67,22 @@ export function SettingsDialog({ book, onClose }: Props) {
           <span>{t('artLabel')}</span>
           <select
             value={settings.art}
+            aria-describedby="art-hint"
             onChange={(event) => {
-              const art = ART_STYLES.find((style) => style === event.currentTarget.value)
+              const art = LOOKS.find((look) => look === event.currentTarget.value)
               if (art !== undefined) void book.updateSettings({ art })
             }}
           >
-            {ART_STYLES.map((style) => (
-              <option key={style} value={style}>
-                {t(`art.${style}`)}
+            {LOOKS.map((look) => (
+              <option key={look} value={look}>
+                {t(`art.${look}`)}
               </option>
             ))}
           </select>
         </label>
+        <p id="art-hint" class="hint">
+          {t('artHint')}
+        </p>
         <LanguageSwitch />
       </div>
     </Modal>

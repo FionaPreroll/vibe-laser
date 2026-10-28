@@ -74,8 +74,10 @@ export const en = {
   reducedMotion: 'Reduce motion',
   colorBlind: 'Color-blind mode',
   artLabel: 'Look',
+  'art.pack': "Pack's choice",
   'art.flat': 'Plain',
   'art.neon': 'Neon',
+  artHint: "With the pack's choice, each level pack shows in the look it was made for.",
   colorBlindHint:
     'Pieces show their colors as letters, R, G and B, and beams draw each color as a line of its own: red, green and blue side by side.',
 
@@ -188,6 +190,7 @@ export const en = {
   removeSkill: 'Remove the last skill',
   confirmRemoveSkill: 'Remove skill {number} and its levels?',
   selectSkillLabel: 'Players choose a skill first',
+  packSkinHint: 'Players see the levels in this look, unless they chose a look of their own.',
   savePack: 'Save pack settings',
   saved: 'Saved',
   unsaved: 'Unsaved changes',
@@ -369,8 +372,11 @@ export const de: Record<MessageKey, string> = {
   reducedMotion: 'Weniger Bewegung',
   colorBlind: 'Farbenblind-Modus',
   artLabel: 'Aussehen',
+  'art.pack': 'Wahl des Packs',
   'art.flat': 'Schlicht',
   'art.neon': 'Neon',
+  artHint:
+    'Mit der Wahl des Packs zeigt sich jedes Level-Pack im Aussehen, für das es gemacht ist.',
   colorBlindHint:
     'Teile zeigen ihre Farben als Buchstaben, R, G und B, und Strahlen zeichnen jede Farbe als eigene Linie: Rot, Grün und Blau nebeneinander.',
 
@@ -485,6 +491,7 @@ export const de: Record<MessageKey, string> = {
   removeSkill: 'Letzte Stufe entfernen',
   confirmRemoveSkill: 'Stufe {number} mit ihren Leveln entfernen?',
   selectSkillLabel: 'Spieler wählen zuerst eine Stufe',
+  packSkinHint: 'Spieler sehen die Level in diesem Aussehen, außer sie haben selbst eines gewählt.',
   savePack: 'Pack-Einstellungen speichern',
   saved: 'Gespeichert',
   unsaved: 'Ungespeicherte Änderungen',

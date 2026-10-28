@@ -281,6 +281,7 @@ function Workbench({ source, skill, slot, saved, speaker, paused, onHelp }: Work
         <TestRun
           editor={editor}
           packRules={source.file.rules}
+          skin={source.file.skin}
           speaker={speaker}
           paused={paused}
           onHelp={onHelp}
@@ -292,6 +293,7 @@ function Workbench({ source, skill, slot, saved, speaker, paused, onHelp }: Work
             <EditorCanvas
               key={`${geometry.columns}x${geometry.rows}x${geometry.toolboxSize}`}
               editor={editor}
+              skin={source.file.skin}
               label={t('editorBoard', { columns: level.size[0], rows: level.size[1] })}
             />
             <p id="editor-hint" class="hint">

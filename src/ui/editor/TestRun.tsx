@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef } from 'preact/hooks'
 import { listen, type Speaker } from '../../audio/director'
 import { puzzleOf, rulesOf } from '../../content/level'
+import type { ArtStyle } from '../../content/schema'
 import { playSolution, recordMoves, recordSolution } from '../../content/solution'
 import type { Rules } from '../../core/rules'
 import type { EditorController } from '../../editor/controller'
@@ -14,6 +15,7 @@ import { Hud } from '../Hud'
 interface Props {
   readonly editor: EditorController
   readonly packRules: Partial<Rules> | undefined
+  readonly skin: ArtStyle | undefined
   readonly speaker: Speaker
   /** Help or the settings are open over the board. */
   readonly paused: boolean
@@ -25,7 +27,7 @@ interface Props {
  * Plays the level as it stands, as players will. Solved, the moves that solved it can become the
  * level's solution: where each piece was left, in the order of the last moves.
  */
-export function TestRun({ editor, packRules, speaker, paused, onHelp, onClose }: Props) {
+export function TestRun({ editor, packRules, skin, speaker, paused, onHelp, onClose }: Props) {
   const level = useMemo(() => editor.level.value, [editor])
   const start = useMemo(() => puzzleOf(level), [level])
   const controller = useMemo(
@@ -72,6 +74,7 @@ export function TestRun({ editor, packRules, speaker, paused, onHelp, onClose }:
       <div class="stage">
         <BoardCanvas
           controller={controller}
+          skin={skin}
           label={t('board', {
             name: level.name.en || t('editorTitle'),
             columns: puzzle.width,

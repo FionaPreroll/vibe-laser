@@ -1,6 +1,12 @@
 import { useEffect, useState } from 'preact/hooks'
 import { SLOTS } from '../../content/packs'
-import { type LevelFile, type Names, type PackFile, packSchema } from '../../content/schema'
+import {
+  ART_STYLES,
+  type LevelFile,
+  type Names,
+  type PackFile,
+  packSchema,
+} from '../../content/schema'
 import { locale, names, t } from '../../i18n'
 import type { PackShelf } from '../../persistence/packs'
 import { slotOf } from '../../persistence/packs'
@@ -115,7 +121,7 @@ interface SettingsProps {
   readonly levels: ReadonlyMap<string, LevelFile> | undefined
 }
 
-/** Title, description and skills of a pack, saved together. */
+/** Title, description, skills and look of a pack, saved together. */
 function PackSettings({ source, levels }: SettingsProps) {
   const [file, setFile] = useState<PackFile>(source.file)
   const [status, setStatus] = useState<'idle' | 'saved' | 'invalid' | 'failed'>('idle')
@@ -243,6 +249,29 @@ function PackSettings({ source, levels }: SettingsProps) {
         />
         <span>{t('selectSkillLabel')}</span>
       </label>
+      <label class="field">
+        <span>{t('artLabel')}</span>
+        <select
+          value={file.skin ?? 'flat'}
+          aria-describedby="pack-skin-hint"
+          onChange={(event) => {
+            const skin = ART_STYLES.find((style) => style === event.currentTarget.value)
+            // Flat is the look of packs without a skin, so the file leaves it out.
+            change(({ skin: _, ...rest }) =>
+              skin === undefined || skin === 'flat' ? rest : { ...rest, skin },
+            )
+          }}
+        >
+          {ART_STYLES.map((style) => (
+            <option key={style} value={style}>
+              {t(`art.${style}`)}
+            </option>
+          ))}
+        </select>
+      </label>
+      <p id="pack-skin-hint" class="hint">
+        {t('packSkinHint')}
+      </p>
       <div class="dialog-buttons">
         <button type="submit" class="primary">
           {t('savePack')}

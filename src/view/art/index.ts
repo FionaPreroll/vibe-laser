@@ -1,4 +1,4 @@
-import type { ArtStyle } from '../display'
+import type { ArtStyle } from '../../content/schema'
 import { createFlatArt } from './flat'
 import { createNeonArt } from './neon'
 import type { ArtPack } from './types'

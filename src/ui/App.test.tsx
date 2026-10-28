@@ -7,7 +7,7 @@ import { DEFAULT_SETTINGS, type SaveData } from '../persistence/profiles'
 import { type KeyValueStore, memoryStore } from '../persistence/store'
 import { mountBoard } from '../view/board'
 import type { BoardController } from '../view/controller'
-import { artStyle, colorBlind } from '../view/display'
+import { chosenArt, colorBlind } from '../view/display'
 import { App, type Audio } from './App'
 
 vi.mock('../view/board', () => ({ mountBoard: vi.fn() }))
@@ -19,7 +19,7 @@ beforeEach(() => {
 })
 afterEach(() => {
   colorBlind.value = false
-  artStyle.value = 'flat'
+  chosenArt.value = 'pack'
   cleanup()
   vi.restoreAllMocks()
 })
@@ -221,7 +221,31 @@ describe('App', () => {
     })
     await waitFor(() => expect(mount).toHaveBeenCalledTimes(2))
     expect(mount.mock.calls[1]?.[2]).toMatchObject({ id: 'neon' })
-    expect(artStyle.value).toBe('neon')
+    expect(chosenArt.value).toBe('neon')
+  })
+
+  it('draws the levels of a pack in its skin, unless the player chose a look', async () => {
+    const level = await findLevel('tutorial/1/1')?.entry.load()
+    const pack = {
+      version: 1,
+      title: { en: 'Glow', de: 'Glühen' },
+      position: 100,
+      skills: [{ en: 'All', de: 'Alle' }],
+      selectSkill: true,
+      skin: 'neon',
+    }
+    const store = memoryStore({
+      packs: { version: 1, packs: [{ id: 'my-glow', pack, levels: { '1/1': level?.file } }] },
+    })
+    await start('#/play/my-glow/1/1', store)
+    await waitFor(() => expect(mount).toHaveBeenCalledOnce())
+    expect(mount.mock.calls[0]?.[2]).toMatchObject({ id: 'neon' })
+    await click('Settings')
+    await act(() => {
+      fireEvent.change(screen.getByLabelText('Look'), { target: { value: 'flat' } })
+    })
+    await waitFor(() => expect(mount).toHaveBeenCalledTimes(2))
+    expect(mount.mock.calls[1]?.[2]).toMatchObject({ id: 'flat' })
   })
 
   it('plays the sounds of the game at the volumes of the profile', async () => {

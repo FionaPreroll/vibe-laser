@@ -15,12 +15,16 @@ async function newPack(page: Page, title: string) {
   await page.getByRole('button', { name: 'Create' }).click()
 }
 
-test('makes a level, tests it, keeps the solution, and plays it from the pack list', async ({
+test('makes a level in a pack of its own look, tests it, and plays it from the pack list', async ({
   page,
 }) => {
   await newPack(page, 'Mine')
+  await page.getByRole('combobox', { name: 'Look' }).selectOption('neon')
+  await page.getByRole('button', { name: 'Save pack settings' }).click()
+  await expect(page.getByText('Saved', { exact: true })).toBeVisible()
   await page.getByRole('button', { name: '1. Empty', exact: true }).click()
   await boardReady(page)
+  await expect(page.locator('.board')).toHaveAttribute('data-art', 'neon')
   await enter(page, 'spinbutton', 'Columns', '6')
   await enter(page, 'spinbutton', 'Rows', '3')
   await enter(page, 'textbox', 'Name (English)', 'Corner')
@@ -57,6 +61,7 @@ test('makes a level, tests it, keeps the solution, and plays it from the pack li
   await expect(
     page.getByRole('application', { name: 'Corner: game board with 6 columns and 3 rows' }),
   ).toBeVisible()
+  await expect(page.locator('.board')).toHaveAttribute('data-art', 'neon')
 })
 
 test('exports a pack and imports it as a copy', async ({ page }, testInfo) => {

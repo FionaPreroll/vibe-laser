@@ -1,7 +1,11 @@
 import { computed, type ReadonlySignal, type Signal, signal } from '@preact/signals-core'
 import { z } from 'zod'
+import { ART_STYLES } from '../content/schema'
 import { SaveQueue } from './queue'
 import type { KeyValueStore } from './store'
+
+/** Looks players choose from: 'pack' draws each pack in its own skin, the others every pack. */
+export const LOOKS = ['pack', ...ART_STYLES] as const
 
 const settingsSchema = z
   .object({
@@ -10,8 +14,8 @@ const settingsSchema = z
     reducedMotion: z.boolean(),
     // Added after the first saves, which load with it switched off.
     colorBlind: z.boolean().default(false),
-    // The art pack every board draws with; older saves load with the plain one.
-    art: z.enum(['flat', 'neon']).default('flat'),
+    // The look of every board; older saves load following each pack's skin.
+    art: z.enum(LOOKS).default('pack'),
   })
   .strict()
 
@@ -53,7 +57,7 @@ export const DEFAULT_SETTINGS: Settings = {
   musicVolume: 0.5,
   reducedMotion: false,
   colorBlind: false,
-  art: 'flat',
+  art: 'pack',
 }
 
 const KEY = 'save'

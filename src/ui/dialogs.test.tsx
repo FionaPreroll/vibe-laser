@@ -133,7 +133,13 @@ describe('SettingsDialog', () => {
     ])
     expect(colors.getAttribute('aria-describedby')).toBe('color-blind-hint')
     const look = screen.getByLabelText('Look') as HTMLSelectElement
-    expect([...look.options].map((option) => option.text)).toEqual(['Plain', 'Neon'])
+    expect([...look.options].map((option) => option.text)).toEqual([
+      "Pack's choice",
+      'Plain',
+      'Neon',
+    ])
+    expect(look.value).toBe('pack')
+    expect(look.getAttribute('aria-describedby')).toBe('art-hint')
     await act(() => {
       fireEvent.input(sound, { target: { value: '30' } })
       fireEvent.input(music, { target: { value: '0' } })
