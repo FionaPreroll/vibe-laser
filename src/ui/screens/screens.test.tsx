@@ -24,7 +24,7 @@ describe('PacksScreen', () => {
     render(<PacksScreen solved={new Set(['tutorial/1/1', 'tutorial/3/2'])} />)
     const tutorial = button(/^Tutorial/)
     expect(tutorial.textContent).toContain('Every part of the game, one level at a time.')
-    expect(tutorial.textContent).toContain('2 of 18 solved')
+    expect(tutorial.textContent).toContain('2 of 23 solved')
     fireEvent.click(tutorial)
     expect(shown.value).toEqual({ name: 'skills', pack: 'tutorial' })
   })

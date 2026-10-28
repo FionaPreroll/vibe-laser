@@ -3,13 +3,14 @@ import { HEADINGS } from '../core/actors/kinds'
 import type { PartKind } from '../core/board'
 import { parseColor } from '../core/color'
 import { parseCellName } from '../core/grid'
-import { COLORED_KINDS } from '../core/notation'
+import { COLORED_KINDS, INNER_COLORED_KINDS } from '../core/notation'
 import { ROTATING_KINDS } from '../core/parts'
 
 /*
  * The files of level packs, after the spec's JSON proposal: one pack.json per pack and one file per
  * level. Colors are the letters of the switched-on R, G and B switches, so "rb" is magenta, and
- * cells are named as in the original, row letter plus column number.
+ * cells are named as in the original, row letter plus column number. A complex keeps its outer
+ * color in "rgb" and its inner color in "inner".
  */
 
 // A record, so that a new kind of piece fails the type check until level files may use it.
@@ -26,6 +27,11 @@ const KIND_NAMES = Object.keys({
   colorConverter: 0,
   filter: 0,
   polarizer: 0,
+  bender: 0,
+  splicer: 0,
+  prismirror: 0,
+  selector: 0,
+  complex: 0,
   coin: 0,
   antiCoin: 0,
   explosive: 0,
@@ -59,6 +65,8 @@ const piece = {
   /** Clockwise 45° steps; for actors the way they head. */
   rot: rotation.optional(),
   rgb: color.optional(),
+  /** The inner color of a complex. */
+  inner: color.optional(),
   /** Defaults: fixed on the board, free in the toolbox. */
   moveable: z.boolean().optional(),
   rotateable: z.boolean().optional(),
@@ -132,6 +140,8 @@ export interface LevelProblem {
     | 'taken'
     | 'needsColor'
     | 'noColor'
+    | 'needsInner'
+    | 'noInner'
     | 'noRotation'
     | 'heading'
     | 'noCoin'
@@ -157,6 +167,11 @@ const NAMES: Record<PartKind, string> = {
   colorConverter: 'a color converter',
   filter: 'a filter',
   polarizer: 'a polarizer',
+  bender: 'a bender',
+  splicer: 'a splicer',
+  prismirror: 'a prismirror',
+  selector: 'a selector',
+  complex: 'a complex',
   coin: 'a coin',
   antiCoin: 'an anti-coin',
   explosive: 'an explosive',
@@ -171,6 +186,7 @@ type Piece = {
   readonly type: PartKind
   readonly rot?: number
   readonly rgb?: string
+  readonly inner?: string
   readonly moveable?: boolean
   readonly rotateable?: boolean
 }
@@ -197,6 +213,12 @@ function checkLevel(level: z.output<typeof levelObject>, context: z.RefinementCt
     }
     if (!COLORED_KINDS.has(kind) && piece.rgb !== undefined) {
       issue([...path, 'rgb'], `${what} has no color`, { key: 'noColor', kind })
+    }
+    if (INNER_COLORED_KINDS.has(kind) && piece.inner === undefined) {
+      issue([...path, 'inner'], `${what} needs an inner color`, { key: 'needsInner', kind })
+    }
+    if (!INNER_COLORED_KINDS.has(kind) && piece.inner !== undefined) {
+      issue([...path, 'inner'], `${what} has no inner color`, { key: 'noInner', kind })
     }
     const turn = piece.rot ?? 0
     if (!ROTATING_KINDS.has(kind) && turn !== 0)

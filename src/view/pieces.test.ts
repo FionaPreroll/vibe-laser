@@ -108,6 +108,21 @@ describe('PieceLayer', () => {
     expect(layer.children.at(-1)).toBe(turned)
   })
 
+  it('draws a complex anew once its inner color changes', () => {
+    const complex = puzzleOf('CX0r/g Cr')
+    const complexGeometry = sceneGeometry(complex.width, complex.height, complex.toolboxSize)
+    const layer = new PieceLayer(createFlatArt())
+    layer.show(complex, new Set(), complexGeometry)
+    const before = layer.children[0]
+    const recolored = replaceItem(complex, {
+      ...(complex.items[0] as Item),
+      piece: { kind: 'complex', rotation: 0, color: 1, inner: 4 },
+    })
+    layer.show(recolored, new Set(), complexGeometry)
+    expect(layer.children).toHaveLength(2)
+    expect(layer.children).not.toContain(before)
+  })
+
   it('makes a turned, see-through copy of a piece for dragging', () => {
     const layer = new PieceLayer(createFlatArt())
     const item = puzzle.items[1]

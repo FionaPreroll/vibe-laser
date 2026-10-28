@@ -1,0 +1,14 @@
+{
+  "$schema": "../../../level.schema.json",
+  "version": 1,
+  "name": { "en": "Inside and Out", "de": "Innen und außen" },
+  "note": "Red, the outer color, turns; blue, the inner one, goes on; green stops, so A2 sees pure blue.",
+  "size": [5, 4],
+  "objects": [
+    { "type": "coin", "pos": "A2", "rgb": "b" },
+    { "type": "coin", "pos": "A4", "rgb": "r" },
+    { "type": "laser", "pos": "D2", "rot": 0, "rgb": "rgb" }
+  ],
+  "toolbox": [{ "type": "complex", "rot": 4, "rgb": "r", "inner": "b" }],
+  "solution": [{ "piece": 0, "pos": "C2", "rot": 0 }]
+}

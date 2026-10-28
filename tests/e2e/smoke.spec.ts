@@ -55,6 +55,20 @@ test('solves the first level with the mouse', async ({ page }) => {
   await expect(page.getByRole('dialog', { name: 'Level solved' })).toBeVisible()
 })
 
+test('turns two beams with one bender, a part of the expansion packs', async ({ page }) => {
+  const errors = watchErrors(page)
+  await page.goto('./#/play/tutorial/4/1')
+  const bender = await centerOf(page, { slot: 0 })
+  const target = await centerOf(page, { cell: [2, 2] })
+  await page.mouse.move(bender.x, bender.y)
+  await page.mouse.down()
+  await page.mouse.move(target.x, target.y, { steps: 12 })
+  await page.mouse.up()
+
+  await expect(page.getByRole('dialog', { name: 'Level solved' })).toBeVisible()
+  expect(errors).toEqual([])
+})
+
 test('undoes and redoes a move with the buttons', async ({ page }) => {
   await page.goto(FIRST_LEVEL)
   const undo = page.getByRole('button', { name: 'Undo' })

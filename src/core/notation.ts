@@ -10,7 +10,7 @@ import { ROTATING_KINDS } from './parts'
  * row, cells separated by spaces, "." for an empty cell. A part is its abbreviation from the spec,
  * then its rotation 0 to 7 if it has one, then its color letters: "L2r" is a red laser firing east,
  * "M5" a mirror in rotation 5, "Fg" a green filter, "PO2b" a blue polarizer pointing east,
- * "Crb" a magenta coin, "A" an anti-coin.
+ * "Crb" a magenta coin, "A" an anti-coin. A complex adds its inner color after a slash: "CX0r/gb".
  */
 
 const ABBREVIATIONS: Record<PartKind, string> = {
@@ -26,6 +26,11 @@ const ABBREVIATIONS: Record<PartKind, string> = {
   colorConverter: 'CC',
   filter: 'F',
   polarizer: 'PO',
+  bender: 'BE',
+  splicer: 'SP',
+  prismirror: 'PM',
+  selector: 'SE',
+  complex: 'CX',
   coin: 'C',
   antiCoin: 'A',
   explosive: 'T',
@@ -38,14 +43,18 @@ const ABBREVIATIONS: Record<PartKind, string> = {
 const KINDS = new Map(
   Object.entries(ABBREVIATIONS).map(([kind, abbreviation]) => [abbreviation, kind as PartKind]),
 )
-/** Kinds that carry a color: lasers, filters, polarizers and coins. */
+/** Kinds that carry a color: lasers, filters, polarizers, selectors, complexes and coins. */
 export const COLORED_KINDS: ReadonlySet<PartKind> = new Set<PartKind>([
   'laser',
   'filter',
   'polarizer',
+  'selector',
+  'complex',
   'coin',
 ])
-const TOKEN = /^([A-Z]+)([0-7]?)([a-z]*)$/
+/** Kinds that carry an inner color besides their own: the complex. */
+export const INNER_COLORED_KINDS: ReadonlySet<PartKind> = new Set<PartKind>(['complex'])
+const TOKEN = /^([A-Z]+)([0-7]?)([a-z]*)(?:\/([a-z]+))?$/
 
 export function parseBoard(text: string): Board {
   const rows = text
@@ -71,7 +80,7 @@ export function parseBoard(text: string): Board {
 /** Reads one part such as "M5" or "Crb", or "." for none; `where` names it in error messages. */
 export function parsePiece(token: string, where = `"${token}"`): Piece | undefined {
   if (token === '.') return undefined
-  const [, abbreviation = '', digit = '', letters = ''] = TOKEN.exec(token) ?? []
+  const [, abbreviation = '', digit = '', letters = '', innerLetters] = TOKEN.exec(token) ?? []
   const kind = KINDS.get(abbreviation)
   if (kind === undefined) throw new SyntaxError(`${where} is not a part`)
   const rotates = ROTATING_KINDS.has(kind)
@@ -86,11 +95,19 @@ export function parsePiece(token: string, where = `"${token}"`): Piece | undefin
   if (colored !== (color !== 0)) {
     throw new SyntaxError(colored ? `${where} needs a color` : `${where} cannot have a color`)
   }
+  const inner = parseColor(innerLetters ?? '')
+  if (inner === undefined) throw new SyntaxError(`${where} has an unknown inner color`)
+  const twoColored = INNER_COLORED_KINDS.has(kind)
+  if (twoColored !== (inner !== 0)) {
+    throw new SyntaxError(
+      twoColored ? `${where} needs an inner color` : `${where} cannot have an inner color`,
+    )
+  }
   const rotation = rotates ? (Number(digit) as Direction) : 0
   if (HEADINGS[kind]?.includes(rotation) === false) {
     throw new SyntaxError(`${where} cannot head that way`)
   }
-  return { kind, rotation, color }
+  return twoColored ? { kind, rotation, color, inner } : { kind, rotation, color }
 }
 
 /** The text form of a board, columns aligned; parseBoard reads it back. */
@@ -113,5 +130,6 @@ export function formatBoard(board: Board): string {
 function formatPiece(piece: Piece | undefined): string {
   if (piece === undefined) return '.'
   const rotation = ROTATING_KINDS.has(piece.kind) ? String(piece.rotation) : ''
-  return ABBREVIATIONS[piece.kind] + rotation + colorLetters(piece.color)
+  const inner = piece.inner === undefined ? '' : `/${colorLetters(piece.inner)}`
+  return ABBREVIATIONS[piece.kind] + rotation + colorLetters(piece.color) + inner
 }

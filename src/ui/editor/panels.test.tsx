@@ -98,7 +98,7 @@ describe('ToolPanel and PalettePanel', () => {
     expect(editor.tool.value).toBe('paint')
     expect(editor.brush.value).toEqual({ type: 'blackHole' })
     expect(hole.getAttribute('aria-pressed')).toBe('true')
-    expect(screen.getAllByRole('button')).toHaveLength(20)
+    expect(screen.getAllByRole('button')).toHaveLength(25)
   })
 })
 
@@ -132,6 +132,29 @@ describe('PiecePanel', () => {
       fireEvent.click(checkbox('Blue'))
     })
     expect(editor.pieceAt(board(6))?.rgb).toBeUndefined()
+  })
+
+  it('switches the outer and the inner color of a complex apart', async () => {
+    const editor = new EditorController({
+      level: {
+        ...FIRST_LIGHT,
+        objects: [
+          ...FIRST_LIGHT.objects,
+          { type: 'complex', pos: 'C2', rot: 0, rgb: 'r', inner: 'g' },
+        ],
+      },
+    })
+    editor.selected.value = board(13)
+    render(<PiecePanel editor={editor} />)
+    expect(screen.getByText('Complex on C2')).toBeTruthy()
+    const outer = within(screen.getByRole('group', { name: 'Outer color' }))
+    const inner = within(screen.getByRole('group', { name: 'Inner color' }))
+    expect((inner.getByRole('checkbox', { name: 'Green' }) as HTMLInputElement).checked).toBe(true)
+    await act(() => {
+      fireEvent.click(inner.getByRole('checkbox', { name: 'Blue' }))
+      fireEvent.click(outer.getByRole('checkbox', { name: 'Green' }))
+    })
+    expect(editor.pieceAt(board(13))).toMatchObject({ rgb: 'rg', inner: 'gb' })
   })
 
   it('turns pieces and sets what players may do with them', async () => {

@@ -1,0 +1,15 @@
+{
+  "$schema": "../../../level.schema.json",
+  "version": 1,
+  "name": { "en": "Trident", "de": "Dreizack" },
+  "note": "C5 spins from the start; the splicer keeps it lit while it lights A3 and E3.",
+  "size": [5, 5],
+  "objects": [
+    { "type": "coin", "pos": "A3", "rgb": "b" },
+    { "type": "laser", "pos": "C1", "rot": 2, "rgb": "b" },
+    { "type": "coin", "pos": "C5", "rgb": "b" },
+    { "type": "coin", "pos": "E3", "rgb": "b" }
+  ],
+  "toolbox": [{ "type": "splicer", "rot": 0 }],
+  "solution": [{ "piece": 0, "pos": "C3", "rot": 6 }]
+}
