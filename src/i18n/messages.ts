@@ -161,7 +161,7 @@ export const en = {
   savePack: 'Save pack settings',
   saved: 'Saved',
   unsaved: 'Unsaved changes',
-  namesNeeded: 'Titles and skills need names in English and in German.',
+  namesNeeded: 'Every title, skill and description needs its English and its German text.',
   savingFailed: 'Saving did not work.',
   skillTab: '{number}. {name}',
   emptySlot: '{number}. Empty',
@@ -424,7 +424,8 @@ export const de: Record<MessageKey, string> = {
   savePack: 'Pack-Einstellungen speichern',
   saved: 'Gespeichert',
   unsaved: 'Ungespeicherte Änderungen',
-  namesNeeded: 'Titel und Stufen brauchen Namen auf Englisch und auf Deutsch.',
+  namesNeeded:
+    'Jeder Titel, jede Stufe und jede Beschreibung braucht den englischen und den deutschen Text.',
   savingFailed: 'Speichern hat nicht geklappt.',
   skillTab: '{number}. {name}',
   emptySlot: '{number}. Leer',

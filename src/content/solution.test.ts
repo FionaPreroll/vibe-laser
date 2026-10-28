@@ -1,13 +1,12 @@
 import { describe, expect, it } from 'vitest'
 import type { Command } from '../core/commands'
-import { itemById } from '../core/level'
 import { GameSession } from '../game/session'
 import { puzzleOf, rulesOf } from './level'
 import { findLevel } from './packs'
 import { type LevelFile, levelSchema } from './schema'
 import {
-  type LastMove,
   playSolution,
+  recordMoves,
   recordSolution,
   replaySolution,
   verifySolution,
@@ -39,20 +38,13 @@ async function tutorial(id: string): Promise<LevelFile> {
   return level.file
 }
 
-/** Runs commands on a session and notes the last move of each piece, as the editor's test does. */
-function recorder(session: GameSession) {
-  const moves = new Map<number, LastMove>()
-  const run = (command: Command) => {
-    expect(session.execute(command)).toBe(true)
-    const ids = command.kind === 'batch' ? [] : [command.item]
-    for (const id of ids) {
-      const item = itemById(session.state.value.puzzle, id)
-      if (item === undefined) continue
-      moves.delete(id)
-      moves.set(id, { tick: session.ticks, place: item.place, rotation: item.piece.rotation })
-    }
-  }
-  return { moves, run }
+/** Runs commands on a session while recordMoves notes the last move of each piece. */
+function recorder(level: LevelFile) {
+  const start = puzzleOf(level)
+  const session = new GameSession(start, rulesOf(level), 1)
+  const { moves, stop } = recordMoves(session, start)
+  const run = (command: Command) => expect(session.execute(command)).toBe(true)
+  return { session, moves, run, stop }
 }
 
 describe('playSolution', () => {
@@ -154,8 +146,7 @@ describe('recordSolution', () => {
       toolbox: [{ type: 'mirror', rot: 0, count: 2 }],
       solution: undefined,
     })
-    const session = sessionOf(level)
-    const { moves, run } = recorder(session)
+    const { moves, run } = recorder(level)
     run({ kind: 'move', item: 2, to: { area: 'board', cell: 11 } })
     run({ kind: 'move', item: 3, to: { area: 'board', cell: 14 } })
     run({ kind: 'move', item: 3, to: { area: 'toolbox', slot: 3 } })
@@ -176,8 +167,7 @@ describe('recordSolution', () => {
       toolbox: [],
       solution: undefined,
     })
-    const session = sessionOf(level)
-    const { moves, run } = recorder(session)
+    const { moves, run } = recorder(level)
     const [filter, mirror] = [1, 3]
     run({ kind: 'rotate', item: mirror, steps: 1 })
     run({ kind: 'move', item: mirror, to: { area: 'board', cell: 14 } })
@@ -188,10 +178,30 @@ describe('recordSolution', () => {
     ])
   })
 
+  it('notes moves of a batch, forgets them on a restart, and stops noting', () => {
+    const level = firstLight({
+      toolbox: [{ type: 'mirror', rot: 0, count: 2 }],
+      solution: undefined,
+    })
+    const { session, moves, run, stop } = recorder(level)
+    run({
+      kind: 'batch',
+      commands: [
+        { kind: 'move', item: 2, to: { area: 'board', cell: 11 } },
+        { kind: 'move', item: 3, to: { area: 'board', cell: 14 } },
+      ],
+    })
+    expect([...moves.keys()]).toEqual([2, 3])
+    session.restart()
+    expect(moves.size).toBe(0)
+    stop()
+    run({ kind: 'move', item: 2, to: { area: 'board', cell: 11 } })
+    expect(moves.size).toBe(0)
+  })
+
   it('waits where actors make the timing matter', async () => {
     const level = await tutorial('tutorial/3/2')
-    const session = sessionOf(level)
-    const { moves, run } = recorder(session)
+    const { session, moves, run } = recorder(level)
     for (let tick = 0; tick < 20; tick++) session.tick()
     const mirror = 4
     run({ kind: 'move', item: mirror, to: { area: 'board', cell: 0 } })

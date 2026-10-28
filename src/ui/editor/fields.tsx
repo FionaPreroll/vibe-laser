@@ -66,9 +66,15 @@ export function NumberField({ label, value, min, max, onCommit }: NumberProps) {
         value={text}
         onInput={(event) => setText(event.currentTarget.value)}
         onChange={(event) => {
-          const number = Number(event.currentTarget.value)
-          if (Number.isFinite(number)) onCommit(number)
-          else setText(String(value))
+          const input = event.currentTarget
+          // An emptied field keeps its value instead of becoming 0.
+          const number = input.value.trim() === '' ? Number.NaN : Number(input.value)
+          if (Number.isFinite(number)) {
+            onCommit(number)
+          } else {
+            input.value = String(value)
+            setText(String(value))
+          }
         }}
       />
     </label>

@@ -118,8 +118,9 @@ interface SettingsProps {
 function PackSettings({ source, levels }: SettingsProps) {
   const [file, setFile] = useState<PackFile>(source.file)
   const [status, setStatus] = useState<'idle' | 'saved' | 'invalid' | 'failed'>('idle')
-  const change = (next: PackFile) => {
-    setFile(next)
+  // Each change starts from the settings as they are, even between two renders.
+  const change = (edit: (current: PackFile) => PackFile) => {
+    setFile(edit)
     setStatus('idle')
   }
   const setName = (names: Names, locale: 'en' | 'de', value: string): Names => ({
@@ -127,16 +128,16 @@ function PackSettings({ source, levels }: SettingsProps) {
     [locale]: value,
   })
   const description = file.description ?? { en: '', de: '' }
-  const setDescription = (locale: 'en' | 'de', value: string) => {
-    const next = setName(description, locale, value)
-    const { description: _, ...rest } = file
-    change(next.en === '' && next.de === '' ? rest : { ...rest, description: next })
-  }
+  const setDescription = (locale: 'en' | 'de', value: string) =>
+    change(({ description, ...rest }) => {
+      const next = setName(description ?? { en: '', de: '' }, locale, value)
+      return next.en === '' && next.de === '' ? rest : { ...rest, description: next }
+    })
   const removeSkill = () => {
     const last = file.skills.length
     const used = [...(levels?.keys() ?? [])].some((key) => key.startsWith(`${last}/`))
     if (used && !confirm(t('confirmRemoveSkill', { number: last }))) return
-    change({ ...file, skills: file.skills.slice(0, -1) })
+    change((current) => ({ ...current, skills: current.skills.slice(0, -1) }))
   }
   const save = async () => {
     const parsed = packSchema.safeParse(file)
@@ -166,12 +167,16 @@ function PackSettings({ source, levels }: SettingsProps) {
         <TextField
           label={t('titleEn')}
           value={file.title.en}
-          onInput={(value) => change({ ...file, title: setName(file.title, 'en', value) })}
+          onInput={(value) =>
+            change((current) => ({ ...current, title: setName(current.title, 'en', value) }))
+          }
         />
         <TextField
           label={t('titleDe')}
           value={file.title.de}
-          onInput={(value) => change({ ...file, title: setName(file.title, 'de', value) })}
+          onInput={(value) =>
+            change((current) => ({ ...current, title: setName(current.title, 'de', value) }))
+          }
         />
       </div>
       <div class="field-pair">
@@ -188,12 +193,12 @@ function PackSettings({ source, levels }: SettingsProps) {
       </div>
       {file.skills.map((skill, index) => {
         const setSkill = (locale: 'en' | 'de', value: string) =>
-          change({
-            ...file,
-            skills: file.skills.map((each, at) =>
+          change((current) => ({
+            ...current,
+            skills: current.skills.map((each, at) =>
               at === index ? setName(each, locale, value) : each,
             ),
-          })
+          }))
         return (
           <div class="field-pair" key={index}>
             <TextField
@@ -213,7 +218,12 @@ function PackSettings({ source, levels }: SettingsProps) {
         <button
           type="button"
           disabled={file.skills.length >= 4}
-          onClick={() => change({ ...file, skills: [...file.skills, names('defaultSkill')] })}
+          onClick={() =>
+            change((current) => ({
+              ...current,
+              skills: [...current.skills, names('defaultSkill')],
+            }))
+          }
         >
           {t('addSkill')}
         </button>
@@ -225,7 +235,10 @@ function PackSettings({ source, levels }: SettingsProps) {
         <input
           type="checkbox"
           checked={file.selectSkill}
-          onChange={(event) => change({ ...file, selectSkill: event.currentTarget.checked })}
+          onChange={(event) => {
+            const selectSkill = event.currentTarget.checked
+            change((current) => ({ ...current, selectSkill }))
+          }}
         />
         <span>{t('selectSkillLabel')}</span>
       </label>

@@ -97,8 +97,10 @@ export function PiecePanel({ editor }: { readonly editor: EditorController }) {
   const color = parseColor(piece.rgb ?? '') ?? 0
   const headings = HEADINGS[kind]
   const setColor = (letter: string, on: boolean) => {
+    // The color as it is now, which another switch may have changed since this render.
+    const current = editor.pieceAt(place)?.rgb ?? ''
     const letters = PRIMARIES.map((primary) => primary.letter).filter((each) =>
-      each === letter ? on : (piece.rgb ?? '').includes(each),
+      each === letter ? on : current.includes(each),
     )
     editor.change(place, { rgb: letters.length > 0 ? letters.join('') : undefined })
   }

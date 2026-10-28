@@ -40,23 +40,22 @@ type Loaded = { readonly level: LevelFile | undefined } | { readonly failed: tru
  * own, keyed by the slot, as the editor's undo history belongs to one level.
  */
 export function LevelEditor({ pack: id, skill, slot, shelf, ...rest }: Props) {
-  const source = sourceOf(id, shelf)
+  // One source for the screen's life: a new one would make a new editor and lose its history.
+  const source = useMemo(() => sourceOf(id, shelf), [id, shelf])
   const [loaded, setLoaded] = useState<Loaded>()
   useEffect(() => {
     let current = true
-    sourceOf(id, shelf)
-      ?.levels()
-      .then(
-        (levels) => current && setLoaded({ level: levels.get(slotOf(skill, slot)) }),
-        (error: unknown) => {
-          console.error('The level could not be loaded', error)
-          if (current) setLoaded({ failed: true })
-        },
-      )
+    source?.levels().then(
+      (levels) => current && setLoaded({ level: levels.get(slotOf(skill, slot)) }),
+      (error: unknown) => {
+        console.error('The level could not be loaded', error)
+        if (current) setLoaded({ failed: true })
+      },
+    )
     return () => {
       current = false
     }
-  }, [id, skill, slot, shelf])
+  }, [source, skill, slot])
 
   const inRange = skill <= (source?.file.skills.length ?? 0) && slot >= 1 && slot <= SLOTS
   if (source === undefined || !inRange) return <Missing />

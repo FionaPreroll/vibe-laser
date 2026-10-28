@@ -43,6 +43,12 @@ describe('i18n', () => {
     expect(localStorage.getItem(KEY)).toBe('de')
   })
 
+  it('gives a text in every language, for content that keeps both', async () => {
+    const { names, setLocale } = await load()
+    setLocale('de')
+    expect(names('defaultSkill')).toEqual({ en: 'Levels', de: 'Level' })
+  })
+
   it('keeps working when storage is blocked', async () => {
     vi.spyOn(Storage.prototype, 'getItem').mockImplementation(() => {
       throw new Error('blocked')
