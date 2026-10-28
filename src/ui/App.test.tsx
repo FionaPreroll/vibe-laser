@@ -270,6 +270,14 @@ describe('App', () => {
     await waitFor(async () => expect(await solvedIn(store)).toEqual(['my-pack/1/4']))
   })
 
+  it('opens the level editor from the header, loading it on demand', async () => {
+    await start()
+    await click('Level editor')
+    expect(screen.getByText('Loading…')).toBeTruthy()
+    expect(await screen.findByRole('heading', { name: 'Level editor' })).toBeTruthy()
+    expect(screen.getByRole('heading', { name: 'Your packs' })).toBeTruthy()
+  })
+
   it('follows the address, as with the back button', async () => {
     await start()
     await act(() => {

@@ -19,6 +19,13 @@ export type Screen =
 
 const PACKS: Screen = { name: 'packs' }
 
+/** The editor's screens, which load on demand. */
+export type EditorScreen = Extract<Screen, { name: 'editor' | 'editPack' | 'editLevel' }>
+
+export function isEditorScreen(screen: Screen): screen is EditorScreen {
+  return screen.name === 'editor' || screen.name === 'editPack' || screen.name === 'editLevel'
+}
+
 /** The screen for an address such as "#/play/tutorial/1/3"; the pack list for anything else. */
 export function parseHash(hash: string): Screen {
   const parts = hash.replace(/^#\/?/, '').split('/').filter(Boolean)

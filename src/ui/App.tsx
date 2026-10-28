@@ -7,12 +7,9 @@ import { t } from '../i18n'
 import { PackShelf } from '../persistence/packs'
 import { ProfileBook } from '../persistence/profiles'
 import { browserStore, type KeyValueStore, memoryStore } from '../persistence/store'
-import { EditorHome } from './editor/EditorHome'
-import { LevelEditor } from './editor/LevelEditor'
-import { PackEditor } from './editor/PackEditor'
 import { HelpDialog } from './HelpDialog'
 import { LanguageSwitch } from './LanguageSwitch'
-import { followAddress, navigate, screen } from './router'
+import { followAddress, isEditorScreen, navigate, screen } from './router'
 import { SettingsDialog } from './SettingsDialog'
 import { AboutScreen } from './screens/AboutScreen'
 import { LevelsScreen } from './screens/LevelsScreen'
@@ -34,6 +31,10 @@ interface Props {
 }
 
 type Overlay = 'help' | 'settings' | undefined
+
+/** The editor loads on demand, so players who only play do not download it. */
+type EditorModule = typeof import('./editor/EditorScreens')
+const loadEditor = (): Promise<EditorModule> => import('./editor/EditorScreens')
 
 interface Saves {
   readonly book: ProfileBook
@@ -70,6 +71,7 @@ export function App({ store, audio }: Props) {
   const sound = useMemo(() => audio ?? new Synth(), [audio])
   const [opened, setOpened] = useState<Saves>()
   const [overlay, setOverlay] = useState<Overlay>()
+  const [editor, setEditor] = useState<EditorModule>()
 
   useEffect(() => followAddress(), [])
   useEffect(() => {
@@ -87,6 +89,10 @@ export function App({ store, audio }: Props) {
   }, [sound])
   const book = opened?.book
   const shelf = opened?.shelf
+  const editing = isEditorScreen(screen.value)
+  useEffect(() => {
+    if (editing && editor === undefined) void loadEditor().then(setEditor)
+  }, [editing, editor])
   useEffect(() => {
     if (shelf === undefined) return
     const stop = effect(() => {
@@ -157,23 +163,18 @@ export function App({ store, audio }: Props) {
           />
         )}
         {current.name === 'profiles' && <ProfilesScreen book={book} />}
-        {current.name === 'editor' && shelf && <EditorHome shelf={shelf} />}
-        {current.name === 'editPack' && shelf && (
-          <PackEditor key={current.pack} pack={current.pack} shelf={shelf} />
-        )}
-        {current.name === 'editLevel' && shelf && (
-          // One editor per slot: its undo history belongs to one level.
-          <LevelEditor
-            key={`${current.pack}/${current.skill}/${current.slot}`}
-            pack={current.pack}
-            skill={current.skill}
-            slot={current.slot}
-            shelf={shelf}
-            speaker={sound}
-            paused={overlay !== undefined}
-            onHelp={() => setOverlay('help')}
-          />
-        )}
+        {isEditorScreen(current) &&
+          (editor && shelf ? (
+            <editor.EditorScreens
+              screen={current}
+              shelf={shelf}
+              speaker={sound}
+              paused={overlay !== undefined}
+              onHelp={() => setOverlay('help')}
+            />
+          ) : (
+            <p class="loading">{t('loading')}</p>
+          ))}
         {current.name === 'about' && <AboutScreen />}
       </main>
       {overlay === 'help' && <HelpDialog onClose={closeOverlay} />}
