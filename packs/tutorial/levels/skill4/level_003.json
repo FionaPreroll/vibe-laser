@@ -1,0 +1,15 @@
+{
+  "$schema": "../../../level.schema.json",
+  "version": 1,
+  "name": { "en": "Mirror Image", "de": "Spiegelbild" },
+  "note": "Rainbow mirrored: the prism turns green and blue the wrong way, the prismirror the right way.",
+  "size": [5, 4],
+  "objects": [
+    { "type": "coin", "pos": "A2", "rgb": "g" },
+    { "type": "coin", "pos": "A4", "rgb": "r" },
+    { "type": "coin", "pos": "C1", "rgb": "b" },
+    { "type": "laser", "pos": "D4", "rot": 0, "rgb": "rgb" }
+  ],
+  "toolbox": [{ "type": "prism", "rot": 0 }, { "type": "prismirror", "rot": 2 }],
+  "solution": [{ "piece": 1, "pos": "C4", "rot": 0 }]
+}

@@ -97,7 +97,7 @@ export class PieceLayer extends Container {
   }
 }
 
-/** The art depends on kind and color; rotation only turns the graphic. */
+/** The art depends on kind and colors; rotation only turns the graphic. */
 function looksAlike(a: Piece, b: Piece): boolean {
-  return a.kind === b.kind && a.color === b.color
+  return a.kind === b.kind && a.color === b.color && a.inner === b.inner
 }

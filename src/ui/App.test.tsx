@@ -65,7 +65,7 @@ describe('App', () => {
     render(<App store={memoryStore()} audio={{ play() {}, unlock() {}, setVolumes() {} }} />)
     expect(screen.getByText('Loading…')).toBeTruthy()
     expect(await screen.findByRole('heading', { name: 'Level packs' })).toBeTruthy()
-    expect(button(/^Tutorial/).textContent).toContain('0 of 18 solved')
+    expect(button(/^Tutorial/).textContent).toContain('0 of 23 solved')
     expect(button('Profile: Player')).toBeTruthy()
   })
 
