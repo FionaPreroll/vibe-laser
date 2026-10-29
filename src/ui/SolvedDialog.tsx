@@ -1,5 +1,9 @@
 import { useEffect, useRef } from 'preact/hooks'
 import { t } from '../i18n'
+import { useAfter } from './pause'
+
+/** Long enough to watch the coins spin before the board goes behind the dialog. */
+export const SOLVED_PAUSE_MS = 1500
 
 interface Props {
   /** Absent once every level of the pack is solved. */
@@ -8,13 +12,15 @@ interface Props {
   readonly onReplay: () => void
 }
 
-/** Shown once every coin spins; the board stays locked behind it. */
+/** Shown a moment after every coin spins; the board stays locked behind it. */
 export function SolvedDialog({ onNext, onLevels, onReplay }: Props) {
   const first = useRef<HTMLButtonElement>(null)
+  const shown = useAfter(SOLVED_PAUSE_MS)
   useEffect(() => {
-    first.current?.focus()
-  }, [])
+    if (shown) first.current?.focus()
+  }, [shown])
 
+  if (!shown) return null
   return (
     <div class="dialog-backdrop">
       <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="solved-title">
