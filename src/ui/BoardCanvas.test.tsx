@@ -53,12 +53,10 @@ describe('BoardCanvas', () => {
     await act(() => {
       artStyle.value = 'neon'
     })
-    await waitFor(() => expect(destroy).toHaveBeenCalledOnce())
-    expect(mount).toHaveBeenLastCalledWith(
-      expect.any(HTMLElement),
-      game,
-      expect.objectContaining({ id: 'neon' }),
-    )
+    await waitFor(() => expect(mount).toHaveBeenCalledTimes(2))
+    expect(destroy).toHaveBeenCalledOnce()
+    expect(mount.mock.calls[1]?.[1]).toBe(game)
+    expect(mount.mock.calls[1]?.[2]).toMatchObject({ id: 'neon' })
   })
 
   it('destroys a board that finishes mounting after the canvas is gone', async () => {

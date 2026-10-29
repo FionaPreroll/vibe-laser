@@ -40,3 +40,4 @@ All changes players can notice are listed here. The format follows [Keep a Chang
 ### Changed
 
 - On computers without graphics acceleration, the board leaves out edge smoothing and so runs twice as smoothly.
+- The game starts faster: the board's graphics load only when the first level opens.

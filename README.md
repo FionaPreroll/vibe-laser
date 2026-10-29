@@ -96,6 +96,8 @@ Playwright needs a Chromium: run `pnpm exec playwright install chromium` once, o
 
 TypeScript 7, PixiJS 8 for the board, Preact with Signals for the interface around it, Vite 8, Vitest 5, Playwright and Biome 2.
 
+The first download holds the menus only. The board with PixiJS loads when the first level opens (`BoardCanvas` imports `src/view/board.ts` and the art packs on demand), and the editor when it opens; the service worker keeps both for later visits.
+
 ## Project layout
 
 ```
