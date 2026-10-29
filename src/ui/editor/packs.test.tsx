@@ -182,6 +182,25 @@ describe('PackEditor', () => {
     await waitFor(() => expect(shelf.find('my-1')?.pack).not.toHaveProperty('description'))
   })
 
+  it('saves the look the levels are made for, and leaves the plain one out of the file', async () => {
+    await shelf.create(PACK)
+    render(<PackEditor pack="my-1" shelf={shelf} />)
+    const look = screen.getByRole('combobox', { name: 'Look' }) as HTMLSelectElement
+    expect([...look.options].map((option) => option.text)).toEqual(['Plain', 'Neon'])
+    expect(look.value).toBe('flat')
+    expect(look.getAttribute('aria-describedby')).toBe('pack-skin-hint')
+    await act(() => {
+      fireEvent.change(look, { target: { value: 'neon' } })
+    })
+    await click('Save pack settings')
+    await waitFor(() => expect(shelf.find('my-1')?.pack.skin).toBe('neon'))
+    await act(() => {
+      fireEvent.change(look, { target: { value: 'flat' } })
+    })
+    await click('Save pack settings')
+    await waitFor(() => expect(shelf.find('my-1')?.pack).not.toHaveProperty('skin'))
+  })
+
   it('adds skills up to four and removes the last, asking when it has levels', async () => {
     await shelf.create(PACK)
     await shelf.saveLevel('my-1', 2, 1, LEVEL)

@@ -77,6 +77,13 @@
       "default": true,
       "type": "boolean"
     },
+    "skin": {
+      "type": "string",
+      "enum": [
+        "flat",
+        "neon"
+      ]
+    },
     "rules": {
       "type": "object",
       "properties": {

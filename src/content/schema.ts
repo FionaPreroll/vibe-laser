@@ -50,6 +50,10 @@ const color = z
   .refine((letters) => (parseColor(letters) ?? 0) !== 0, 'expected color letters such as "rb"')
 const names = z.object({ en: z.string().min(1), de: z.string().min(1) }).strict()
 
+/** The looks a pack can be made for, as its skin: flat shapes, or glowing outlines. */
+export const ART_STYLES = ['flat', 'neon'] as const
+export type ArtStyle = (typeof ART_STYLES)[number]
+
 /** Overrides of the rule flags in src/core/rules.ts, for a pack or a single level. */
 export const rulesSchema = z
   .object({
@@ -117,6 +121,8 @@ export const packSchema = z
     skills: z.array(names).min(1).max(4),
     /** false goes straight from the pack to its levels, as with a single skill. */
     selectSkill: z.boolean().default(true),
+    /** The look its levels are made for, unless the player chose one; flat without it. */
+    skin: z.enum(ART_STYLES).optional(),
     rules: rulesSchema.optional(),
   })
   .strict()

@@ -159,6 +159,18 @@ describe('packSchema', () => {
     expect(pack.selectSkill).toBe(true)
   })
 
+  it('takes the look its levels are made for, from the art styles there are', () => {
+    const pack = {
+      version: 1,
+      title: { en: 'P', de: 'P' },
+      position: 3,
+      skills: [{ en: 'S', de: 'S' }],
+    }
+    expect(packSchema.parse({ ...pack, skin: 'neon' }).skin).toBe('neon')
+    expect(packSchema.parse(pack).skin).toBeUndefined()
+    expect(packSchema.safeParse({ ...pack, skin: 'chrome' }).success).toBe(false)
+  })
+
   it('allows at most four skills', () => {
     const skill = { en: 'S', de: 'S' }
     const parsed = packSchema.safeParse({

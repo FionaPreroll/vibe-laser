@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useRef, useState } from 'preact/hooks'
+import type { ArtStyle } from '../content/schema'
 import { t } from '../i18n'
 import type { BoardView } from '../view/board'
 import type { BoardController } from '../view/controller'
-import { artStyle } from '../view/display'
+import { artStyleOf } from '../view/display'
 
 interface HostProps {
   /** Puts a board into the host; it is destroyed when the host goes or `mount` changes. */
@@ -53,6 +54,8 @@ export function CanvasHost({ mount, label, describedBy }: HostProps) {
 interface Props {
   readonly controller: BoardController
   readonly label: string
+  /** The skin of the level's pack, the look unless the player chose one. */
+  readonly skin: ArtStyle | undefined
 }
 
 /**
@@ -60,8 +63,8 @@ interface Props {
  * mounts it afresh, and the game goes on where it was. The board, its art and PixiJS load with the
  * first level, so the menus before it come up without them.
  */
-export function BoardCanvas({ controller, label }: Props) {
-  const style = artStyle.value
+export function BoardCanvas({ controller, label, skin }: Props) {
+  const style = artStyleOf(skin)
   const mount = useCallback(
     async (element: HTMLElement) => {
       const [{ mountBoard }, { createArt }] = await Promise.all([
