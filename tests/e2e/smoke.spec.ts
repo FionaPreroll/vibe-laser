@@ -56,6 +56,20 @@ test('solves the first level with the mouse', async ({ page }) => {
   await expect(page.getByRole('dialog', { name: 'Level solved' })).toBeVisible()
 })
 
+test('lights the color dots for the piece under the mouse', async ({ page }) => {
+  await page.goto(FIRST_LEVEL)
+  const laser = await centerOf(page, { cell: [0, 1] })
+  const free = await centerOf(page, { cell: [2, 1] })
+  await page.mouse.move(laser.x, laser.y)
+  await expect(
+    page.getByRole('img', { name: 'Colors of the piece under the pointer: Red' }),
+  ).toBeVisible()
+  await page.mouse.move(free.x, free.y)
+  await expect(
+    page.getByRole('img', { name: 'Colors of the piece under the pointer: none' }),
+  ).toBeVisible()
+})
+
 test('turns two beams with one bender, a part of the expansion packs', async ({ page }) => {
   const errors = watchErrors(page)
   await page.goto('./#/play/tutorial/4/1')

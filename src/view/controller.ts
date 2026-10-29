@@ -1,4 +1,5 @@
-import { computed, type ReadonlySignal, type Signal, signal } from '@preact/signals-core'
+import { batch, computed, type ReadonlySignal, type Signal, signal } from '@preact/signals-core'
+import type { Piece } from '../core/board'
 import { itemAt, itemById, type Place, samePlace } from '../core/level'
 import type { GameSession } from '../game/session'
 import {
@@ -26,6 +27,13 @@ export class BoardController {
   readonly lifted = signal<number | undefined>(undefined)
   /** True while the keyboard drives the board, so the focus frame shows. */
   readonly keyboardActive = signal(false)
+  /** The board cell or toolbox slot under the mouse, while it is over the board. */
+  readonly hovered = signal<Place | undefined>(undefined)
+  /**
+   * The piece whose colors the HUD's dots show: the one under the mouse; after a key, the one
+   * lifted or in the frame; else the selected one, as on touch screens, which have no mouse.
+   */
+  readonly inspected: ReadonlySignal<Piece | undefined>
   /** Whether the rotate buttons can turn the selected piece. */
   readonly canRotateSelected: ReadonlySignal<boolean>
   /** While help or the settings are open, the clock stands still. */
@@ -45,10 +53,30 @@ export class BoardController {
       const rotateable = id !== undefined && itemById(puzzle, id)?.rotateable === true
       return this.session.canPlay.value && rotateable
     })
+    this.inspected = computed(() => {
+      const { puzzle } = this.session.state.value
+      const hovered = this.hovered.value
+      if (hovered !== undefined) return itemAt(puzzle, hovered)?.piece
+      const focused = this.focusedPlace()
+      const id = this.keyboardActive.value
+        ? (this.lifted.value ?? (focused && itemAt(puzzle, focused)?.id))
+        : this.selected.value
+      return id === undefined ? undefined : itemById(puzzle, id)?.piece
+    })
   }
 
   select(id: number | undefined): void {
     this.selected.value = id
+  }
+
+  /** Notes the place under the mouse, or that it has left the board. */
+  hover(place: Place | undefined): void {
+    const hovered = this.hovered.value
+    const same =
+      place === undefined
+        ? hovered === undefined
+        : hovered !== undefined && samePlace(hovered, place)
+    if (!same) this.hovered.value = place
   }
 
   rotate(id: number, steps: number): boolean {
@@ -92,7 +120,11 @@ export class BoardController {
       if (letter === 'y') return this.session.redo()
       return false
     }
-    this.keyboardActive.value = true
+    // The keyboard takes over from the mouse until the mouse moves again.
+    batch(() => {
+      this.keyboardActive.value = true
+      this.hovered.value = undefined
+    })
     switch (key) {
       case 'ArrowLeft':
         return this.#step(-1, 0)
