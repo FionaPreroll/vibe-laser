@@ -155,6 +155,32 @@ describe('mountBoard', () => {
     expect(scene.cursor).toBe('default')
   })
 
+  it('tells the color dots what the mouse points at, but not what a finger touches', async () => {
+    const { controller, host, scene, at, screenAt, finger } = await mount()
+    const kind = () => controller.inspected.value?.kind
+    scene.emit('globalpointermove', at(B1))
+    expect(controller.hovered.value).toEqual(B1)
+    expect(kind()).toBe('laser')
+    // While a piece is dragged, the dots keep showing it; dropped, it is under the mouse.
+    scene.emit('pointerdown', at(SLOT))
+    scene.emit('globalpointermove', at(SLOT, 0, 20))
+    scene.emit('globalpointermove', at(B6))
+    expect(kind()).toBe('mirror')
+    host.querySelector('canvas')?.dispatchEvent(new Event('pointerleave'))
+    expect(kind()).toBe('mirror')
+    scene.emit('pointerup', at(B6))
+    expect(controller.hovered.value).toEqual(B6)
+    expect(kind()).toBe('mirror')
+    host.querySelector('canvas')?.dispatchEvent(new Event('pointerleave'))
+    expect(controller.hovered.value).toBeUndefined()
+    scene.emit('pointerdown', finger(1, screenAt(B1)))
+    scene.emit('globalpointermove', finger(1, screenAt(B1, 4)))
+    scene.emit('pointerup', finger(1, screenAt(B1, 4)))
+    expect(controller.hovered.value).toBeUndefined()
+    // A tap selects the laser, and the dots show the selected piece.
+    expect(kind()).toBe('laser')
+  })
+
   it('shows faintly where light would go while a piece is carried, and nothing changes', async () => {
     const { controller, scene, at } = await mount()
     const beams = scene.children[1] as Container

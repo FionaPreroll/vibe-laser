@@ -187,7 +187,8 @@ export async function mountBoard(
     batch(() => {
       controller.keyboardActive.value = false
       controller.lifted.value = undefined
-      // A touch decides what it selects once the finger lifts.
+      // A touch decides what it selects once the finger lifts, and fingers do not hover.
+      controller.hover(touch ? undefined : place)
       if (!touch) controller.select(item?.id)
     })
     press = {
@@ -212,7 +213,10 @@ export async function mountBoard(
     }
     const local = scene.toLocal(event.global)
     if (press === undefined) {
-      if (!fingers.has(event.pointerId)) scene.cursor = cursorAt(local)
+      if (!fingers.has(event.pointerId)) {
+        scene.cursor = cursorAt(local)
+        controller.hover(placeAt(geometry, local))
+      }
       return
     }
     const item = press.id === undefined ? undefined : itemById(session.state.value.puzzle, press.id)
@@ -259,7 +263,10 @@ export async function mountBoard(
     } else if (ended.id !== undefined && (ended.button === 0 || ended.button === 2)) {
       controller.rotate(ended.id, ended.button === 2 ? 1 : -1)
     }
-    if (!ended.touch) scene.cursor = cursorAt(scene.toLocal(event.global))
+    if (!ended.touch) {
+      scene.cursor = cursorAt(scene.toLocal(event.global))
+      controller.hover(at)
+    }
   }
   scene.on('pointerup', release)
   scene.on('pointerupoutside', release)
@@ -275,6 +282,11 @@ export async function mountBoard(
     event.preventDefault()
   }
   window.addEventListener('keydown', onKey)
+  // A mouse that leaves the board points at nothing; a drag keeps what it carries.
+  const onLeave = () => {
+    if (press === undefined) controller.hover(undefined)
+  }
+  stage.app.canvas.addEventListener('pointerleave', onLeave)
 
   const stopRendering = effect(render)
   stage.app.ticker.add((ticker) => {
@@ -294,6 +306,7 @@ export async function mountBoard(
       stopEffects()
       stopRendering()
       window.removeEventListener('keydown', onKey)
+      stage.app.canvas.removeEventListener('pointerleave', onLeave)
       stage.destroy()
     },
   }

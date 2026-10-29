@@ -2,7 +2,8 @@ import { effect } from '@preact/signals'
 import { useEffect, useMemo, useState } from 'preact/hooks'
 import type { Speaker } from '../audio/director'
 import { Synth } from '../audio/synth'
-import { packOfLevels, setCustomPacks } from '../content/packs'
+import { findLevel, findPack, packOfLevels, setCustomPacks } from '../content/packs'
+import { type PackSounds, soundsOf } from '../content/schema'
 import { t } from '../i18n'
 import { PackShelf } from '../persistence/packs'
 import { ProfileBook } from '../persistence/profiles'
@@ -10,7 +11,7 @@ import { browserStore, type KeyValueStore, memoryStore } from '../persistence/st
 import { beamPreview, chosenArt, colorBlind } from '../view/display'
 import { HelpDialog } from './HelpDialog'
 import { LanguageSwitch } from './LanguageSwitch'
-import { followAddress, isEditorScreen, navigate, screen } from './router'
+import { followAddress, isEditorScreen, navigate, type Screen, screen } from './router'
 import { SettingsDialog } from './SettingsDialog'
 import { AboutScreen } from './screens/AboutScreen'
 import { LevelsScreen } from './screens/LevelsScreen'
@@ -24,6 +25,14 @@ import { UpdateNotice } from './UpdateNotice'
 export interface Audio extends Speaker {
   unlock(): void
   setVolumes(sound: number, music: number): void
+  /** Plays in the voice of a pack's sounds. */
+  useSounds(sounds: PackSounds): void
+}
+
+/** The pack a screen belongs to: one whose skills, levels or level it shows, or that it edits. */
+function packOfScreen(current: Screen): string | undefined {
+  if ('pack' in current) return current.pack
+  return current.name === 'play' ? findLevel(current.level)?.pack.id : undefined
 }
 
 interface Props {
@@ -89,6 +98,15 @@ export function App({ store, audio }: Props) {
       window.removeEventListener('keydown', unlock)
     }
   }, [sound])
+  useEffect(
+    () =>
+      effect(() => {
+        // A pack sounds alike on its screens and in its levels; elsewhere the laboratory plays.
+        const pack = packOfScreen(screen.value)
+        sound.useSounds(soundsOf(pack === undefined ? undefined : findPack(pack)?.file))
+      }),
+    [sound],
+  )
   const book = opened?.book
   const shelf = opened?.shelf
   const editing = isEditorScreen(screen.value)
@@ -161,7 +179,9 @@ export function App({ store, audio }: Props) {
       <UpdateNotice />
       <main class={current.name === 'play' || current.name === 'editLevel' ? 'play' : 'menu'}>
         {current.name === 'packs' && <PacksScreen solved={solved} />}
-        {current.name === 'skills' && <SkillsScreen pack={current.pack} solved={solved} />}
+        {current.name === 'skills' && (
+          <SkillsScreen pack={current.pack} solved={solved} onHelp={() => setOverlay('help')} />
+        )}
         {current.name === 'levels' && (
           <LevelsScreen pack={current.pack} skill={current.skill} solved={solved} />
         )}

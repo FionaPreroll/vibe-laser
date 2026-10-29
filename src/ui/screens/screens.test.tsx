@@ -29,6 +29,13 @@ describe('PacksScreen', () => {
     expect(shown.value).toEqual({ name: 'skills', pack: 'tutorial' })
   })
 
+  it('shows each pack with a banner in the style of its selection screen', () => {
+    render(<PacksScreen solved={new Set()} />)
+    const banner = (name: RegExp) => button(name).querySelector('.card-banner')?.className
+    expect(banner(/^Tutorial/)).toBe('card-banner banner-school')
+    expect(banner(/^Lightworks/)).toBe('card-banner banner-lab')
+  })
+
   it('opens a pack without a choice of skills at its levels', () => {
     const pack = (skills: number, selectSkill: boolean): Pack => {
       const names = Array.from({ length: skills }, () => ({ en: 'Any', de: 'Alle' }))
@@ -55,7 +62,7 @@ describe('PacksScreen', () => {
 
 describe('SkillsScreen', () => {
   it('lists the skills of a pack with their progress', () => {
-    render(<SkillsScreen pack="tutorial" solved={new Set(['tutorial/2/1'])} />)
+    render(<SkillsScreen pack="tutorial" solved={new Set(['tutorial/2/1'])} onHelp={() => {}} />)
     expect(screen.getByRole('heading', { name: 'Tutorial' })).toBeTruthy()
     expect(button(/^1\. Mirrors/).textContent).toContain('0 of 5 solved')
     expect(button(/^2\. Optics/).textContent).toContain('1 of 8 solved')
@@ -65,16 +72,45 @@ describe('SkillsScreen', () => {
     expect(shown.value).toEqual({ name: 'packs' })
   })
 
+  it("shows the skills on the pack's own selection screen, with its own help button", () => {
+    const solved = new Set(['tutorial/1/1', 'tutorial/1/2', 'tutorial/1/3', 'tutorial/1/4'])
+    solved.add('tutorial/1/5').add('tutorial/2/1')
+    const onHelp = vi.fn()
+    const { container } = render(<SkillsScreen pack="tutorial" solved={solved} onHelp={onHelp} />)
+    expect(container.querySelector('section')?.className).toBe('screen select-screen theme-school')
+    expect(screen.getByText('Lesson book')).toBeTruthy()
+    expect(screen.getByText('Every part of the game, one level at a time.')).toBeTruthy()
+    // A skill solved through lights its lamp; the meters fill with the solved levels.
+    const lamp = (name: RegExp) =>
+      button(name).querySelector('.select-lamp')?.getAttribute('data-on')
+    expect([lamp(/^1\. Mirrors/), lamp(/^2\. Optics/)]).toEqual(['true', 'false'])
+    const meter = (name: RegExp) =>
+      (button(name).querySelector('.select-meter > span') as HTMLElement | null)?.style.width
+    expect([meter(/^1\. Mirrors/), meter(/^2\. Optics/)]).toEqual(['100%', '12.5%'])
+    fireEvent.click(button('Instructions'))
+    expect(onHelp).toHaveBeenCalledOnce()
+  })
+
+  it('shows packs without a choice of screen in the laboratory', () => {
+    render(<SkillsScreen pack="lightworks" solved={new Set()} onHelp={() => {}} />)
+    expect(screen.getByText('Laboratory of light')).toBeTruthy()
+    expect(button('Operating manual')).toBeTruthy()
+  })
+
   it('says when there is no such pack', () => {
-    render(<SkillsScreen pack="missing" solved={new Set()} />)
+    render(<SkillsScreen pack="missing" solved={new Set()} onHelp={() => {}} />)
     expect(screen.getByText('There is no level here.')).toBeTruthy()
   })
 })
 
 describe('LevelsScreen', () => {
   it('names the levels once they are loaded and marks the solved ones', async () => {
-    render(<LevelsScreen pack="tutorial" skill={1} solved={new Set(['tutorial/1/2'])} />)
+    const { container } = render(
+      <LevelsScreen pack="tutorial" skill={1} solved={new Set(['tutorial/1/2'])} />,
+    )
     expect(screen.getByRole('heading', { name: 'Tutorial · Mirrors' })).toBeTruthy()
+    expect(container.querySelector('section')?.classList.contains('theme-school')).toBe(true)
+    expect(screen.getByText('Lesson book')).toBeTruthy()
     expect(await screen.findByRole('button', { name: '1. First Light' })).toBeTruthy()
     const solved = button(/^2\. Two Turns/)
     expect(solved.classList.contains('solved')).toBe(true)

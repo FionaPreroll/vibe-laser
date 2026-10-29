@@ -8,7 +8,7 @@ Play it at https://fionapreroll.github.io/vibe-laser/.
 
 ## How to play
 
-- Pick a level pack, a skill and a level. Every level of a skill is open from the start, and solved levels carry a mark.
+- Pick a level pack, a skill and a level. Every level of a skill is open from the start, and solved levels carry a mark. Each pack chooses its skills on a screen of its own, as in the original: the Tutorial on a chalkboard, Lightworks at a laboratory console.
 - Drag pieces from the toolbox on the left onto the board. Click a piece to turn it left, right-click to turn it right.
 - While you carry a piece, the beams show faintly where light would go if you put it down there, and explosives that light would reach get a red ring. Nothing changes until you let go.
 - On a touch screen, tap a piece to select it and tap it again to turn it left, or tap a free place to move the selected piece there; dragging works too. Pinch to zoom in on the board, up to four times its size, and drag an empty spot to look around.
@@ -16,6 +16,7 @@ Play it at https://fionapreroll.github.io/vibe-laser/.
 - Keep light away from explosives. One that goes off sets off its neighbours too, and the level is lost; only starting again helps.
 - Slimes, robot mines and spaceships move by themselves. With mines or ships on the board, a solution must hold for five seconds while a bar fills.
 - The buttons below the board lead back to the level selection, restart the level, clean up (unlit pieces go back into the toolbox), undo, redo, rotate the selected piece and open the help.
+- Three dots at the end of the button bar show the colors of the piece under the pointer, as in the original: a yellow piece lights red and green, and a complex shows its inner color after a slash. After a key they show the piece in the keyboard frame, and on a touch screen the selected piece.
 - Each player can have a profile of their own, with their own progress and settings: the volume of sound effects and music, less motion on the board, color-blind mode, the preview of the beams while a piece is carried, and the look of the board: Plain, Neon, or the look each level pack is made for. Profiles can be exported as a file and imported in another browser.
 - Color-blind mode writes the colors of pieces as letters, R, G and B, with a complex's inner color after a slash, as in R/GB, and draws each color in a beam as a line of its own, red, green and blue always in the same order across the beam. Help explains how colors mix.
 - Keyboard: focus the board with Tab. The arrow keys move a frame over the toolbox and the board, Enter picks a piece up and puts it down, Escape cancels, Q and E rotate, Ctrl+Z undoes and Ctrl+Y or Ctrl+Shift+Z redoes.
@@ -147,7 +148,7 @@ Property tests (`src/core/properties.test.ts`, with fast-check) check the model 
 - Undo takes back only player moves. Whatever actors and explosions did stays, and an undo entry whose piece is gone or whose cell is taken is dropped.
 - The session reports what happens as events, such as `ignited`, `ate` or `fired`, for the view's effects.
 - `preview()` traces the light a move would bring, and the explosives it would set off, without making the move. While a piece is carried, the board draws that light faintly; `beamPreview` in `src/view/display.ts` follows the profile's setting.
-- `BoardController` in `src/view/controller.ts` holds what only the interface needs: the selected piece, the keyboard focus and a piece lifted with the keyboard. Its `tap()` decides what a tap on a touch screen does.
+- `BoardController` in `src/view/controller.ts` holds what only the interface needs: the selected piece, the keyboard focus, a piece lifted with the keyboard and the place under the mouse. Its `tap()` decides what a tap on a touch screen does, and `inspected` names the piece whose colors the dots show.
 - The stage keeps the scene's transform on the screen (`src/view/layout.ts`): fitted at first, zoomed and panned by fingers within bounds, and when the screen changes size, as when a phone's address bar hides, zoomed as far as before with the same middle.
 - Every level file carries one known solution, with waits where actors must do their part first. `playSolution` and `replaySolution` in `src/content/solution.ts` play it; tests in `src/content/packs.test.ts` play every solution under eight seeds and expect the level to be solved, and check that no level explodes or solves itself during a minute without moves. As the original's FAQ demands, no solution may depend on timing: every solution must also work when the player thinks ten seconds before each move. Levels with actors hold them back with beams and pieces until the player sets them loose.
 
@@ -164,13 +165,13 @@ packs/
     levels/skill1/level_001.json
     levels/skill1/level_002.json
     …
-  lightworks/                twelve puzzles for after the tutorial, in two skills
+  lightworks/                eighteen puzzles for after the tutorial, in three skills
 ```
 
-The Tutorial pack teaches one part per level. Lightworks combines them: each level is built around one idea, such as a prism used backwards or a slime steered with beams, and was checked by a brute-force search for a single solution that needs every piece in the toolbox.
+The Tutorial pack teaches one part per level. Lightworks combines them: each level is built around one idea, such as a prism used backwards or a slime steered with beams, and was checked by a brute-force search for a single solution that needs every piece in the toolbox. Every level of its third skill, Crossfire, has two lasers; in Switchboard nothing is placed, and only one of the 4,096 ways to turn its four mirrors solves it.
 
 - A pack has one to four skills of up to 30 levels each. A level's id comes from its path: `tutorial/2/5` is the fifth level of the second skill. With `"selectSkill": false`, or with one skill only, the pack opens straight at its levels.
-- `pack.json` gives the title and description in English and German, the `position` in the list of packs, the skill names, and optionally its `skin`, the look its levels are made for (`flat` or `neon`), and `rules`: rule flags from `src/core/rules.ts` for every level of the pack.
+- `pack.json` gives the title and description in English and German, the `position` in the list of packs, the skill names, and optionally its `skin`, the look its levels are made for (`flat` or `neon`), its `selectScreen`, where players choose a skill, and its `sounds` (both `lab`, the default, `school`, `classic`, `space`, `sea`, `crypt` or `clinic`), and `rules`: rule flags from `src/core/rules.ts` for every level of the pack.
 - A level file gives its `name` in English and German, optionally an `intro` that players read above the board, also in both languages, its `size` as columns and rows (up to 32 × 26), the `objects` on the board, the `toolbox`, optionally its own `rules`, and the known `solution`. An optional `note` tells other authors what the level is about.
 - Objects name their cell as in the original, row letter and column number (`B6`), their `type` (`laser`, `mirror`, `blackHole` and so on), their rotation `rot` from 0 to 7 and their color `rgb` as the letters of the switched-on colors, so `"rb"` is magenta. A complex gives its outer color as `rgb` and its inner color as `inner`. Pieces on the board are fixed and toolbox pieces free; `moveable` and `rotateable` change that. A toolbox entry can repeat itself with `count`.
 - A solution step puts toolbox piece `piece` (counted from 0) on cell `pos` in rotation `rot`. A piece that starts on the board is named by its cell instead: `{ "from": "C3", "pos": "B6", "rot": 7 }` moves or turns it, `{ "from": "C3", "stow": true }` puts it into the toolbox. `{ "wait": 10 }` lets ten ticks pass. Steps say where a piece ends up, so the same piece may appear twice.
@@ -198,6 +199,7 @@ The build bundles every `pack.json`, and each level file becomes a small file of
 
 - The address after `#` names the screen, so the browser's back button and bookmarks work: `#/` lists the packs, `#/packs/tutorial` the skills of a pack, `#/packs/tutorial/2` the levels of a skill, `#/play/tutorial/2/5` opens a level, and `#/profiles` and `#/about` the profiles and the version with the changelog. The editor lives at `#/editor`, a pack in it at `#/editor/<pack>` and a slot at `#/editor/<pack>/2/5`.
 - Help and the settings open over the game and stop its clock while they are open.
+- A pack shows its skills, and its level lists, on a selection screen of its own, after the original's SelectSkillDLL: a laboratory console for packs without a choice, as Deluxe had, and six more. `selectScreenOf()` in `src/content/schema.ts` names a pack's screen, and `src/ui/styles.css` draws each one with CSS alone. The pack list shows every pack with a banner in its style, where the original had a picture of 440 × 50 pixels.
 - `ProfileBook` in `src/persistence/profiles.ts` keeps all profiles in one record in IndexedDB (database `vibe-laser`, store `saves`), through idb-keyval. The record carries a version, and `migrate()` is where later formats will convert older saves; a record it cannot read starts afresh. Changes are saved one after another, so the last one always wins.
 - A profile holds a name, the ids of its solved levels and its settings. Reduced motion starts on when the system asks for less motion. Settings added later start at their defaults when older saves load: color-blind mode off, each pack in its own look, and the beam preview on. After the first solved level the game asks the browser to keep its storage (`navigator.storage.persist()`).
 - Color-blind mode is one signal for every board, `colorBlind` in `src/view/display.ts`, which the app sets from the active profile. The stage then shows `ColorLabelLayer` letters above the pieces, and `BeamLayer` splits each beam into its primaries.
@@ -210,7 +212,7 @@ The build bundles every `pack.json`, and each level file becomes a small file of
 
 The editor is a mode of the game: the same board with different input. Its logic is in `src/editor/` without any drawing, its board in `src/view/editorBoard.ts`, and its screens in `src/ui/editor/`, which load only when a player opens the editor.
 
-- **Packs.** The editor starts with the player's own packs: a new pack, an imported `.vlpack.json` file, or one made before. A pack has one to four skills with 30 slots each, and its settings: titles, descriptions, skill names, whether players choose a skill first, and the look its levels are made for. A pack exports as one `.vlpack.json` file with every level inside (`"format": "vibe-laser-pack"`).
+- **Packs.** The editor starts with the player's own packs: a new pack, an imported `.vlpack.json` file, or one made before. A pack has one to four skills with 30 slots each, and its settings: titles, descriptions, skill names, whether players choose a skill first, the look its levels are made for, its selection screen and its sounds. A pack exports as one `.vlpack.json` file with every level inside (`"format": "vibe-laser-pack"`).
 - **Board.** A click uses the tool: Select, Paint, Clone or Eraser. Select drags pieces, also between board and toolbox; Paint and Eraser paint along a drag, which undoes as one step; Clone picks up a piece to paint copies of it. A right click turns a piece. Each part has a key, as `H` for a black hole in the original, and the parts of the expansion packs have the keys 1 to 5: a key puts the part where the pointer or the keyboard frame is, Q and E turn, Delete removes, Ctrl+Z and Ctrl+Y undo and redo.
 - **Panels.** The selected piece's colors, direction or heading, and whether players may move and turn it; the level's names, intro for players, note and size; its problems; and its solution.
 - **Problems** show live, in the player's language, and keep a level from being saved: a missing name or coin, an intro in only one language, a color missing, light on an explosive or every coin spinning before the first move, or a solution that no longer works. A problem with a place selects it.
@@ -230,7 +232,9 @@ While `pnpm dev` runs, the editor also lists the built-in packs. Saving one of t
 
 ## Sound
 
-There are no sound files: `src/audio/synth.ts` synthesizes every effect and the music with the Web Audio API. `listen()` in `src/audio/director.ts` turns what happens in a game session into sounds: placing and turning pieces, coins starting to spin, blasts, shots, slimes eating, and the end of a level. The music is a slow, generated pentatonic melody. Browsers allow sound only after the first click or key press, so it starts then; the volumes come from the active profile.
+There are no sound files: `src/audio/synth.ts` synthesizes every effect and the music with the Web Audio API. `listen()` in `src/audio/director.ts` turns what happens in a game session into sounds: placing and turning pieces, coins starting to spin, blasts, shots, slimes eating, and the end of a level. The music is a slow, generated melody. Browsers allow sound only after the first click or key press, so it starts then; the volumes come from the active profile.
+
+Each pack plays its own sounds, as the original's `Sounds` key let a pack use the sounds of another. `sounds` in `pack.json` names one of seven voices in `src/audio/voices.ts`, each a scale, a pace and waveforms for the music, and a waveform and pitch for the effects: the laboratory's calm A minor pentatonic, which packs get without a choice, a bright schoolroom, a busy classic harpsichord, a slow and deep space station, a rolling sea, an eerie crypt and a clinic that beeps. The game switches voices with the screen: a pack's skills, level lists and levels sound alike, and everything else sounds like the laboratory.
 
 ## Offline and installing
 

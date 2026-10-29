@@ -132,6 +132,51 @@ button.primary {
   gap: 8px;
 }
 
+/* The original's RGB dots, at the end of the button bar: lit in the colors of the piece pointed at. */
+.color-dots {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: auto;
+}
+
+.color-dot {
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  background: var(--surface);
+  color: var(--text-quiet);
+  font-size: 0.6875rem;
+  font-weight: 700;
+}
+
+.color-dot[data-on="true"] {
+  border-color: transparent;
+  color: #05060a;
+}
+
+.color-dot-r[data-on="true"] {
+  background: #ff3b3b;
+  box-shadow: 0 0 8px #ff3b3b;
+}
+
+.color-dot-g[data-on="true"] {
+  background: #2dff5f;
+  box-shadow: 0 0 8px #2dff5f;
+}
+
+.color-dot-b[data-on="true"] {
+  background: #3d6bff;
+  box-shadow: 0 0 8px #3d6bff;
+}
+
+.color-dots-slash {
+  color: var(--text-quiet);
+}
+
 .stability {
   display: flex;
   flex-wrap: wrap;
@@ -302,6 +347,402 @@ main.play {
 .level .mark {
   color: var(--accent);
   font-size: 0.8125rem;
+}
+
+/*
+ * Selection screens: each pack shows its skills, and its level list, on a screen of its own, as
+ * the original did with its SelectSkillDLL. A theme sets the custom properties and its decoration.
+ */
+.select-screen {
+  --select-ink: var(--text);
+  --select-quiet: var(--text-quiet);
+  --select-edge: var(--line);
+  --select-button: var(--surface-raised);
+  --select-button-ink: var(--text);
+  --select-accent: var(--accent);
+  --select-font: inherit;
+  margin-top: 16px;
+  margin-bottom: 16px;
+  padding: 20px 24px 24px;
+  border: 2px solid var(--select-edge);
+  border-radius: 14px;
+  background: var(--surface);
+  color: var(--select-ink);
+}
+
+.select-screen button {
+  border-color: var(--select-edge);
+  background: var(--select-button);
+  color: var(--select-button-ink);
+}
+
+.select-screen button:hover:not(:disabled) {
+  background: var(--select-button);
+  filter: brightness(1.15);
+}
+
+.select-kicker {
+  margin: 4px 0 0;
+  color: var(--select-accent);
+  font: 700 0.75rem / 1.3 var(--select-font);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.select-screen h2 {
+  margin: 4px 0 8px;
+  font-family: var(--select-font);
+  font-size: 1.75rem;
+}
+
+.select-text {
+  max-width: 60ch;
+  margin: 0 0 18px;
+  color: var(--select-quiet);
+}
+
+.select-skills {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 14px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.select-skill {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-template-areas:
+    "lamp name"
+    "meter meter"
+    "progress progress";
+  align-items: center;
+  gap: 10px 10px;
+  width: 100%;
+  height: 100%;
+  padding: 14px 16px;
+  border-radius: 10px;
+  text-align: left;
+}
+
+.select-lamp {
+  grid-area: lamp;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--select-accent) 22%, transparent);
+}
+
+.select-lamp[data-on="true"] {
+  background: var(--select-accent);
+  box-shadow: 0 0 10px var(--select-accent);
+}
+
+.select-skill-name {
+  grid-area: name;
+  font-family: var(--select-font);
+  font-size: 1.0625rem;
+  font-weight: 700;
+}
+
+.select-meter {
+  grid-area: meter;
+  height: 6px;
+  overflow: hidden;
+  border-radius: 3px;
+  background: color-mix(in srgb, var(--select-button-ink) 16%, transparent);
+}
+
+.select-meter > span {
+  display: block;
+  height: 100%;
+  background: var(--select-accent);
+}
+
+.select-progress {
+  grid-area: progress;
+  color: var(--select-quiet);
+  font-size: 0.8125rem;
+}
+
+.select-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 20px;
+}
+
+.select-screen .level.solved {
+  border-color: var(--select-accent);
+}
+
+.select-screen .level .mark {
+  color: var(--select-accent);
+}
+
+/* The laboratory: a riveted steel console with green lamps and gauges, after Deluxe's lab. */
+.theme-lab {
+  --select-ink: #e1e8f3;
+  --select-quiet: #9aa7bd;
+  --select-edge: #3b4862;
+  --select-button: #1f293a;
+  --select-button-ink: #e8eef8;
+  --select-accent: #7dff9a;
+  --select-font: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  background:
+    radial-gradient(circle at 14px 14px, #55627e 3px, transparent 4px),
+    radial-gradient(circle at calc(100% - 14px) 14px, #55627e 3px, transparent 4px),
+    radial-gradient(circle at 14px calc(100% - 14px), #55627e 3px, transparent 4px),
+    radial-gradient(circle at calc(100% - 14px) calc(100% - 14px), #55627e 3px, transparent 4px),
+    linear-gradient(180deg, #1b2231, #10151e);
+}
+
+.theme-lab .select-skill {
+  border-width: 2px;
+  box-shadow:
+    inset 0 -3px 0 rgb(0 0 0 / 35%),
+    0 2px 0 #090c12;
+}
+
+.theme-lab .select-meter {
+  height: 8px;
+  border-radius: 2px;
+  background: repeating-linear-gradient(90deg, #0b0f16 0 9px, #2b3548 9px 10px);
+}
+
+/* The schoolroom: chalk on a green board in a wooden frame, for lessons. */
+.theme-school {
+  --select-ink: #f5f2e9;
+  --select-quiet: #cbd6c7;
+  --select-edge: rgb(245 242 233 / 55%);
+  --select-button: rgb(255 255 255 / 5%);
+  --select-button-ink: #f5f2e9;
+  --select-accent: #ffe28a;
+  --select-font: "Chalkboard SE", "Segoe Print", "Comic Sans MS", cursive;
+  border: 12px solid #7b4f27;
+  border-radius: 6px;
+  background:
+    radial-gradient(ellipse at 25% 15%, rgb(255 255 255 / 7%), transparent 55%),
+    radial-gradient(ellipse at 80% 90%, rgb(255 255 255 / 4%), transparent 50%), #24392e;
+  box-shadow: inset 0 0 40px rgb(0 0 0 / 45%);
+}
+
+.theme-school .select-skill {
+  border: 2px dashed var(--select-edge);
+  border-radius: 4px;
+}
+
+.theme-school .select-meter > span {
+  background: repeating-linear-gradient(90deg, #f5f2e9 0 7px, transparent 7px 10px);
+}
+
+/* Classic: a plain menu on parchment, one skill under the other, as Classic Conundrums had. */
+.theme-classic {
+  --select-ink: #2b2112;
+  --select-quiet: #5a4a2f;
+  --select-edge: #a88b55;
+  --select-button: #f8f0da;
+  --select-button-ink: #2b2112;
+  --select-accent: #8c3b1f;
+  --select-font: Georgia, "Times New Roman", serif;
+  border: 4px double #a88b55;
+  border-radius: 4px;
+  background: radial-gradient(ellipse at center, #f7eed4, #e4d1a5);
+  text-align: center;
+}
+
+.theme-classic :focus-visible {
+  outline-color: #8c3b1f;
+}
+
+.theme-classic .back {
+  float: left;
+}
+
+.theme-classic .select-text {
+  margin-inline: auto;
+}
+
+.theme-classic .select-skills {
+  grid-template-columns: minmax(0, 420px);
+  justify-content: center;
+}
+
+.theme-classic .select-skill {
+  border-radius: 2px;
+}
+
+.theme-classic .select-actions {
+  justify-content: center;
+}
+
+/* The space station: a cold blue panel among the stars. */
+.theme-space {
+  --select-ink: #e6f6ff;
+  --select-quiet: #93b6cc;
+  --select-edge: rgb(89 214 255 / 45%);
+  --select-button: rgb(10 32 64 / 70%);
+  --select-button-ink: #e6f6ff;
+  --select-accent: #59d6ff;
+  --select-font: "Trebuchet MS", "Segoe UI", system-ui, sans-serif;
+  background:
+    radial-gradient(1px 1px at 12% 22%, #fff, transparent),
+    radial-gradient(1px 1px at 33% 68%, #cfe9ff, transparent),
+    radial-gradient(1.5px 1.5px at 47% 18%, #fff, transparent),
+    radial-gradient(1px 1px at 62% 82%, #fff, transparent),
+    radial-gradient(1.5px 1.5px at 78% 36%, #e0f2ff, transparent),
+    radial-gradient(1px 1px at 91% 74%, #fff, transparent),
+    radial-gradient(1px 1px at 24% 91%, #fff, transparent),
+    radial-gradient(1px 1px at 85% 9%, #fff, transparent),
+    radial-gradient(ellipse at 85% 115%, rgb(89 214 255 / 22%), transparent 60%), #050817;
+}
+
+.theme-space .select-skill {
+  border-radius: 2px 16px;
+  box-shadow: inset 0 0 14px rgb(89 214 255 / 16%);
+}
+
+.theme-space h2 {
+  letter-spacing: 0.04em;
+}
+
+/* At sea: a wooden board with rope round it, over the waves, lit by lanterns. */
+.theme-sea {
+  --select-ink: #fdf3dc;
+  --select-quiet: #dccca7;
+  --select-edge: #d9b77a;
+  --select-button: #6b4423;
+  --select-button-ink: #fdf3dc;
+  --select-accent: #ffcf5c;
+  --select-font: Georgia, "Times New Roman", serif;
+  border: 3px dashed #d9b77a;
+  background:
+    repeating-radial-gradient(circle at 50% 160%, rgb(255 255 255 / 5%) 0 2px, transparent 2px 26px),
+    linear-gradient(180deg, #0e3652, #062033);
+}
+
+.theme-sea .select-skill {
+  border: 2px solid #3d2613;
+  border-radius: 6px;
+  background: repeating-linear-gradient(90deg, #6b4423 0 26px, #5f3c1f 26px 28px);
+}
+
+.theme-sea .select-skill:hover:not(:disabled) {
+  background: repeating-linear-gradient(90deg, #6b4423 0 26px, #5f3c1f 26px 28px);
+}
+
+/* The crypt: stone blocks, purple ghost light, and skills on gravestones. */
+.theme-crypt {
+  --select-ink: #ebe4f6;
+  --select-quiet: #ac9fc2;
+  --select-edge: #4b4159;
+  --select-button: #27222f;
+  --select-button-ink: #ebe4f6;
+  --select-accent: #c49dff;
+  --select-font: "Palatino Linotype", "Book Antiqua", Palatino, serif;
+  background:
+    linear-gradient(rgb(0 0 0 / 0%) calc(100% - 2px), rgb(0 0 0 / 45%) 0) 0 0 / 100% 42px,
+    linear-gradient(90deg, rgb(0 0 0 / 0%) calc(100% - 2px), rgb(0 0 0 / 45%) 0) 0 0 / 84px 42px,
+    radial-gradient(ellipse at 50% 0%, rgb(196 157 255 / 14%), transparent 60%),
+    #1b1822;
+}
+
+.theme-crypt .select-skill {
+  padding-top: 22px;
+  border-width: 2px;
+  border-radius: 48px 48px 6px 6px;
+}
+
+/* The clinic: clean white cards on mint, with a red cross. */
+.theme-clinic {
+  --select-ink: #10302b;
+  --select-quiet: #46655f;
+  --select-edge: #9fd6ca;
+  --select-button: #ffffff;
+  --select-button-ink: #10302b;
+  --select-accent: #0b7a68;
+  --select-font: system-ui, sans-serif;
+  background: linear-gradient(180deg, #ecf8f5, #d6efe9);
+}
+
+.theme-clinic :focus-visible {
+  outline-color: #0b7a68;
+}
+
+.theme-clinic .select-kicker::before {
+  margin-right: 6px;
+  color: #d93a3f;
+  content: "✚";
+}
+
+.theme-clinic .select-skill {
+  border-top: 6px solid #0b7a68;
+  border-radius: 6px;
+  box-shadow: 0 2px 6px rgb(16 48 43 / 12%);
+}
+
+/* The original gave each pack a picture of 440 × 50 pixels in the list; here a strip in its theme. */
+.card-banner {
+  display: block;
+  height: 44px;
+  margin: -16px -16px 6px;
+  border-radius: 9px 9px 0 0;
+}
+
+.banner-lab {
+  background:
+    radial-gradient(circle at 12px 50%, #7dff9a 3px, transparent 4px),
+    radial-gradient(circle at 28px 50%, #ffcf5c 3px, transparent 4px),
+    repeating-linear-gradient(90deg, #1b2231 0 18px, #222b3d 18px 20px);
+}
+
+/* Two lines of chalk, as if someone had started writing on the board. */
+.banner-school {
+  background:
+    repeating-linear-gradient(90deg, rgb(245 242 233 / 60%) 0 14px, transparent 14px 20px) 16px 12px
+    / 104px 2px no-repeat,
+    repeating-linear-gradient(90deg, rgb(245 242 233 / 45%) 0 9px, transparent 9px 15px) 16px 22px /
+    66px 2px no-repeat,
+    #24392e;
+  border-bottom: 5px solid #7b4f27;
+}
+
+.banner-classic {
+  background: radial-gradient(ellipse at center, #f7eed4, #e4d1a5);
+  border-bottom: 3px double #a88b55;
+}
+
+.banner-space {
+  background:
+    radial-gradient(1px 1px at 15% 30%, #fff, transparent),
+    radial-gradient(1px 1px at 45% 70%, #fff, transparent),
+    radial-gradient(1.5px 1.5px at 72% 25%, #fff, transparent),
+    radial-gradient(circle at 92% 120%, #2e6fa8 0 26px, transparent 27px), #050817;
+}
+
+.banner-sea {
+  background:
+    repeating-radial-gradient(
+      circle at 50% 180%,
+      rgb(255 255 255 / 14%) 0 2px,
+      transparent 2px 14px
+    ),
+    linear-gradient(180deg, #0e3652, #062033);
+}
+
+.banner-crypt {
+  background:
+    linear-gradient(rgb(0 0 0 / 0%) calc(100% - 2px), rgb(0 0 0 / 50%) 0) 0 0 / 100% 22px,
+    linear-gradient(90deg, rgb(0 0 0 / 0%) calc(100% - 2px), rgb(0 0 0 / 50%) 0) 0 0 / 44px 22px,
+    #2a2533;
+}
+
+.banner-clinic {
+  background:
+    linear-gradient(#d93a3f, #d93a3f) 18px 50% / 18px 6px no-repeat,
+    linear-gradient(#d93a3f, #d93a3f) 24px 50% / 6px 18px no-repeat,
+    linear-gradient(180deg, #ecf8f5, #d6efe9);
 }
 
 .level-heading {
@@ -847,6 +1288,25 @@ button.link {
 
   .hud {
     padding: 6px 12px 8px;
+  }
+
+  .color-dot {
+    width: 18px;
+    height: 18px;
+    font-size: 0.625rem;
+  }
+
+  .select-screen {
+    margin: 8px;
+    padding: 14px 14px 18px;
+  }
+
+  .select-screen h2 {
+    font-size: 1.375rem;
+  }
+
+  .theme-school {
+    border-width: 8px;
   }
 }
 
