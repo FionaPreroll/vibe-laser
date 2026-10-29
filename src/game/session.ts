@@ -53,6 +53,13 @@ export type GameEvent =
 
 type Listener = (events: readonly GameEvent[]) => void
 
+/** What a command would do to the light, without doing it. */
+export interface Preview {
+  readonly light: LightField
+  /** Cells of the explosives that light would set off. */
+  readonly ignites: readonly number[]
+}
+
 /**
  * One level in play, and the only writer of its state. Undo applies the stored inverse of a
  * command to the current puzzle instead of restoring a snapshot, so whatever slimes, mines, ships
@@ -117,6 +124,18 @@ export class GameSession {
 
   redo(): boolean {
     return this.#travel(this.#redo, this.#undo)
+  }
+
+  /**
+   * The light after a command, for a faint preview while a piece is carried. Nothing changes and
+   * nothing goes off; undefined when the command is not allowed now or would change nothing.
+   */
+  preview(command: Command): Preview | undefined {
+    if (!this.canPlay.value) return undefined
+    const applied = applyCommand(this.#state.value.puzzle, command)
+    if (applied === undefined) return undefined
+    const light = trace(boardOf(applied.puzzle), this.#rules).light
+    return { light, ignites: litExplosives(applied.puzzle, light) }
   }
 
   /** Cleanup: unlit moveable pieces go back into the toolbox, as one undoable step. */

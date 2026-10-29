@@ -7,7 +7,7 @@ import { DEFAULT_SETTINGS, type SaveData } from '../persistence/profiles'
 import { type KeyValueStore, memoryStore } from '../persistence/store'
 import { mountBoard } from '../view/board'
 import type { BoardController } from '../view/controller'
-import { chosenArt, colorBlind } from '../view/display'
+import { beamPreview, chosenArt, colorBlind } from '../view/display'
 import { App, type Audio } from './App'
 import { navigate } from './router'
 
@@ -20,6 +20,7 @@ beforeEach(() => {
 })
 afterEach(() => {
   colorBlind.value = false
+  beamPreview.value = true
   chosenArt.value = 'pack'
   cleanup()
   vi.restoreAllMocks()
@@ -232,6 +233,16 @@ describe('App', () => {
       fireEvent.click(screen.getByRole('checkbox', { name: 'Color-blind mode' }))
     })
     await waitFor(() => expect(colorBlind.value).toBe(true))
+  })
+
+  it('switches the beam preview on every board with the setting of the profile', async () => {
+    await start('#/play/tutorial/1/1')
+    expect(beamPreview.value).toBe(true)
+    await click('Settings')
+    await act(() => {
+      fireEvent.click(screen.getByRole('checkbox', { name: 'Show where light would go' }))
+    })
+    await waitFor(() => expect(beamPreview.value).toBe(false))
   })
 
   it('draws the board anew in the look of the profile', async () => {

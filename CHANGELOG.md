@@ -42,6 +42,7 @@ All changes players can notice are listed here. The format follows [Keep a Chang
 - Three dots at the end of the button bar light up in the colors of the piece under the pointer, as in the original: a yellow piece lights red and green. After a key they follow the keyboard frame, and on touch screens they show the selected piece.
 - Each level pack can have sounds of its own: seven sets of music and effects, from the calm laboratory to a bright schoolroom, a ship at sea and an eerie crypt. The Tutorial now sounds like a schoolroom, and the level editor's pack settings choose a pack's sounds.
 - Each level pack has a selection screen of its own, as in the original: the Tutorial lays out its skills on a chalkboard, Lightworks at a laboratory console, and the level editor offers seven screens, from a classic menu to a crypt. The pack list shows every pack with a banner in its style.
+- While you carry a piece, the beams show faintly where light would go if you put it down there, and explosives it would reach get a red ring. A setting switches this off.
 
 ### Changed
 
