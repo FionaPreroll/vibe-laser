@@ -1,0 +1,28 @@
+{
+  "$schema": "../../../level.schema.json",
+  "version": 1,
+  "name": { "en": "Switchboard", "de": "Stellwerk" },
+  "intro": {
+    "en": "Nothing to place this time: the four mirrors stay where they are, but they turn like pieces from the toolbox.",
+    "de": "Diesmal gibt es nichts zu setzen: Die vier Spiegel bleiben, wo sie sind, aber sie lassen sich drehen wie Teile aus der Ablage."
+  },
+  "note": "No toolbox: the four mirrors stay where they are and only turn. Red runs down and round to A5, blue up and round to D2, and the back of a mirror stops the other beam.",
+  "size": [6, 6],
+  "objects": [
+    { "type": "laser", "pos": "A2", "rot": 4, "rgb": "r" },
+    { "type": "coin", "pos": "A5", "rgb": "r" },
+    { "type": "mirror", "pos": "C2", "rot": 0, "rotateable": true },
+    { "type": "mirror", "pos": "C5", "rot": 0, "rotateable": true },
+    { "type": "coin", "pos": "D2", "rgb": "b" },
+    { "type": "mirror", "pos": "E2", "rot": 0, "rotateable": true },
+    { "type": "mirror", "pos": "E5", "rot": 0, "rotateable": true },
+    { "type": "laser", "pos": "F5", "rot": 0, "rgb": "b" }
+  ],
+  "toolbox": [],
+  "solution": [
+    { "from": "C2", "pos": "C2", "rot": 1 },
+    { "from": "C5", "pos": "C5", "rot": 7 },
+    { "from": "E2", "pos": "E2", "rot": 1 },
+    { "from": "E5", "pos": "E5", "rot": 5 }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "$schema": "../../../level.schema.json",
+  "version": 1,
+  "name": { "en": "Confluence", "de": "Zusammenfluss" },
+  "note": "Red comes down one diagonal, and the refractor in E5 sends blue up the other. In C3 a threeway takes both into its bevels and sends magenta out of its flat side to C1.",
+  "size": [6, 5],
+  "objects": [
+    { "type": "laser", "pos": "A5", "rot": 5, "rgb": "r" },
+    { "type": "coin", "pos": "C1", "rgb": "rb" },
+    { "type": "laser", "pos": "E6", "rot": 6, "rgb": "b" }
+  ],
+  "toolbox": [{ "type": "refractor", "rot": 0 }, { "type": "threeway", "rot": 0 }],
+  "solution": [{ "piece": 0, "pos": "E5", "rot": 3 }, { "piece": 1, "pos": "C3", "rot": 2 }]
+}
