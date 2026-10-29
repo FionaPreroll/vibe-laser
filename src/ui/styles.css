@@ -132,6 +132,51 @@ button.primary {
   gap: 8px;
 }
 
+/* The original's RGB dots, at the end of the button bar: lit in the colors of the piece pointed at. */
+.color-dots {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: auto;
+}
+
+.color-dot {
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  background: var(--surface);
+  color: var(--text-quiet);
+  font-size: 0.6875rem;
+  font-weight: 700;
+}
+
+.color-dot[data-on="true"] {
+  border-color: transparent;
+  color: #05060a;
+}
+
+.color-dot-r[data-on="true"] {
+  background: #ff3b3b;
+  box-shadow: 0 0 8px #ff3b3b;
+}
+
+.color-dot-g[data-on="true"] {
+  background: #2dff5f;
+  box-shadow: 0 0 8px #2dff5f;
+}
+
+.color-dot-b[data-on="true"] {
+  background: #3d6bff;
+  box-shadow: 0 0 8px #3d6bff;
+}
+
+.color-dots-slash {
+  color: var(--text-quiet);
+}
+
 .stability {
   display: flex;
   flex-wrap: wrap;
@@ -847,6 +892,12 @@ button.link {
 
   .hud {
     padding: 6px 12px 8px;
+  }
+
+  .color-dot {
+    width: 18px;
+    height: 18px;
+    font-size: 0.625rem;
   }
 }
 

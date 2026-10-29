@@ -4,7 +4,10 @@ import { afterEach, describe, expect, it, vi } from 'vitest'
 import { puzzleOf } from '../content/level'
 import { findLevel, type Level } from '../content/packs'
 import { playSolution } from '../content/solution'
+import { createPuzzle } from '../core/level'
+import { parseBoard } from '../core/notation'
 import { GameSession } from '../game/session'
+import { locale } from '../i18n'
 import { BoardController } from '../view/controller'
 import { Hud } from './Hud'
 import { touchScreen } from './pointer'
@@ -12,6 +15,7 @@ import { touchScreen } from './pointer'
 afterEach(() => {
   cleanup()
   touchScreen.value = false
+  locale.value = 'en'
 })
 
 async function load(id: string): Promise<Level> {
@@ -119,5 +123,43 @@ describe('Hud', () => {
     const bar = screen.getByRole('progressbar', { name: 'Stability' }) as HTMLProgressElement
     expect(bar.value).toBe(10)
     expect(screen.getByText(/System stable/)).toBeTruthy()
+  })
+
+  it('lights the dots in the colors of the piece under the pointer', async () => {
+    // A yellow laser, a free cell and a complex, red outside and cyan inside.
+    const board = parseBoard('L2rg . CX0r/gb Crg')
+    const controller = new BoardController(new GameSession(createPuzzle(board, [])))
+    renderHud(controller)
+    const dots = () => {
+      const found = document.querySelector('.color-dots')
+      if (found === null) throw new Error('No color dots')
+      return found
+    }
+    const lit = () =>
+      [...dots().querySelectorAll('.color-dot')].map((dot) =>
+        dot.getAttribute('data-on') === 'true' ? dot.textContent : '-',
+      )
+    expect(screen.getByRole('img', { name: 'Colors of the piece under the pointer: none' })).toBe(
+      dots(),
+    )
+    expect(lit()).toEqual(['-', '-', '-'])
+    await act(() => controller.hover({ area: 'board', cell: 0 }))
+    expect(dots().getAttribute('aria-label')).toBe(
+      'Colors of the piece under the pointer: Red, Green',
+    )
+    expect(lit()).toEqual(['R', 'G', '-'])
+    await act(() => controller.hover({ area: 'board', cell: 2 }))
+    expect(dots().getAttribute('aria-label')).toBe(
+      'Colors of the piece under the pointer: Red, inside Green, Blue',
+    )
+    expect(lit()).toEqual(['R', '-', '-', '-', 'G', 'B'])
+    await act(() => {
+      locale.value = 'de'
+    })
+    expect(dots().getAttribute('aria-label')).toBe(
+      'Farben des Teils unter dem Zeiger: Rot, innen Grün, Blau',
+    )
+    await act(() => controller.hover({ area: 'board', cell: 1 }))
+    expect(dots().getAttribute('aria-label')).toBe('Farben des Teils unter dem Zeiger: keine')
   })
 })
