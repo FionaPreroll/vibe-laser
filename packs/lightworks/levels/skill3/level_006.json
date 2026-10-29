@@ -1,0 +1,19 @@
+{
+  "$schema": "../../../level.schema.json",
+  "version": 1,
+  "name": { "en": "Mirror Image", "de": "Spiegelbild" },
+  "note": "Two white beams. The prismirror in C3 sends green and blue up, to the left of red; the prism in E4 sends them down, to its right.",
+  "size": [6, 7],
+  "objects": [
+    { "type": "coin", "pos": "A3", "rgb": "b" },
+    { "type": "coin", "pos": "A5", "rgb": "g" },
+    { "type": "laser", "pos": "C1", "rot": 2, "rgb": "rgb" },
+    { "type": "coin", "pos": "C6", "rgb": "r" },
+    { "type": "laser", "pos": "E1", "rot": 2, "rgb": "rgb" },
+    { "type": "coin", "pos": "E6", "rgb": "r" },
+    { "type": "coin", "pos": "G4", "rgb": "b" },
+    { "type": "coin", "pos": "G6", "rgb": "g" }
+  ],
+  "toolbox": [{ "type": "prismirror", "rot": 0 }, { "type": "prism", "rot": 0 }],
+  "solution": [{ "piece": 0, "pos": "C3", "rot": 2 }, { "piece": 1, "pos": "E4", "rot": 2 }]
+}

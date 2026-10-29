@@ -162,10 +162,10 @@ packs/
     levels/skill1/level_001.json
     levels/skill1/level_002.json
     …
-  lightworks/                twelve puzzles for after the tutorial, in two skills
+  lightworks/                eighteen puzzles for after the tutorial, in three skills
 ```
 
-The Tutorial pack teaches one part per level. Lightworks combines them: each level is built around one idea, such as a prism used backwards or a slime steered with beams, and was checked by a brute-force search for a single solution that needs every piece in the toolbox.
+The Tutorial pack teaches one part per level. Lightworks combines them: each level is built around one idea, such as a prism used backwards or a slime steered with beams, and was checked by a brute-force search for a single solution that needs every piece in the toolbox. Every level of its third skill, Crossfire, has two lasers; in Switchboard nothing is placed, and only one of the 4,096 ways to turn its four mirrors solves it.
 
 - A pack has one to four skills of up to 30 levels each. A level's id comes from its path: `tutorial/2/5` is the fifth level of the second skill. With `"selectSkill": false`, or with one skill only, the pack opens straight at its levels.
 - `pack.json` gives the title and description in English and German, the `position` in the list of packs, the skill names, and optionally its `skin`, the look its levels are made for (`flat` or `neon`), and `rules`: rule flags from `src/core/rules.ts` for every level of the pack.
