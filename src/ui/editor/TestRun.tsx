@@ -6,7 +6,7 @@ import { playSolution, recordMoves, recordSolution } from '../../content/solutio
 import type { Rules } from '../../core/rules'
 import type { EditorController } from '../../editor/controller'
 import { GameSession } from '../../game/session'
-import { t } from '../../i18n'
+import { locale, t } from '../../i18n'
 import { BoardController } from '../../view/controller'
 import { BoardCanvas } from '../BoardCanvas'
 import { FailedDialog } from '../FailedDialog'
@@ -71,6 +71,7 @@ export function TestRun({ editor, packRules, skin, speaker, paused, onHelp, onCl
           {t('backToEditing')}
         </button>
       </div>
+      {level.intro && <p class="level-intro">{level.intro[locale.value]}</p>}
       <div class="stage">
         <BoardCanvas
           controller={controller}

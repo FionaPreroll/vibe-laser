@@ -2,6 +2,10 @@
   "$schema": "../../../level.schema.json",
   "version": 1,
   "name": { "en": "Clockwise", "de": "Im Uhrzeigersinn" },
+  "intro": {
+    "en": "A bender turns every beam 45° clockwise, whichever way it comes from. Where two beams cross, one bender turns both.",
+    "de": "Ein Bender lenkt jeden Strahl um 45° im Uhrzeigersinn ab, egal woher er kommt. Wo sich zwei Strahlen kreuzen, lenkt einer beide ab."
+  },
   "note": "Both beams cross on C3, and the bender there turns each of them clockwise.",
   "size": [5, 5],
   "objects": [

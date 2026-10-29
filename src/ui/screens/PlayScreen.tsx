@@ -88,7 +88,8 @@ export function PlayScreen({ level: id, book, speaker, paused, onHelp }: Props) 
   }
 
   const { pack, skill, entry } = found
-  const name = loaded.level.file.name[locale.value]
+  const { name: names, intro } = loaded.level.file
+  const name = names[locale.value]
   const { puzzle, phase } = controller.session.state.value
   const toLevels = () => navigate({ name: 'levels', pack: pack.id, skill: skill.number })
   const restart = () => {
@@ -106,6 +107,7 @@ export function PlayScreen({ level: id, book, speaker, paused, onHelp }: Props) 
           name,
         })}
       </h2>
+      {intro && <p class="level-intro">{intro[locale.value]}</p>}
       <div class="stage">
         <BoardCanvas
           controller={controller}

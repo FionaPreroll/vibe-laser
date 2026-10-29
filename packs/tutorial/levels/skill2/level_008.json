@@ -2,6 +2,10 @@
   "$schema": "../../../level.schema.json",
   "version": 1,
   "name": { "en": "Polarized", "de": "Polarisiert" },
+  "intro": {
+    "en": "A polarizer is a filter that also lets light through only in the direction its marker points. Here one piece sorts by color and by direction at once.",
+    "de": "Ein Polarisator ist ein Filter, der Licht außerdem nur in die Richtung seiner Markierung durchlässt. Hier sortiert ein Teil zugleich nach Farbe und Richtung."
+  },
   "note": "Only blue traveling east may cross B3: the polarizer filters by color and direction at once.",
   "size": [5, 3],
   "objects": [

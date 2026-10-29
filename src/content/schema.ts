@@ -96,6 +96,8 @@ const levelObject = z
     $schema: z.string().optional(),
     version: z.literal(1),
     name: names,
+    /** What players read above the board, such as what a new part does. */
+    intro: names.optional(),
     /** For level authors: what the level is about. Players do not see it. */
     note: z.string().optional(),
     size: z.tuple([z.number().int().min(1).max(32), z.number().int().min(1).max(26)]),

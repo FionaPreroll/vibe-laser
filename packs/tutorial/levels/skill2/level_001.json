@@ -2,6 +2,10 @@
   "$schema": "../../../level.schema.json",
   "version": 1,
   "name": { "en": "Bend", "de": "Knick" },
+  "intro": {
+    "en": "A refractor is a glass bar that bends light by 45° at its ends; its long sides stop light. Find the angle that leads to the coin.",
+    "de": "Ein Refraktor ist ein Glasstab, der Licht an seinen Enden um 45° knickt; seine langen Seiten halten Licht auf. Finde den Winkel, der zur Münze führt."
+  },
   "size": [5, 4],
   "objects": [
     { "type": "coin", "pos": "A5", "rgb": "g" },

@@ -2,6 +2,10 @@
   "$schema": "../../../level.schema.json",
   "version": 1,
   "name": { "en": "Event Horizon", "de": "Ereignishorizont" },
+  "intro": {
+    "en": "A spaceship flies east and west and drops a row at obstacles; ramming an explosive sets it off. A dark black hole pulls in ships in line with it, but light in the hole stops the pull.",
+    "de": "Ein Raumschiff fliegt nach Osten und Westen und rückt an Hindernissen eine Zeile nach unten; rammt es Sprengstoff, geht er hoch. Ein dunkles Schwarzes Loch zieht Raumschiffe an, die mit ihm in einer Linie stehen, doch Licht im Loch hebt den Sog auf."
+  },
   "note": "Light falls into the black hole, so it lets the ship be. Take the beam to the coin, and the dark hole pulls the ship in.",
   "size": [5, 5],
   "objects": [

@@ -142,6 +142,13 @@ describe('levelSchema', () => {
     ).toEqual([])
   })
 
+  it('takes an intro for players in both languages, or none', () => {
+    expect(problems({ intro: { en: 'Mirrors turn light.', de: 'Spiegel lenken Licht.' } })).toEqual(
+      [],
+    )
+    expect(problems({ intro: { en: 'Mirrors turn light.', de: '' } })[0]).toMatch(/^intro\.de: /)
+  })
+
   it('refuses unknown fields and versions', () => {
     expect(problems({ colour: 'red' })).toEqual(['Unrecognized key: "colour"'])
     expect(problems({ version: 2 })[0]).toMatch(/^version: /)

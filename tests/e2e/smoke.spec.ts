@@ -24,6 +24,7 @@ test('opens the first level from the pack list without errors', async ({ page })
   await expect(
     page.getByRole('application', { name: 'First Light: game board with 6 columns and 3 rows' }),
   ).toBeVisible()
+  await expect(page.getByText(/^A laser fires a beam of its color/)).toBeVisible()
   const size = await page.locator('.board canvas').boundingBox()
   expect(size?.width).toBeGreaterThan(300)
   expect(size?.height).toBeGreaterThan(200)

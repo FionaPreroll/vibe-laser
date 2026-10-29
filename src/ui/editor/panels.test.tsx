@@ -214,7 +214,7 @@ describe('PiecePanel', () => {
 })
 
 describe('LevelPanel', () => {
-  it('renames the level, notes it and resizes the board', async () => {
+  it('renames the level, writes its intro, notes it and resizes the board', async () => {
     const editor = new EditorController({ level: FIRST_LIGHT })
     render(<LevelPanel editor={editor} />)
     fireEvent.change(screen.getByRole('textbox', { name: 'Name (German)' }), {
@@ -225,6 +225,16 @@ describe('LevelPanel', () => {
       target: { value: 'Mirrors' },
     })
     expect(editor.level.value.note).toBe('Mirrors')
+    fireEvent.change(screen.getByRole('textbox', { name: 'Intro for players (English)' }), {
+      target: { value: ' Mirrors turn light. ' },
+    })
+    fireEvent.change(screen.getByRole('textbox', { name: 'Intro for players (German)' }), {
+      target: { value: 'Spiegel lenken Licht.' },
+    })
+    expect(editor.level.value.intro).toEqual({
+      en: 'Mirrors turn light.',
+      de: 'Spiegel lenken Licht.',
+    })
     fireEvent.change(screen.getByRole('spinbutton', { name: 'Columns' }), {
       target: { value: '8' },
     })

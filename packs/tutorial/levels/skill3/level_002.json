@@ -2,6 +2,10 @@
   "$schema": "../../../level.schema.json",
   "version": 1,
   "name": { "en": "Hungry Slime", "de": "Hungriger Schleim" },
+  "intro": {
+    "en": "A slime walks ahead and turns right where a beam or a piece is in its way. It eats the first explosive it reaches, the only safe way to get rid of one, but also a plain mirror without light. Let this one go, and give it time.",
+    "de": "Ein Schleim läuft geradeaus und biegt rechts ab, wo ein Strahl oder ein Teil im Weg ist. Er frisst den ersten Sprengstoff, den er erreicht, der einzige sichere Weg, einen loszuwerden, aber auch einen einfachen Spiegel ohne Licht. Lass diesen los und gib ihm Zeit."
+  },
   "note": "The slime eats the explosive in its way; only then may the beam pass there.",
   "size": [5, 4],
   "objects": [

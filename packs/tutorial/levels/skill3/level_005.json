@@ -2,6 +2,10 @@
   "$schema": "../../../level.schema.json",
   "version": 1,
   "name": { "en": "Fuel Run", "de": "Treibstoff" },
+  "intro": {
+    "en": "A ship that flies right over a fuel cell takes it aboard, then shoots the next explosive ahead. Fuel cells explode in light, like explosives.",
+    "de": "Ein Raumschiff, das direkt über eine Brennstoffzelle fliegt, nimmt sie an Bord und schießt dann auf den nächsten Sprengstoff voraus. Brennstoffzellen explodieren bei Licht wie Sprengstoff."
+  },
   "note": "Flying over the fuel cell, the ship takes it aboard and shoots the explosive; then the beam may pass.",
   "size": [6, 4],
   "objects": [

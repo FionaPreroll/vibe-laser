@@ -2,6 +2,10 @@
   "$schema": "../../../level.schema.json",
   "version": 1,
   "name": { "en": "Dark Coin", "de": "Dunkle Münze" },
+  "intro": {
+    "en": "An anti-coin spins only while no light touches it, and light passes right through it. Lead the beam around it to the green coin.",
+    "de": "Eine Anti-Münze dreht sich nur, solange kein Licht sie berührt, und Licht geht durch sie hindurch. Führ den Strahl um sie herum zur grünen Münze."
+  },
   "size": [5, 2],
   "objects": [
     { "type": "laser", "pos": "A1", "rot": 2, "rgb": "g" },
