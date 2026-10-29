@@ -12,5 +12,6 @@
     { "en": "Optics", "de": "Optik" },
     { "en": "Hazards", "de": "Gefahren" },
     { "en": "Expansions", "de": "Erweiterungen" }
-  ]
+  ],
+  "selectScreen": "school"
 }

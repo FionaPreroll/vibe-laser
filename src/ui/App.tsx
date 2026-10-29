@@ -160,7 +160,9 @@ export function App({ store, audio }: Props) {
       <UpdateNotice />
       <main class={current.name === 'play' || current.name === 'editLevel' ? 'play' : 'menu'}>
         {current.name === 'packs' && <PacksScreen solved={solved} />}
-        {current.name === 'skills' && <SkillsScreen pack={current.pack} solved={solved} />}
+        {current.name === 'skills' && (
+          <SkillsScreen pack={current.pack} solved={solved} onHelp={() => setOverlay('help')} />
+        )}
         {current.name === 'levels' && (
           <LevelsScreen pack={current.pack} skill={current.skill} solved={solved} />
         )}
