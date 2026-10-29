@@ -5,16 +5,12 @@
   "note": "One splitter, two color converters: one turned to make green, the other to make blue.",
   "size": [5, 5],
   "objects": [
-    { "type": "coin", "rgb": "g", "pos": "A3" },
-    { "type": "laser", "rot": 2, "rgb": "r", "pos": "C1" },
-    { "type": "coin", "rgb": "r", "pos": "C2" },
-    { "type": "coin", "rgb": "b", "pos": "E3" }
+    { "type": "coin", "pos": "A3", "rgb": "g" },
+    { "type": "laser", "pos": "C1", "rot": 2, "rgb": "r" },
+    { "type": "coin", "pos": "C2", "rgb": "r" },
+    { "type": "coin", "pos": "E3", "rgb": "b" }
   ],
-  "toolbox": [
-    { "type": "splitter", "rot": 0 },
-    { "type": "colorConverter", "rot": 0 },
-    { "type": "colorConverter", "rot": 0 }
-  ],
+  "toolbox": [{ "type": "splitter", "rot": 0 }, { "type": "colorConverter", "rot": 0, "count": 2 }],
   "solution": [
     { "piece": 0, "pos": "C3", "rot": 6 },
     { "piece": 1, "pos": "B3", "rot": 4 },

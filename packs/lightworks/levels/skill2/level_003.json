@@ -5,18 +5,14 @@
   "note": "One splicer feeds three ways; the coins in column 1 and in E5 each need a mirror.",
   "size": [5, 5],
   "objects": [
-    { "type": "coin", "rgb": "g", "pos": "A1" },
-    { "type": "coin", "rgb": "g", "pos": "A3" },
-    { "type": "coin", "rgb": "g", "pos": "B1" },
-    { "type": "coin", "rgb": "g", "pos": "C1" },
-    { "type": "laser", "rot": 0, "rgb": "g", "pos": "E3" },
-    { "type": "coin", "rgb": "g", "pos": "E5" }
+    { "type": "coin", "pos": "A1", "rgb": "g" },
+    { "type": "coin", "pos": "A3", "rgb": "g" },
+    { "type": "coin", "pos": "B1", "rgb": "g" },
+    { "type": "coin", "pos": "C1", "rgb": "g" },
+    { "type": "laser", "pos": "E3", "rot": 0, "rgb": "g" },
+    { "type": "coin", "pos": "E5", "rgb": "g" }
   ],
-  "toolbox": [
-    { "type": "splicer", "rot": 0 },
-    { "type": "mirror", "rot": 0 },
-    { "type": "mirror", "rot": 0 }
-  ],
+  "toolbox": [{ "type": "splicer", "rot": 0 }, { "type": "mirror", "rot": 0, "count": 2 }],
   "solution": [
     { "piece": 0, "pos": "D3", "rot": 4 },
     { "piece": 1, "pos": "D1", "rot": 1 },

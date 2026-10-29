@@ -5,17 +5,13 @@
   "note": "The splitter goes below the anti-coin, and each branch needs a mirror.",
   "size": [6, 4],
   "objects": [
-    { "type": "coin", "rgb": "g", "pos": "A1" },
+    { "type": "coin", "pos": "A1", "rgb": "g" },
     { "type": "antiCoin", "pos": "A3" },
     { "type": "explosive", "pos": "C1" },
-    { "type": "laser", "rot": 0, "rgb": "g", "pos": "D3" },
-    { "type": "coin", "rgb": "g", "pos": "D6" }
+    { "type": "laser", "pos": "D3", "rot": 0, "rgb": "g" },
+    { "type": "coin", "pos": "D6", "rgb": "g" }
   ],
-  "toolbox": [
-    { "type": "splitter", "rot": 0 },
-    { "type": "mirror", "rot": 0 },
-    { "type": "mirror", "rot": 0 }
-  ],
+  "toolbox": [{ "type": "splitter", "rot": 0 }, { "type": "mirror", "rot": 0, "count": 2 }],
   "solution": [
     { "piece": 0, "pos": "B3", "rot": 4 },
     { "piece": 1, "pos": "B1", "rot": 1 },

@@ -5,21 +5,16 @@
   "note": "Red and blue swap rows, and their beams cross: blue must turn up west of where red turns down.",
   "size": [6, 4],
   "objects": [
-    { "type": "laser", "rot": 2, "rgb": "r", "pos": "A1" },
-    { "type": "coin", "rgb": "r", "pos": "A2" },
-    { "type": "coin", "rgb": "r", "pos": "A3" },
+    { "type": "laser", "pos": "A1", "rot": 2, "rgb": "r" },
+    { "type": "coin", "pos": "A2", "rgb": "r" },
+    { "type": "coin", "pos": "A3", "rgb": "r" },
     { "type": "antiCoin", "pos": "A5" },
-    { "type": "coin", "rgb": "b", "pos": "B3" },
-    { "type": "coin", "rgb": "b", "pos": "B6" },
-    { "type": "coin", "rgb": "r", "pos": "C6" },
-    { "type": "laser", "rot": 2, "rgb": "b", "pos": "D1" }
+    { "type": "coin", "pos": "B3", "rgb": "b" },
+    { "type": "coin", "pos": "B6", "rgb": "b" },
+    { "type": "coin", "pos": "C6", "rgb": "r" },
+    { "type": "laser", "pos": "D1", "rot": 2, "rgb": "b" }
   ],
-  "toolbox": [
-    { "type": "mirror", "rot": 0 },
-    { "type": "mirror", "rot": 0 },
-    { "type": "mirror", "rot": 0 },
-    { "type": "mirror", "rot": 0 }
-  ],
+  "toolbox": [{ "type": "mirror", "rot": 0, "count": 4 }],
   "solution": [
     { "piece": 0, "pos": "A4", "rot": 5 },
     { "piece": 1, "pos": "C4", "rot": 1 },
