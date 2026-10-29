@@ -140,7 +140,7 @@ Property tests (`src/core/properties.test.ts`, with fast-check) check the model 
 
 - `GameSession` in `src/game/session.ts` is the only writer of game state. Views and buttons send it commands (`move`, `rotate`, or a `batch` of them, as Cleanup does) from `src/core/commands.ts`.
 - Every command stores its inverse. Undo applies that inverse to the current puzzle instead of restoring a snapshot, so that later the work of slimes, mines and ships survives undo, as the spec demands.
-- Once every coin spins, the session locks the level; only Restart and the next level remain.
+- Once every coin spins, the session locks the level; only Restart and the next level remain. The dialog saying so waits 1.5 s, so players see the spinning coins first, as the explosion dialog waits for the blast to fade.
 - Time runs in fixed ticks of 100 ms. The view feeds the session elapsed time with `advance()`; tests call `tick()`. On each tick the actors in `src/core/actors/` take their steps in id order, slimes every 8 ticks, mines and ships every 4. Mines bounce at random, from a generator seeded per session, so a level plays the same way for the same moves.
 - The phases are `playing`, `stabilizing`, `exploding`, `failed` and `solved`. With mines or ships about, every coin spinning first means `stabilizing`, and the level counts as solved once that has held for 50 ticks. A lit explosive means `exploding`: the chain from `src/core/explosions.ts` spreads one ring per tick, then the level has `failed`.
 - Undo takes back only player moves. Whatever actors and explosions did stays, and an undo entry whose piece is gone or whose cell is taken is dropped.
