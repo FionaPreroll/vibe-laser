@@ -18,6 +18,7 @@ import {
   changePiece,
   clearLevel,
   finishLevel,
+  introLevel,
   movePiece,
   newLevel,
   noteLevel,
@@ -47,6 +48,7 @@ export interface EditorScene {
 export type ProblemKey =
   | LevelProblem['key']
   | 'noName'
+  | 'halfIntro'
   | 'invalid'
   | 'startsSolved'
   | 'startsExploding'
@@ -253,6 +255,10 @@ export class EditorController {
     return this.#edit(renameLevel(this.level.value, locale, name))
   }
 
+  setIntro(locale: 'en' | 'de', text: string): boolean {
+    return this.#edit(introLevel(this.level.value, locale, text))
+  }
+
   setNote(note: string): boolean {
     return this.#edit(noteLevel(this.level.value, note))
   }
@@ -376,6 +382,7 @@ export class EditorController {
     for (const issue of parsed.error?.issues ?? []) {
       const [area, index] = issue.path
       if (area === 'name') add({ key: 'noName', blocking: true })
+      else if (area === 'intro') add({ key: 'halfIntro', blocking: true })
       else if (area === 'solution') add({ key: 'solutionFails', blocking: true })
       else {
         const found = problemOf(issue)
@@ -414,7 +421,7 @@ function sameProblem(a: Problem, b: Problem): boolean {
   return JSON.stringify(a) === JSON.stringify(b)
 }
 
-/** What decides how the level plays: board, pieces and rules, but not its name or note. */
+/** What decides how the level plays: board, pieces and rules, but not its name, intro or note. */
 function playKey(level: LevelFile): string {
   return JSON.stringify([level.size, level.objects, level.toolbox, level.rules])
 }

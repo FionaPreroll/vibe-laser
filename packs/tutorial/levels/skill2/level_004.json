@@ -2,6 +2,10 @@
   "$schema": "../../../level.schema.json",
   "version": 1,
   "name": { "en": "Three Ways", "de": "Drei Wege" },
+  "intro": {
+    "en": "A threeway splits light that enters its flat side into two beams, one through each bevel.",
+    "de": "Ein Threeway teilt Licht, das durch seine flache Seite eintritt, in zwei Strahlen, je einen durch jede Schrägseite."
+  },
   "size": [5, 4],
   "objects": [
     { "type": "coin", "pos": "A1", "rgb": "b" },

@@ -4,6 +4,7 @@ import {
   changePiece,
   clearLevel,
   finishLevel,
+  introLevel,
   movePiece,
   newLevel,
   noteLevel,
@@ -57,13 +58,18 @@ describe('level drafts', () => {
       { type: 'mirror' },
       { type: 'filter', rgb: 'g' },
     ])
-    const saved = finishLevel({ ...opened, note: '  For testing  ' })
+    const saved = finishLevel({
+      ...opened,
+      note: '  For testing  ',
+      intro: { en: 'Light', de: 'Licht' },
+    })
     expect(saved.toolbox).toEqual([
       { type: 'mirror', count: 2 },
       { type: 'filter', rgb: 'g' },
     ])
     expect(saved.objects.map((object) => object.pos)).toEqual(['A1', 'A4'])
     expect(saved.note).toBe('For testing')
+    expect(Object.keys(saved).slice(0, 4)).toEqual(['version', 'name', 'intro', 'note'])
     expect(finishLevel({ ...opened, note: '  ' })).not.toHaveProperty('note')
     expect(levelSchema.safeParse(saved).success).toBe(true)
   })
@@ -177,6 +183,14 @@ describe('level drafts', () => {
     expect(noted.note).toBe('Why')
     expect(noteLevel(noted, '')).not.toHaveProperty('note')
     expect(noteLevel(draft, '')).toBe(draft)
+    const introduced = introLevel(draft, 'en', 'Mirrors turn light.')
+    expect(introduced.intro).toEqual({ en: 'Mirrors turn light.', de: '' })
+    expect(introLevel(introduced, 'en', 'Mirrors turn light.')).toBe(introduced)
+    expect(introLevel(introduced, 'de', 'Spiegel').intro).toEqual({
+      en: 'Mirrors turn light.',
+      de: 'Spiegel',
+    })
+    expect(introLevel(introduced, 'en', '')).not.toHaveProperty('intro')
     const solved = solveLevel(draft, [{ wait: 3 }])
     expect(solved.solution).toEqual([{ wait: 3 }])
     expect(solveLevel(solved, undefined)).not.toHaveProperty('solution')

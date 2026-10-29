@@ -302,13 +302,15 @@ describe('LevelEditor', () => {
       controller.session.execute({ kind: 'rotate', item: 2, steps: -1 })
     })
     expect(speaker.play).toHaveBeenCalledWith('place')
-    expect(screen.getByRole('dialog', { name: 'Level solved' })).toBeTruthy()
+    expect(screen.queryByRole('dialog', { name: 'Level solved' })).toBeNull()
+    await screen.findByRole('dialog', { name: 'Level solved' }, { timeout: 3000 })
     await click('Play again')
     expect(controller.session.state.value.phase).toBe('playing')
     await act(() => {
       controller.session.execute({ kind: 'move', item: 2, to: { area: 'board', cell: 11 } })
       controller.session.execute({ kind: 'rotate', item: 2, steps: -1 })
     })
+    await screen.findByRole('button', { name: 'Keep as solution' }, { timeout: 3000 })
     await click('Keep as solution')
     expect(screen.queryByText(/^Testing/)).toBeNull()
     expect(editor.level.value.solution).toEqual([{ piece: 0, pos: 'B6', rot: 7 }])
@@ -323,6 +325,16 @@ describe('LevelEditor', () => {
     await click('Test')
     await testRun()
     expect(gameMount.mock.lastCall?.[2]).toMatchObject({ id: 'neon' })
+  })
+
+  it('shows the intro for players while testing', async () => {
+    const intro = { en: 'Mirrors turn light.', de: 'Spiegel lenken Licht.' }
+    await shelf.saveLevel('my-1', 1, 2, { ...FIRST_LIGHT, intro })
+    open(2)
+    await editorShown()
+    await click('Test')
+    await testRun()
+    expect(screen.getByText('Mirrors turn light.')).toBeTruthy()
   })
 
   it('goes back to editing from a test, with Exit, the banner or the dialog', async () => {

@@ -19,6 +19,8 @@ import { replaySolution, SEEDS } from './solution'
 
 /** A minute of ticks: about how long a player may look at a level before the first move. */
 const THINKING_TICKS = 600
+/** Ten seconds of thought before each move: no solution may hang on quick hands. */
+const PONDERING_TICKS = 100
 
 const entries = PACKS.flatMap((pack) =>
   pack.skills.flatMap((skill) => skill.levels.map((entry) => [entry.id, entry] as const)),
@@ -54,6 +56,20 @@ describe('built-in packs', () => {
     const pack = PACKS.find((candidate) => candidate.id === level.pack)
     for (const seed of SEEDS) {
       const session = replaySolution(level.file, pack?.file.rules, seed)
+      expect(session.state.value.phase, `seed ${seed}`).toBe('solved')
+    }
+  })
+  it.each(entries)('%s is solved slowly too, with a pause before each move', async (_, entry) => {
+    const level = await entry.load()
+    const pack = PACKS.find((candidate) => candidate.id === level.pack)
+    const slowly: LevelFile = {
+      ...level.file,
+      solution: level.file.solution?.flatMap((step) =>
+        'wait' in step ? [step] : [{ wait: PONDERING_TICKS }, step],
+      ),
+    }
+    for (const seed of SEEDS) {
+      const session = replaySolution(slowly, pack?.file.rules, seed)
       expect(session.state.value.phase, `seed ${seed}`).toBe('solved')
     }
   })

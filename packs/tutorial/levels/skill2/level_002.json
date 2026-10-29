@@ -2,6 +2,10 @@
   "$schema": "../../../level.schema.json",
   "version": 1,
   "name": { "en": "One-Way Street", "de": "Einbahnstraße" },
+  "intro": {
+    "en": "A one-way piece lets light in only straight through its broad side. Let the red beam pass, and keep the green one off the anti-coin.",
+    "de": "Ein Einweg-Teil lässt Licht nur gerade durch seine breite Seite herein. Lass den roten Strahl durch und halte den grünen von der Anti-Münze fern."
+  },
   "note": "The one-way must let the red beam through and stop the green one in the same cell.",
   "size": [5, 3],
   "objects": [

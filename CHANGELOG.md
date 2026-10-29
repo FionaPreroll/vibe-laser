@@ -38,8 +38,16 @@ All changes players can notice are listed here. The format follows [Keep a Chang
 - A second look for the board, in the settings: Neon draws every part as a glowing outline on a dark board.
 - A second level pack, Lightworks: twelve puzzles for after the tutorial, in two skills, that combine the parts in new ways, such as a prism used backwards or a slime steered with beams.
 - Level packs can choose the look their levels are made for. The new default look in the settings, the pack's choice, shows each pack that way; Plain or Neon show every pack in one look. In the level editor, the pack settings choose a pack's look.
+- Every tutorial level explains its new part in a few words above the board, and the level editor lets authors write such an intro, in English and German, for their own levels.
 
 ### Changed
 
+- Three tutorial levels are rebuilt so that you decide what the slime and the ships do: Hungry Slime, Event Horizon and Fuel Run. A beam holds them back until you move it, and the wrong order sets off the explosive. Nothing in them hurries you any more.
+- Slimes crawl more slowly, 1.2 seconds per cell instead of 0.8, so you can watch where they go.
 - On computers without graphics acceleration, the board leaves out edge smoothing and so runs twice as smoothly.
 - The game starts faster: the board's graphics load only when the first level opens.
+- Once a level is solved, its message waits a moment, so you can watch the coins spin first.
+
+### Fixed
+
+- A spaceship that runs into a dead end turns round and flies back, instead of standing still there.

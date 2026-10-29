@@ -34,6 +34,9 @@ async function start(hash = '#/', store: KeyValueStore = memoryStore()) {
 }
 
 /** The controller the play screen handed to the board it mounted last. */
+/** The solved dialog, which appears a moment after every coin starts to spin. */
+const solvedDialog = () => screen.findByRole('dialog', { name: 'Level solved' }, { timeout: 3000 })
+
 async function mounted(): Promise<BoardController> {
   await waitFor(() => expect(mount).toHaveBeenCalled())
   const controller = mount.mock.lastCall?.[1]
@@ -102,7 +105,7 @@ describe('App', () => {
   it('saves a solved level and moves on to the next unsolved one, unsolved', async () => {
     const { store } = await start('#/play/tutorial/1/1')
     await solve(await mounted(), 'tutorial/1/1')
-    const dialog = screen.getByRole('dialog', { name: 'Level solved' })
+    const dialog = await solvedDialog()
     await waitFor(async () => expect(await solvedIn(store)).toEqual(['tutorial/1/1']))
     await act(() => {
       fireEvent.click(within(dialog).getByRole('button', { name: 'Next unsolved level' }))
@@ -122,14 +125,22 @@ describe('App', () => {
     expect(await solvedIn(store)).toEqual(['tutorial/1/1'])
   })
 
+  it('tells players above the board what the level is about', async () => {
+    await start('#/play/tutorial/1/1')
+    await mounted()
+    expect(screen.getByText(/^A laser fires a beam of its color/)).toBeTruthy()
+  })
+
   it('plays a solved level again, or goes back to the level selection', async () => {
     await start('#/play/tutorial/1/1')
     const controller = await mounted()
     await solve(controller, 'tutorial/1/1')
+    await solvedDialog()
     await click('Play again')
     expect(screen.queryByRole('dialog')).toBeNull()
     expect(controller.session.state.value.phase).toBe('playing')
     await solve(controller, 'tutorial/1/1')
+    await solvedDialog()
     await click('Level selection')
     expect(screen.getByRole('heading', { name: 'Tutorial · Mirrors' })).toBeTruthy()
   })
@@ -150,6 +161,7 @@ describe('App', () => {
     await start('#/play/tutorial/1/1', store)
     expect(button('Profile: Fiona')).toBeTruthy()
     await solve(await mounted(), 'tutorial/1/1')
+    await solvedDialog()
     expect(screen.getByText(/every level of this pack is solved/)).toBeTruthy()
     expect(screen.queryByRole('button', { name: 'Next unsolved level' })).toBeNull()
   })

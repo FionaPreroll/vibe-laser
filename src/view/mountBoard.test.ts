@@ -290,22 +290,23 @@ describe('mountBoard', () => {
   })
 
   it('lets actors jump instead of glide when motion is reduced', async () => {
-    const { controller, tick, scene } = await mount('tutorial/3/2')
-    const slimeIndex = () =>
-      controller.session.state.value.puzzle.items.findIndex((item) => item.piece.kind === 'slime')
-    const slime = (scene.children[2] as Container).children[slimeIndex()]
-    const start = { x: slime?.x, y: slime?.y }
-    // One slime step, with the clock moved by hand so no time passes for the gliding.
-    controller.session.advance(800)
-    const place = controller.session.state.value.puzzle.items[slimeIndex()]?.place
-    if (place === undefined) throw new Error('The slime is gone')
+    // In Event Horizon the ship paces back and forth from the start.
+    const { controller, tick, scene } = await mount('tutorial/3/4')
+    const shipIndex = () =>
+      controller.session.state.value.puzzle.items.findIndex((item) => item.piece.kind === 'ship')
+    const ship = (scene.children[2] as Container).children[shipIndex()]
+    const start = { x: ship?.x, y: ship?.y }
+    // One ship step, with the clock moved by hand so no time passes for the gliding.
+    controller.session.advance(400)
+    const place = controller.session.state.value.puzzle.items[shipIndex()]?.place
+    if (place === undefined) throw new Error('The ship is gone')
     const target = placeCenter(controller.geometry, place)
     expect(target).not.toEqual(start)
     tick(0)
-    expect({ x: slime?.x, y: slime?.y }).toEqual(start)
+    expect({ x: ship?.x, y: ship?.y }).toEqual(start)
     controller.reducedMotion.value = true
     tick(0)
-    expect({ x: slime?.x, y: slime?.y }).toEqual(target)
+    expect({ x: ship?.x, y: ship?.y }).toEqual(target)
   })
 
   it('keeps the browser menu off the canvas and stops listening once destroyed', async () => {

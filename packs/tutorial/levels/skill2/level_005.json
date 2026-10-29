@@ -2,6 +2,10 @@
   "$schema": "../../../level.schema.json",
   "version": 1,
   "name": { "en": "Rainbow", "de": "Regenbogen" },
+  "intro": {
+    "en": "White light is red, green and blue together. A prism sends red straight on and turns green by 45° and blue by 90°.",
+    "de": "Weißes Licht ist Rot, Grün und Blau zusammen. Ein Prisma lässt Rot geradeaus und knickt Grün um 45° und Blau um 90° ab."
+  },
   "size": [5, 4],
   "objects": [
     { "type": "coin", "pos": "A2", "rgb": "r" },

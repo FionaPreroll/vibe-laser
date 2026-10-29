@@ -2,6 +2,10 @@
   "$schema": "../../../level.schema.json",
   "version": 1,
   "name": { "en": "Fenced In", "de": "Eingezäunt" },
+  "intro": {
+    "en": "A robot mine jumps around and bounces off beams and pieces; if it reaches an explosive, it sets it off. A beam can fence it in.",
+    "de": "Eine Robotmine springt umher und prallt an Strahlen und Teilen ab; erreicht sie Sprengstoff, geht er hoch. Ein Strahl kann sie einzäunen."
+  },
   "note": "The beam along row C keeps the mine away from the explosive, and must go on doing so.",
   "size": [5, 5],
   "objects": [

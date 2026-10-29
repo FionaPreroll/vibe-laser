@@ -2,6 +2,10 @@
   "$schema": "../../../level.schema.json",
   "version": 1,
   "name": { "en": "First Light", "de": "Erstes Licht" },
+  "intro": {
+    "en": "A laser fires a beam of its color, and a coin spins when light of exactly its color falls on it. Put the mirror in the beam and turn it until the beam reaches the coin.",
+    "de": "Ein Laser sendet einen Strahl seiner Farbe aus, und eine Münze dreht sich, wenn Licht genau ihrer Farbe auf sie fällt. Stell den Spiegel in den Strahl und dreh ihn, bis der Strahl die Münze erreicht."
+  },
   "size": [6, 3],
   "objects": [
     { "type": "coin", "pos": "A6", "rgb": "r" },

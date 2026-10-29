@@ -2,6 +2,10 @@
   "$schema": "../../../level.schema.json",
   "version": 1,
   "name": { "en": "Trident", "de": "Dreizack" },
+  "intro": {
+    "en": "A splicer splits light that enters its narrow end three ways: to the left, to the right and straight on. Its sides and its red end stop light.",
+    "de": "Ein Splicer teilt Licht, das durch sein schmales Ende eintritt, dreifach: nach links, nach rechts und geradeaus. Seine Seiten und sein rotes Ende sperren."
+  },
   "note": "C5 spins from the start; the splicer keeps it lit while it lights A3 and E3.",
   "size": [5, 5],
   "objects": [
