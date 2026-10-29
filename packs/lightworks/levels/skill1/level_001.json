@@ -1,0 +1,28 @@
+{
+  "$schema": "../../../level.schema.json",
+  "version": 1,
+  "name": { "en": "In Order", "de": "Der Reihe nach" },
+  "note": "Filters one after another: yellow first, then red, for the two coins on the same beam.",
+  "size": [5, 4],
+  "objects": [
+    { "type": "laser", "pos": "A1", "rot": 2, "rgb": "rgb" },
+    { "type": "coin", "pos": "A3", "rgb": "rg" },
+    { "type": "coin", "pos": "B5", "rgb": "r" },
+    { "type": "coin", "pos": "C5", "rgb": "r" },
+    { "type": "laser", "pos": "D1", "rot": 2, "rgb": "rgb" },
+    { "type": "coin", "pos": "D3", "rgb": "gb" },
+    { "type": "coin", "pos": "D4", "rgb": "gb" }
+  ],
+  "toolbox": [
+    { "type": "filter", "rgb": "rg" },
+    { "type": "filter", "rgb": "r" },
+    { "type": "mirror", "rot": 0 },
+    { "type": "filter", "rgb": "gb" }
+  ],
+  "solution": [
+    { "piece": 0, "pos": "A2", "rot": 0 },
+    { "piece": 1, "pos": "A4", "rot": 0 },
+    { "piece": 2, "pos": "A5", "rot": 5 },
+    { "piece": 3, "pos": "D2", "rot": 0 }
+  ]
+}

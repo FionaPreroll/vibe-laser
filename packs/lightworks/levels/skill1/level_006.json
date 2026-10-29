@@ -1,0 +1,24 @@
+{
+  "$schema": "../../../level.schema.json",
+  "version": 1,
+  "name": { "en": "Crossing Paths", "de": "Kreuzwege" },
+  "note": "Red and blue swap rows, and their beams cross: blue must turn up west of where red turns down.",
+  "size": [6, 4],
+  "objects": [
+    { "type": "laser", "pos": "A1", "rot": 2, "rgb": "r" },
+    { "type": "coin", "pos": "A2", "rgb": "r" },
+    { "type": "coin", "pos": "A3", "rgb": "r" },
+    { "type": "antiCoin", "pos": "A5" },
+    { "type": "coin", "pos": "B3", "rgb": "b" },
+    { "type": "coin", "pos": "B6", "rgb": "b" },
+    { "type": "coin", "pos": "C6", "rgb": "r" },
+    { "type": "laser", "pos": "D1", "rot": 2, "rgb": "b" }
+  ],
+  "toolbox": [{ "type": "mirror", "rot": 0, "count": 4 }],
+  "solution": [
+    { "piece": 0, "pos": "A4", "rot": 5 },
+    { "piece": 1, "pos": "C4", "rot": 1 },
+    { "piece": 2, "pos": "D2", "rot": 7 },
+    { "piece": 3, "pos": "B2", "rot": 3 }
+  ]
+}

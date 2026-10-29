@@ -1,0 +1,14 @@
+{
+  "$schema": "../pack.schema.json",
+  "version": 1,
+  "title": { "en": "Lightworks", "de": "Lichtwerk" },
+  "description": {
+    "en": "Twelve puzzles for after the tutorial: every part comes back, now in combination.",
+    "de": "Zwölf Rätsel für nach der Einführung: Alle Teile kommen wieder, jetzt im Zusammenspiel."
+  },
+  "position": 2,
+  "skills": [
+    { "en": "Light Work", "de": "Leichte Übung" },
+    { "en": "Tricks of the Light", "de": "Lichtspiele" }
+  ]
+}

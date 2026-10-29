@@ -1,0 +1,18 @@
+{
+  "$schema": "../../../level.schema.json",
+  "version": 1,
+  "name": { "en": "Sorting Office", "de": "Sortieranlage" },
+  "note": "The selector takes green out of white; the complex then parts red from blue.",
+  "size": [6, 4],
+  "objects": [
+    { "type": "laser", "pos": "A1", "rot": 2, "rgb": "rgb" },
+    { "type": "coin", "pos": "A6", "rgb": "b" },
+    { "type": "coin", "pos": "C6", "rgb": "r" },
+    { "type": "coin", "pos": "D5", "rgb": "g" }
+  ],
+  "toolbox": [
+    { "type": "selector", "rot": 0, "rgb": "g" },
+    { "type": "complex", "rot": 0, "rgb": "r", "inner": "b" }
+  ],
+  "solution": [{ "piece": 0, "pos": "A2", "rot": 2 }, { "piece": 1, "pos": "A4", "rot": 2 }]
+}

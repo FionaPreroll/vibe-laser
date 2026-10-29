@@ -1,0 +1,21 @@
+{
+  "$schema": "../../../level.schema.json",
+  "version": 1,
+  "name": { "en": "Glass Corners", "de": "Glasecken" },
+  "note": "Two refractors take the beam up a diagonal and back; a mirror turns it to the coins.",
+  "size": [6, 5],
+  "objects": [
+    { "type": "coin", "pos": "A5", "rgb": "r" },
+    { "type": "coin", "pos": "B5", "rgb": "r" },
+    { "type": "coin", "pos": "D3", "rgb": "r" },
+    { "type": "laser", "pos": "E1", "rot": 2, "rgb": "r" },
+    { "type": "antiCoin", "pos": "E3" },
+    { "type": "antiCoin", "pos": "E5" }
+  ],
+  "toolbox": [{ "type": "refractor", "rot": 0, "count": 2 }, { "type": "mirror", "rot": 0 }],
+  "solution": [
+    { "piece": 0, "pos": "E2", "rot": 2 },
+    { "piece": 1, "pos": "C4", "rot": 2 },
+    { "piece": 2, "pos": "C5", "rot": 7 }
+  ]
+}

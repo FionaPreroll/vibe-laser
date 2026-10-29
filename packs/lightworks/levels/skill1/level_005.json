@@ -1,0 +1,19 @@
+{
+  "$schema": "../../../level.schema.json",
+  "version": 1,
+  "name": { "en": "Prism Break", "de": "Ausbruch" },
+  "note": "The prism right after the laser: green runs down the diagonal by itself; red and blue each need a mirror.",
+  "size": [6, 5],
+  "objects": [
+    { "type": "laser", "pos": "A1", "rot": 2, "rgb": "rgb" },
+    { "type": "coin", "pos": "C4", "rgb": "g" },
+    { "type": "coin", "pos": "C6", "rgb": "r" },
+    { "type": "coin", "pos": "E4", "rgb": "b" }
+  ],
+  "toolbox": [{ "type": "prism", "rot": 0 }, { "type": "mirror", "rot": 0, "count": 2 }],
+  "solution": [
+    { "piece": 0, "pos": "A2", "rot": 2 },
+    { "piece": 1, "pos": "A6", "rot": 5 },
+    { "piece": 2, "pos": "E2", "rot": 1 }
+  ]
+}
