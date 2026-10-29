@@ -228,6 +228,33 @@ describe('PackEditor', () => {
     await waitFor(() => expect(shelf.find('my-1')?.pack).not.toHaveProperty('selectScreen'))
   })
 
+  it("saves the pack's sounds, and leaves the laboratory's out of the file", async () => {
+    await shelf.create(PACK)
+    render(<PackEditor pack="my-1" shelf={shelf} />)
+    const sounds = screen.getByRole('combobox', { name: 'Sounds' }) as HTMLSelectElement
+    expect([...sounds.options].map((option) => option.text)).toEqual([
+      'Laboratory',
+      'Schoolroom',
+      'Classic',
+      'Space station',
+      'At sea',
+      'Crypt',
+      'Clinic',
+    ])
+    expect(sounds.value).toBe('lab')
+    expect(sounds.getAttribute('aria-describedby')).toBe('pack-sounds-hint')
+    await act(() => {
+      fireEvent.change(sounds, { target: { value: 'sea' } })
+    })
+    await click('Save pack settings')
+    await waitFor(() => expect(shelf.find('my-1')?.pack.sounds).toBe('sea'))
+    await act(() => {
+      fireEvent.change(sounds, { target: { value: 'lab' } })
+    })
+    await click('Save pack settings')
+    await waitFor(() => expect(shelf.find('my-1')?.pack).not.toHaveProperty('sounds'))
+  })
+
   it('adds skills up to four and removes the last, asking when it has levels', async () => {
     await shelf.create(PACK)
     await shelf.saveLevel('my-1', 2, 1, LEVEL)

@@ -1,0 +1,17 @@
+{
+  "$schema": "../../../level.schema.json",
+  "version": 1,
+  "name": { "en": "Right of Way", "de": "Vorfahrt" },
+  "note": "Two blue beams cross in C3. A polarizer there lets the one going east through and stops the one going north, which would light the anti-coins; a mirror in C6 takes the first one down to the coin.",
+  "size": [6, 5],
+  "objects": [
+    { "type": "antiCoin", "pos": "A3" },
+    { "type": "antiCoin", "pos": "B3" },
+    { "type": "laser", "pos": "C1", "rot": 2, "rgb": "b" },
+    { "type": "coin", "pos": "D3", "rgb": "b" },
+    { "type": "laser", "pos": "E3", "rot": 0, "rgb": "b" },
+    { "type": "coin", "pos": "E6", "rgb": "b" }
+  ],
+  "toolbox": [{ "type": "polarizer", "rot": 0, "rgb": "b" }, { "type": "mirror", "rot": 0 }],
+  "solution": [{ "piece": 0, "pos": "C3", "rot": 2 }, { "piece": 1, "pos": "C6", "rot": 5 }]
+}

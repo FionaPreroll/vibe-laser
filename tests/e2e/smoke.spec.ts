@@ -56,6 +56,20 @@ test('solves the first level with the mouse', async ({ page }) => {
   await expect(page.getByRole('dialog', { name: 'Level solved' })).toBeVisible()
 })
 
+test('lights the color dots for the piece under the mouse', async ({ page }) => {
+  await page.goto(FIRST_LEVEL)
+  const laser = await centerOf(page, { cell: [0, 1] })
+  const free = await centerOf(page, { cell: [2, 1] })
+  await page.mouse.move(laser.x, laser.y)
+  await expect(
+    page.getByRole('img', { name: 'Colors of the piece under the pointer: Red' }),
+  ).toBeVisible()
+  await page.mouse.move(free.x, free.y)
+  await expect(
+    page.getByRole('img', { name: 'Colors of the piece under the pointer: none' }),
+  ).toBeVisible()
+})
+
 test('turns two beams with one bender, a part of the expansion packs', async ({ page }) => {
   const errors = watchErrors(page)
   await page.goto('./#/play/tutorial/4/1')
@@ -68,6 +82,24 @@ test('turns two beams with one bender, a part of the expansion packs', async ({ 
 
   await expect(page.getByRole('dialog', { name: 'Level solved' })).toBeVisible()
   expect(errors).toEqual([])
+})
+
+test('solves Switchboard by turning mirrors that stay where they are', async ({ page }) => {
+  await page.goto('./#/play/lightworks/3/2')
+  await expect(page.getByText(/^Nothing to place this time/)).toBeVisible()
+  // C2 and E2 turn one step to the right, C5 one step and E5 three steps to the left.
+  const turns: [[number, number], 'left' | 'right', number][] = [
+    [[1, 2], 'right', 1],
+    [[4, 2], 'left', 1],
+    [[1, 4], 'right', 1],
+    [[4, 4], 'left', 3],
+  ]
+  for (const [cell, button, times] of turns) {
+    const mirror = await centerOf(page, { cell })
+    for (let turn = 0; turn < times; turn++) await page.mouse.click(mirror.x, mirror.y, { button })
+  }
+
+  await expect(page.getByRole('dialog', { name: 'Level solved' })).toBeVisible()
 })
 
 test('undoes and redoes a move with the buttons', async ({ page }) => {

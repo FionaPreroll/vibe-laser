@@ -14,6 +14,7 @@ export function HelpDialog({ onClose }: { readonly onClose: () => void }) {
         <ColorWheel />
         <p>{t('helpColorsText')}</p>
       </div>
+      <p>{t('helpColorDots')}</p>
       <h3>{t('helpParts')}</h3>
       <dl class="parts">
         {PALETTE.map(({ kind }) => (

@@ -1,6 +1,13 @@
 import { describe, expect, it } from 'vitest'
 import { z } from 'zod'
-import { describeIssues, levelSchema, packSchema, problemOf, selectScreenOf } from './schema'
+import {
+  describeIssues,
+  levelSchema,
+  packSchema,
+  problemOf,
+  selectScreenOf,
+  soundsOf,
+} from './schema'
 
 /** The smallest level that passes: a red laser shining on a red coin. */
 const LEVEL = {
@@ -188,6 +195,19 @@ describe('packSchema', () => {
     expect(selectScreenOf(packSchema.parse({ ...pack, selectScreen: 'crypt' }))).toBe('crypt')
     expect(selectScreenOf(packSchema.parse(pack))).toBe('lab')
     expect(packSchema.safeParse({ ...pack, selectScreen: 'castle' }).success).toBe(false)
+  })
+
+  it("takes the pack's sounds, the laboratory's by default", () => {
+    const pack = {
+      version: 1,
+      title: { en: 'P', de: 'P' },
+      position: 3,
+      skills: [{ en: 'S', de: 'S' }],
+    }
+    expect(soundsOf(packSchema.parse({ ...pack, sounds: 'sea' }))).toBe('sea')
+    expect(soundsOf(packSchema.parse(pack))).toBe('lab')
+    expect(soundsOf(undefined)).toBe('lab')
+    expect(packSchema.safeParse({ ...pack, sounds: 'disco' }).success).toBe(false)
   })
 
   it('allows at most four skills', () => {
