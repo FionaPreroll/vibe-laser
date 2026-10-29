@@ -96,6 +96,18 @@
         "clinic"
       ]
     },
+    "selectScreen": {
+      "type": "string",
+      "enum": [
+        "lab",
+        "school",
+        "classic",
+        "space",
+        "sea",
+        "crypt",
+        "clinic"
+      ]
+    },
     "rules": {
       "type": "object",
       "properties": {

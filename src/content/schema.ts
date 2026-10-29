@@ -62,6 +62,22 @@ export type ArtStyle = (typeof ART_STYLES)[number]
 export const PACK_SOUNDS = ['lab', 'school', 'classic', 'space', 'sea', 'crypt', 'clinic'] as const
 export type PackSounds = (typeof PACK_SOUNDS)[number]
 
+/**
+ * Screens where players choose a skill, after the original's SelectSkillDLL: its Deluxe
+ * laboratory, which packs get without a choice, then Tutorial, Classic, the space station of
+ * Level Pack 1, the boat, the crypt and the hospital of the later packs.
+ */
+export const SELECT_SCREENS = [
+  'lab',
+  'school',
+  'classic',
+  'space',
+  'sea',
+  'crypt',
+  'clinic',
+] as const
+export type SelectScreen = (typeof SELECT_SCREENS)[number]
+
 /** Overrides of the rule flags in src/core/rules.ts, for a pack or a single level. */
 export const rulesSchema = z
   .object({
@@ -135,6 +151,8 @@ export const packSchema = z
     skin: z.enum(ART_STYLES).optional(),
     /** The music and sound effects of its screens and levels; the laboratory's without it. */
     sounds: z.enum(PACK_SOUNDS).optional(),
+    /** The screen where players choose a skill; the lab without it. */
+    selectScreen: z.enum(SELECT_SCREENS).optional(),
     rules: rulesSchema.optional(),
   })
   .strict()
@@ -142,6 +160,11 @@ export const packSchema = z
 /** The sounds of a pack, or the laboratory's where there is no pack. */
 export function soundsOf(pack: { readonly sounds?: PackSounds } | undefined): PackSounds {
   return pack?.sounds ?? 'lab'
+}
+
+/** The selection screen of a pack. */
+export function selectScreenOf(pack: { readonly selectScreen?: SelectScreen }): SelectScreen {
+  return pack.selectScreen ?? 'lab'
 }
 
 export type LevelFile = z.output<typeof levelSchema>

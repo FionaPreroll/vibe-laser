@@ -1,4 +1,5 @@
 import { countSolved, levelsOf, library, type Pack } from '../../content/packs'
+import { selectScreenOf } from '../../content/schema'
 import { locale, t } from '../../i18n'
 import { navigate } from '../router'
 
@@ -18,6 +19,11 @@ export function PacksScreen({ solved }: { readonly solved: ReadonlySet<string> }
           return (
             <li key={pack.id}>
               <button type="button" class="card" onClick={() => openPack(pack)}>
+                {/* The original gave every pack a picture of its own in the list. */}
+                <span
+                  class={`card-banner banner-${selectScreenOf(pack.file)}`}
+                  aria-hidden="true"
+                />
                 <span class="card-title">{pack.file.title[locale.value]}</span>
                 {pack.file.description && (
                   <span class="card-text">{pack.file.description[locale.value]}</span>
