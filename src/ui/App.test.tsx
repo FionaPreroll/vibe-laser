@@ -9,6 +9,7 @@ import { mountBoard } from '../view/board'
 import type { BoardController } from '../view/controller'
 import { chosenArt, colorBlind } from '../view/display'
 import { App, type Audio } from './App'
+import { navigate } from './router'
 
 vi.mock('../view/board', () => ({ mountBoard: vi.fn() }))
 const mount = vi.mocked(mountBoard)
@@ -27,7 +28,12 @@ afterEach(() => {
 /** Opens the game at an address, with saves in memory and a speaker that stays silent. */
 async function start(hash = '#/', store: KeyValueStore = memoryStore()) {
   location.hash = hash
-  const audio = { play: vi.fn(), unlock: vi.fn(), setVolumes: vi.fn() } satisfies Audio
+  const audio = {
+    play: vi.fn(),
+    unlock: vi.fn(),
+    setVolumes: vi.fn(),
+    useSounds: vi.fn(),
+  } satisfies Audio
   render(<App store={store} audio={audio} />)
   await screen.findByRole('heading', { name: 'Vibe Laser' })
   return { audio, store }
@@ -68,7 +74,12 @@ async function click(name: string | RegExp) {
 describe('App', () => {
   it('opens on the pack list once the saves are loaded', async () => {
     location.hash = ''
-    render(<App store={memoryStore()} audio={{ play() {}, unlock() {}, setVolumes() {} }} />)
+    render(
+      <App
+        store={memoryStore()}
+        audio={{ play() {}, unlock() {}, setVolumes() {}, useSounds() {} }}
+      />,
+    )
     expect(screen.getByText('Loading…')).toBeTruthy()
     expect(await screen.findByRole('heading', { name: 'Level packs' })).toBeTruthy()
     expect(button(/^Tutorial/).textContent).toContain('0 of 23 solved')
@@ -258,6 +269,17 @@ describe('App', () => {
     })
     await waitFor(() => expect(mount).toHaveBeenCalledTimes(2))
     expect(mount.mock.calls[1]?.[2]).toMatchObject({ id: 'flat' })
+  })
+
+  it('plays each pack in its own sounds, on its screens and in its levels', async () => {
+    const { audio } = await start('#/play/tutorial/1/1')
+    expect(audio.useSounds).toHaveBeenLastCalledWith('school')
+    await act(() => navigate({ name: 'skills', pack: 'lightworks' }))
+    expect(audio.useSounds).toHaveBeenLastCalledWith('lab')
+    await act(() => navigate({ name: 'levels', pack: 'tutorial', skill: 2 }))
+    expect(audio.useSounds).toHaveBeenLastCalledWith('school')
+    await act(() => navigate({ name: 'packs' }))
+    expect(audio.useSounds).toHaveBeenLastCalledWith('lab')
   })
 
   it('plays the sounds of the game at the volumes of the profile', async () => {
