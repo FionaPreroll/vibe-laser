@@ -40,6 +40,7 @@ All changes players can notice are listed here. The format follows [Keep a Chang
 - Every tutorial level explains its new part in a few words above the board, and the level editor lets authors write such an intro, in English and German, for their own levels.
 - A second level pack, Lightworks: twelve puzzles for after the tutorial, in two skills, that combine the parts in new ways, such as a prism used backwards or a slime steered with beams.
 - Three dots at the end of the button bar light up in the colors of the piece under the pointer, as in the original: a yellow piece lights red and green. After a key they follow the keyboard frame, and on touch screens they show the selected piece.
+- Each level pack can have sounds of its own: seven sets of music and effects, from the calm laboratory to a bright schoolroom, a ship at sea and an eerie crypt. The Tutorial now sounds like a schoolroom, and the level editor's pack settings choose a pack's sounds.
 
 ### Changed
 

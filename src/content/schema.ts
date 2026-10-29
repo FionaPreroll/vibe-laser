@@ -54,6 +54,14 @@ const names = z.object({ en: z.string().min(1), de: z.string().min(1) }).strict(
 export const ART_STYLES = ['flat', 'neon'] as const
 export type ArtStyle = (typeof ART_STYLES)[number]
 
+/**
+ * Sounds a pack plays, as the original's Sounds key lets a pack use the sounds of another: the
+ * laboratory's, which packs get without a choice, and sets for a schoolroom, a classic menu, a
+ * space station, a ship, a crypt and a clinic.
+ */
+export const PACK_SOUNDS = ['lab', 'school', 'classic', 'space', 'sea', 'crypt', 'clinic'] as const
+export type PackSounds = (typeof PACK_SOUNDS)[number]
+
 /** Overrides of the rule flags in src/core/rules.ts, for a pack or a single level. */
 export const rulesSchema = z
   .object({
@@ -125,9 +133,16 @@ export const packSchema = z
     selectSkill: z.boolean().default(true),
     /** The look its levels are made for, unless the player chose one; flat without it. */
     skin: z.enum(ART_STYLES).optional(),
+    /** The music and sound effects of its screens and levels; the laboratory's without it. */
+    sounds: z.enum(PACK_SOUNDS).optional(),
     rules: rulesSchema.optional(),
   })
   .strict()
+
+/** The sounds of a pack, or the laboratory's where there is no pack. */
+export function soundsOf(pack: { readonly sounds?: PackSounds } | undefined): PackSounds {
+  return pack?.sounds ?? 'lab'
+}
 
 export type LevelFile = z.output<typeof levelSchema>
 export type PackFile = z.output<typeof packSchema>
