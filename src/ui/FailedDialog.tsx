@@ -1,5 +1,6 @@
-import { useEffect, useRef, useState } from 'preact/hooks'
+import { useEffect, useRef } from 'preact/hooks'
 import { t } from '../i18n'
+import { useAfter } from './pause'
 
 /** Long enough to watch the last blast of the chain reaction fade. */
 const DELAY_MS = 900
@@ -14,11 +15,7 @@ interface Props {
 /** Shown once an explosion chain has ended; only a fresh start helps. */
 export function FailedDialog({ onRestart, onLevels, leaveLabel }: Props) {
   const button = useRef<HTMLButtonElement>(null)
-  const [shown, setShown] = useState(false)
-  useEffect(() => {
-    const timer = setTimeout(() => setShown(true), DELAY_MS)
-    return () => clearTimeout(timer)
-  }, [])
+  const shown = useAfter(DELAY_MS)
   useEffect(() => {
     if (shown) button.current?.focus()
   }, [shown])
