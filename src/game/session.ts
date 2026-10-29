@@ -166,7 +166,8 @@ export class GameSession {
     if (!isPlaying(state.phase)) return
     this.#ticks++
     const step = stepActors(state, this.#ticks, this.#rules)
-    if (step.events.length === 0 && state.phase === 'playing') return
+    // A tick that changed nothing needs no new light; a ship turning round changes its heading.
+    if (step.world === state && state.phase === 'playing') return
     const next = { ...state, ...step.world }
     this.#settle(settle(next, this.#rules, { ticks: 1, rammed: step.ignites, events: step.events }))
   }

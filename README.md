@@ -147,7 +147,7 @@ Property tests (`src/core/properties.test.ts`, with fast-check) check the model 
 - The session reports what happens as events, such as `ignited`, `ate` or `fired`, for the view's effects.
 - `BoardController` in `src/view/controller.ts` holds what only the interface needs: the selected piece, the keyboard focus and a piece lifted with the keyboard. Its `tap()` decides what a tap on a touch screen does.
 - The stage keeps the scene's transform on the screen (`src/view/layout.ts`): fitted at first, zoomed and panned by fingers within bounds, and when the screen changes size, as when a phone's address bar hides, zoomed as far as before with the same middle.
-- Every level file carries one known solution, with waits where actors must do their part first. `playSolution` and `replaySolution` in `src/content/solution.ts` play it; tests in `src/content/packs.test.ts` play every solution under eight seeds and expect the level to be solved, and check that no level explodes or solves itself during a minute without moves.
+- Every level file carries one known solution, with waits where actors must do their part first. `playSolution` and `replaySolution` in `src/content/solution.ts` play it; tests in `src/content/packs.test.ts` play every solution under eight seeds and expect the level to be solved, and check that no level explodes or solves itself during a minute without moves. As the original's FAQ demands, no solution may depend on timing: every solution must also work when the player thinks ten seconds before each move. Levels with actors hold them back with beams and pieces until the player sets them loose.
 
 ## Level packs
 
@@ -266,7 +266,7 @@ There are no sound files: `src/audio/synth.ts` synthesizes every effect and the 
 - A slime heads north unless it starts another way, and tries ahead, then right, then back, then left. It eats the first food it runs into and is then gone with it; that is how this game reads "a nearer unlit mirror is eaten instead". It remembers its steps since the board last changed and avoids repeating one, which keeps it from circling.
 - A robot mine keeps its heading while the way is open and otherwise jumps in a random open direction. It treats fuel cells as obstacles.
 - A ship takes a fuel cell aboard when it is right above it, and fires at the next explosive or fuel cell ahead in its row, through other pieces. Black holes pull ships along rows and columns only.
-- Slimes take 0.8 s per cell, mines and ships 0.4 s. Actors start moving as the level opens.
+- Slimes take 1.2 s per cell, mines and ships 0.4 s. Actors start moving as the level opens. A ship that can neither fly on nor drop a row turns round where it is.
 - Only mines and ships call for the five seconds of stability, as the spec says; slimes do not. Once a level is solved, mines stay where they are instead of vanishing, so the beams stay as they were.
 
 ## CI and deployment

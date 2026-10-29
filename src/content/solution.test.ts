@@ -120,8 +120,8 @@ describe('playSolution', () => {
   it('waits for actors where the solution says so', async () => {
     const level = await tutorial('tutorial/3/2')
     const session = sessionOf(level)
-    expect(playSolution(session, level)).toBe(2)
-    expect(session.ticks).toBe(20)
+    expect(playSolution(session, level)).toBe(3)
+    expect(session.ticks).toBe(40)
   })
 })
 
@@ -200,12 +200,18 @@ describe('recordSolution', () => {
   })
 
   it('waits where actors make the timing matter', async () => {
+    // Hungry Slime: turn the beam up at B2, let the slime eat the explosive, then A2.
     const level = await tutorial('tutorial/3/2')
     const { session, moves, run } = recorder(level)
-    for (let tick = 0; tick < 20; tick++) session.tick()
-    const mirror = 4
-    run({ kind: 'move', item: mirror, to: { area: 'board', cell: 0 } })
-    run({ kind: 'rotate', item: mirror, steps: 3 })
+    const [first, second] = session.state.value.puzzle.items
+      .filter((item) => item.place.area === 'toolbox')
+      .map((item) => item.id)
+    if (first === undefined || second === undefined) throw new Error('No mirrors')
+    run({ kind: 'move', item: first, to: { area: 'board', cell: 6 } })
+    run({ kind: 'rotate', item: first, steps: -1 })
+    for (let tick = 0; tick < 40; tick++) session.tick()
+    run({ kind: 'move', item: second, to: { area: 'board', cell: 1 } })
+    run({ kind: 'rotate', item: second, steps: 3 })
     expect(session.state.value.phase).toBe('solved')
     expect(recordSolution(level, moves)).toEqual(level.solution)
   })

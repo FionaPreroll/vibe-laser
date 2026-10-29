@@ -4,7 +4,7 @@ import { boardOf, createPuzzle } from '../level'
 import { formatBoard, parseBoard } from '../notation'
 import { DEFAULT_RULES } from '../rules'
 import { halfColor, trace } from '../trace'
-import { forgetPaths, stepActors } from './index'
+import { forgetPaths, STEP_TICKS, stepActors } from './index'
 import type { World } from './world'
 
 function worldOf(text: string): World {
@@ -29,7 +29,8 @@ describe('stepActors', () => {
   it('moves each kind on its own ticks', () => {
     expect(moved(zoo, 1)).toEqual([])
     expect(moved(zoo, 4)).toEqual([1, 2])
-    expect(moved(zoo, 8)).toEqual([0, 1, 2])
+    expect(moved(zoo, 8)).toEqual([1, 2])
+    expect(moved(zoo, 12)).toEqual([0, 1, 2])
   })
 
   it('gives a cell to the first actor that claims it', () => {
@@ -37,7 +38,7 @@ describe('stepActors', () => {
       SL2 .   SL6
       .   .   .
     `)
-    const { world: after } = stepActors(world, 8, DEFAULT_RULES)
+    const { world: after } = stepActors(world, STEP_TICKS.slime, DEFAULT_RULES)
     expect(formatBoard(boardOf(after.puzzle))).toBe(formatBoard(parseBoard('. SL2 . \n . . SL4')))
   })
 
@@ -68,7 +69,7 @@ describe('stepActors', () => {
       .   SL0 .   SL0
     `)
     const remembering = { ...world, memory: { 2: { visited: [7] } } }
-    const { world: after } = stepActors(remembering, 8, DEFAULT_RULES)
+    const { world: after } = stepActors(remembering, STEP_TICKS.slime, DEFAULT_RULES)
     expect(after.memory).toEqual({})
   })
 })
