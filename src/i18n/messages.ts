@@ -80,6 +80,9 @@ export const en = {
   artHint: "With the pack's choice, each level pack shows in the look it was made for.",
   colorBlindHint:
     'Pieces show their colors as letters, R, G and B, and beams draw each color as a line of its own: red, green and blue side by side.',
+  beamPreview: 'Show where light would go',
+  beamPreviewHint:
+    'While you carry a piece, the beams show faintly where light would go if you put it down there, and explosives it would reach get a red ring.',
 
   helpTitle: 'How to play',
   helpGoal:
@@ -382,6 +385,9 @@ export const de: Record<MessageKey, string> = {
     'Mit der Wahl des Packs zeigt sich jedes Level-Pack im Aussehen, für das es gemacht ist.',
   colorBlindHint:
     'Teile zeigen ihre Farben als Buchstaben, R, G und B, und Strahlen zeichnen jede Farbe als eigene Linie: Rot, Grün und Blau nebeneinander.',
+  beamPreview: 'Zeigen, wohin das Licht ginge',
+  beamPreviewHint:
+    'Während du ein Teil trägst, zeigen die Strahlen blass, wohin das Licht ginge, wenn du es dort ablegst, und Sprengstoff, den es erreichen würde, bekommt einen roten Ring.',
 
   helpTitle: 'So wird gespielt',
   helpGoal:

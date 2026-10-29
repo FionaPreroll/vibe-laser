@@ -7,6 +7,12 @@ import type { ArtStyle } from '../content/schema'
  */
 export const colorBlind = signal(false)
 
+/**
+ * While a piece is carried, the beams show faintly where light would go if it were put down there,
+ * and explosives that light would reach get a red ring. The active profile's settings switch it.
+ */
+export const beamPreview = signal(true)
+
 /** The look players chose for every board: an art style, or 'pack' for the skin of each pack. */
 export const chosenArt = signal<ArtStyle | 'pack'>('pack')
 

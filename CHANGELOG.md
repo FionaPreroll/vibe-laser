@@ -39,6 +39,7 @@ All changes players can notice are listed here. The format follows [Keep a Chang
 - Level packs can choose the look their levels are made for. The new default look in the settings, the pack's choice, shows each pack that way; Plain or Neon show every pack in one look. In the level editor, the pack settings choose a pack's look.
 - Every tutorial level explains its new part in a few words above the board, and the level editor lets authors write such an intro, in English and German, for their own levels.
 - A second level pack, Lightworks: twelve puzzles for after the tutorial, in two skills, that combine the parts in new ways, such as a prism used backwards or a slime steered with beams.
+- While you carry a piece, the beams show faintly where light would go if you put it down there, and explosives it would reach get a red ring. A setting switches this off.
 
 ### Changed
 

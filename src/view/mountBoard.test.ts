@@ -1,14 +1,15 @@
 // @vitest-environment happy-dom
-import type { Container, FederatedPointerEvent } from 'pixi.js'
+import type { Container, FederatedPointerEvent, Graphics } from 'pixi.js'
 import { Point } from 'pixi.js'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { puzzleOf } from '../content/level'
 import { findLevel } from '../content/packs'
-import { itemById, type Place } from '../core/level'
+import { createPuzzle, itemById, type Place, type Puzzle } from '../core/level'
+import { parseBoard, parsePiece } from '../core/notation'
 import { GameSession } from '../game/session'
 import { mountBoard } from './board'
 import { BoardController } from './controller'
-import { colorBlind } from './display'
+import { beamPreview, colorBlind } from './display'
 import { placeCenter } from './layout'
 
 // No WebGL here: a stand-in Application keeps PixiJS's real scene graph without a renderer.
@@ -44,12 +45,19 @@ afterEach(() => {
   document.body.innerHTML = ''
   fakes.apps.length = 0
   colorBlind.value = false
+  beamPreview.value = true
 })
 
-async function mount(id = 'tutorial/1/1') {
+async function puzzleOfLevel(id: string): Promise<Puzzle> {
   const level = await findLevel(id)?.entry.load()
   if (level === undefined) throw new Error(`No level ${id}`)
-  const controller = new BoardController(new GameSession(puzzleOf(level.file)))
+  return puzzleOf(level.file)
+}
+
+/** Mounts a built-in level by its id, or a puzzle of its own. */
+async function mount(level: string | Puzzle = 'tutorial/1/1') {
+  const puzzle = typeof level === 'string' ? await puzzleOfLevel(level) : level
+  const controller = new BoardController(new GameSession(puzzle))
   const host = document.createElement('div')
   document.body.append(host)
   const view = await mountBoard(host, controller)
@@ -145,6 +153,62 @@ describe('mountBoard', () => {
     expect(scene.cursor).toBe('grab')
     scene.emit('globalpointermove', at(B1))
     expect(scene.cursor).toBe('default')
+  })
+
+  it('shows faintly where light would go while a piece is carried, and nothing changes', async () => {
+    const { controller, scene, at } = await mount()
+    const beams = scene.children[1] as Container
+    const lines = () => beams.children.filter((sprite) => sprite.visible).length
+    const B3: Place = { area: 'board', cell: 8 }
+    const before = lines()
+    scene.emit('pointerdown', at(SLOT))
+    scene.emit('globalpointermove', at(SLOT, 0, 20))
+    scene.emit('globalpointermove', at(B3))
+    expect(beams.alpha).toBeLessThan(1)
+    const previewed = lines()
+    expect(previewed).not.toBe(before)
+    expect(itemById(controller.session.state.value.puzzle, MIRROR)?.place).toEqual(SLOT)
+    // The mirror cannot go down on the laser, so the light would stay as it is.
+    scene.emit('globalpointermove', at(B1))
+    expect([beams.alpha, lines()]).toEqual([1, before])
+    scene.emit('globalpointermove', at(B3))
+    scene.emit('pointerup', at(B3))
+    expect([beams.alpha, lines()]).toEqual([1, previewed])
+  })
+
+  it('previews the light for a piece lifted with the keyboard, in the frame', async () => {
+    const { host, scene, key } = await mount()
+    const beams = scene.children[1] as Container
+    host.dispatchEvent(new FocusEvent('focus'))
+    key('Enter')
+    for (let step = 0; step < 4; step++) key('ArrowRight')
+    key('ArrowDown')
+    expect(beams.alpha).toBeLessThan(1)
+    key('Escape')
+    expect(beams.alpha).toBe(1)
+    host.dispatchEvent(new FocusEvent('blur'))
+  })
+
+  it('rings the explosives the light would reach, and shows nothing with the setting off', async () => {
+    // The mirror in the toolbox points north-west: in B3 it would send the beam into A3.
+    const mirror = parsePiece('M7')
+    if (mirror === undefined) throw new Error('No mirror')
+    const puzzle = createPuzzle(parseBoard('.   .   T   T \n L2r .   .   .'), [mirror])
+    const { scene, at } = await mount(puzzle)
+    const beams = scene.children[1] as Container
+    const overlay = scene.children[5] as Graphics
+    const strokes = () =>
+      overlay.context.instructions.filter((instruction) => instruction.action === 'stroke').length
+    const B3: Place = { area: 'board', cell: 6 }
+    scene.emit('pointerdown', at(SLOT))
+    scene.emit('globalpointermove', at(SLOT, 0, 20))
+    scene.emit('globalpointermove', at(B3))
+    const warned = strokes()
+    beamPreview.value = false
+    scene.emit('globalpointermove', at(B3))
+    expect(beams.alpha).toBe(1)
+    // The ring around the explosive in A3 is gone, the rest of the overlay stays.
+    expect(strokes()).toBe(warned - 1)
   })
 
   it('writes colors as letters and splits beams in color-blind mode', async () => {

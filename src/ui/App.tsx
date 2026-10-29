@@ -7,7 +7,7 @@ import { t } from '../i18n'
 import { PackShelf } from '../persistence/packs'
 import { ProfileBook } from '../persistence/profiles'
 import { browserStore, type KeyValueStore, memoryStore } from '../persistence/store'
-import { chosenArt, colorBlind } from '../view/display'
+import { beamPreview, chosenArt, colorBlind } from '../view/display'
 import { HelpDialog } from './HelpDialog'
 import { LanguageSwitch } from './LanguageSwitch'
 import { followAddress, isEditorScreen, navigate, screen } from './router'
@@ -121,6 +121,7 @@ export function App({ store, audio }: Props) {
         const { settings } = book.active.value
         colorBlind.value = settings.colorBlind
         chosenArt.value = settings.art
+        beamPreview.value = settings.beamPreview
       }),
     [book],
   )
