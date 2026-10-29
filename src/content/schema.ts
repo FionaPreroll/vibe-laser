@@ -125,6 +125,16 @@ export const packSchema = z
     selectSkill: z.boolean().default(true),
     /** The look its levels are made for, unless the player chose one; flat without it. */
     skin: z.enum(ART_STYLES).optional(),
+    /**
+     * A Hints & Solutions pack, the original's IsSolved: players may ask where the next piece of a
+     * level's known solution goes, or watch the whole solution.
+     */
+    showsSolutions: z.boolean().optional(),
+    /** A built-in pack whose levels this one plays instead of levels of its own, skill by skill. */
+    levelsFrom: z
+      .string()
+      .regex(/^[a-z0-9-]+$/)
+      .optional(),
     rules: rulesSchema.optional(),
   })
   .strict()

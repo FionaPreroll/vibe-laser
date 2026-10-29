@@ -9,6 +9,7 @@ Play it at https://fionapreroll.github.io/vibe-laser/.
 ## How to play
 
 - Pick a level pack, a skill and a level. Every level of a skill is open from the start, and solved levels carry a mark.
+- Stuck? The Hints & Solutions pack has the Lightworks levels with help: a hint shows where the next piece goes and how it is turned, outlined on the board and said in words, and the whole solution plays itself if you ask.
 - Drag pieces from the toolbox on the left onto the board. Click a piece to turn it left, right-click to turn it right.
 - On a touch screen, tap a piece to select it and tap it again to turn it left, or tap a free place to move the selected piece there; dragging works too. Pinch to zoom in on the board, up to four times its size, and drag an empty spot to look around.
 - A level is solved when every coin spins: each colored coin needs light of exactly its color, and dark anti-coins must stay out of the light.
@@ -163,12 +164,15 @@ packs/
     levels/skill1/level_002.json
     …
   lightworks/                twelve puzzles for after the tutorial, in two skills
+  lightworks-hints/          the same puzzles with hints and solutions, borrowed from lightworks
 ```
 
 The Tutorial pack teaches one part per level. Lightworks combines them: each level is built around one idea, such as a prism used backwards or a slime steered with beams, and was checked by a brute-force search for a single solution that needs every piece in the toolbox.
 
+Hints & Solutions packs are the original's `IsSolved` packs. A pack with `showsSolutions` offers two buttons above the board. A hint shows the next move of the level's known solution that the board does not show yet: `nextHint()` in `src/content/solution.ts` finds it, the board draws the piece faintly where it goes, turned as it should be, in a purple frame, and the bar says it in words, mentioning a wait for slimes, mines or ships where the solution has one. Hints only go forward, so a piece the solution moves twice does not send them back. The solution restarts the level and plays its moves with a pause between them, waiting on the game's own clock where the solution waits. Rather than copies of the Lightworks files, `lightworks-hints` names `levelsFrom: "lightworks"`: the loader gives the borrowed levels ids of the hints pack, so solving them there counts there.
+
 - A pack has one to four skills of up to 30 levels each. A level's id comes from its path: `tutorial/2/5` is the fifth level of the second skill. With `"selectSkill": false`, or with one skill only, the pack opens straight at its levels.
-- `pack.json` gives the title and description in English and German, the `position` in the list of packs, the skill names, and optionally its `skin`, the look its levels are made for (`flat` or `neon`), and `rules`: rule flags from `src/core/rules.ts` for every level of the pack.
+- `pack.json` gives the title and description in English and German, the `position` in the list of packs, the skill names, and optionally its `skin`, the look its levels are made for (`flat` or `neon`), `showsSolutions` for a Hints & Solutions pack, `levelsFrom`, a built-in pack whose levels it plays instead of its own, and `rules`: rule flags from `src/core/rules.ts` for every level of the pack.
 - A level file gives its `name` in English and German, optionally an `intro` that players read above the board, also in both languages, its `size` as columns and rows (up to 32 × 26), the `objects` on the board, the `toolbox`, optionally its own `rules`, and the known `solution`. An optional `note` tells other authors what the level is about.
 - Objects name their cell as in the original, row letter and column number (`B6`), their `type` (`laser`, `mirror`, `blackHole` and so on), their rotation `rot` from 0 to 7 and their color `rgb` as the letters of the switched-on colors, so `"rb"` is magenta. A complex gives its outer color as `rgb` and its inner color as `inner`. Pieces on the board are fixed and toolbox pieces free; `moveable` and `rotateable` change that. A toolbox entry can repeat itself with `count`.
 - A solution step puts toolbox piece `piece` (counted from 0) on cell `pos` in rotation `rot`. A piece that starts on the board is named by its cell instead: `{ "from": "C3", "pos": "B6", "rot": 7 }` moves or turns it, `{ "from": "C3", "stow": true }` puts it into the toolbox. `{ "wait": 10 }` lets ten ticks pass. Steps say where a piece ends up, so the same piece may appear twice.
@@ -208,7 +212,7 @@ The build bundles every `pack.json`, and each level file becomes a small file of
 
 The editor is a mode of the game: the same board with different input. Its logic is in `src/editor/` without any drawing, its board in `src/view/editorBoard.ts`, and its screens in `src/ui/editor/`, which load only when a player opens the editor.
 
-- **Packs.** The editor starts with the player's own packs: a new pack, an imported `.vlpack.json` file, or one made before. A pack has one to four skills with 30 slots each, and its settings: titles, descriptions, skill names, whether players choose a skill first, and the look its levels are made for. A pack exports as one `.vlpack.json` file with every level inside (`"format": "vibe-laser-pack"`).
+- **Packs.** The editor starts with the player's own packs: a new pack, an imported `.vlpack.json` file, or one made before. A pack has one to four skills with 30 slots each, and its settings: titles, descriptions, skill names, whether players choose a skill first, whether they may ask for hints and the solution, and the look its levels are made for. A pack exports as one `.vlpack.json` file with every level inside (`"format": "vibe-laser-pack"`).
 - **Board.** A click uses the tool: Select, Paint, Clone or Eraser. Select drags pieces, also between board and toolbox; Paint and Eraser paint along a drag, which undoes as one step; Clone picks up a piece to paint copies of it. A right click turns a piece. Each part has a key, as `H` for a black hole in the original, and the parts of the expansion packs have the keys 1 to 5: a key puts the part where the pointer or the keyboard frame is, Q and E turn, Delete removes, Ctrl+Z and Ctrl+Y undo and redo.
 - **Panels.** The selected piece's colors, direction or heading, and whether players may move and turn it; the level's names, intro for players, note and size; its problems; and its solution.
 - **Problems** show live, in the player's language, and keep a level from being saved: a missing name or coin, an intro in only one language, a color missing, light on an explosive or every coin spinning before the first move, or a solution that no longer works. A problem with a place selects it.

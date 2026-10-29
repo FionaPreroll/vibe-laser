@@ -1,6 +1,6 @@
 import { batch, effect } from '@preact/signals-core'
 import type { FederatedPointerEvent } from 'pixi.js'
-import { type Item, itemAt, itemById, type Place } from '../core/level'
+import { type Item, itemAt, itemById, type Place, samePlace } from '../core/level'
 import { type Phase, STABLE_TICKS } from '../game/session'
 import { createFlatArt } from './art/flat'
 import type { ArtPack } from './art/types'
@@ -80,7 +80,8 @@ export async function mountBoard(
 ): Promise<BoardView> {
   const { session, geometry } = controller
   const stage = await createStage(host, geometry, art)
-  const { scene, beams, pieces, labels, effects, overlay, hasFocus, showGhost, outline } = stage
+  const { scene, beams, pieces, labels, effects, overlay, hasFocus, showGhost, showHint, outline } =
+    stage
 
   const cellCenter = (cell: number) => placeCenter(geometry, { area: 'board', cell })
   const stopEffects = session.onEvents((events) => {
@@ -115,6 +116,19 @@ export async function mountBoard(
           12,
         )
         .stroke({ width: 4, ...frame })
+    }
+    const hint = controller.hint.value
+    const hinted = hint === undefined ? undefined : itemById(puzzle, hint.item)
+    const done =
+      hinted !== undefined &&
+      hint !== undefined &&
+      samePlace(hinted.place, hint.place) &&
+      hinted.piece.rotation === hint.rotation
+    if (hint !== undefined && hinted !== undefined && !done) {
+      showHint({ ...hinted, piece: { ...hinted.piece, rotation: hint.rotation } }, hint.place)
+      outline(hint.place, BOARD_COLORS.hint)
+    } else {
+      showHint(undefined, undefined)
     }
     const selected = controller.selected.value
     const selectedItem = selected === undefined ? undefined : itemById(puzzle, selected)

@@ -1,6 +1,7 @@
 import { effect } from '@preact/signals-core'
 import { cellByName, type Size } from '../core/board'
 import type { Command } from '../core/commands'
+import type { Direction } from '../core/direction'
 import { cellName } from '../core/grid'
 import { freeSlot, type Item, itemById, type Place, type Puzzle, samePlace } from '../core/level'
 import type { Rules } from '../core/rules'
@@ -33,13 +34,18 @@ export function playSolution(session: GameSession, level: LevelFile): number | u
   return steps.length
 }
 
-/** The item a step means: by its toolbox slot or its cell at the start, where it is now. */
-function applyStep(session: GameSession, start: Puzzle, size: Size, step: Move): boolean {
+/** The id of the item a step moves: by its toolbox slot or its cell at the start. */
+function itemOfStep(start: Puzzle, size: Size, step: Move): number | undefined {
   const origin: Place =
     'piece' in step
       ? { area: 'toolbox', slot: step.piece }
       : { area: 'board', cell: cellByName(size, step.from) }
-  const id = start.items.find((item) => samePlace(item.place, origin))?.id
+  return start.items.find((item) => samePlace(item.place, origin))?.id
+}
+
+/** The item a step means, where it is now, and plays the step on it. */
+function applyStep(session: GameSession, start: Puzzle, size: Size, step: Move): boolean {
+  const id = itemOfStep(start, size, step)
   const item = id === undefined ? undefined : itemById(session.state.value.puzzle, id)
   if (item === undefined) return false
   if ('stow' in step) {
@@ -57,6 +63,65 @@ function applyStep(session: GameSession, start: Puzzle, size: Size, step: Move):
   const turn = (((step.rot - item.piece.rotation) % 8) + 8) % 8
   if (turn === 0 || session.state.value.phase === 'solved') return true
   return session.execute({ kind: 'rotate', item: item.id, steps: turn > 4 ? turn - 8 : turn })
+}
+
+/** Plays one move of a level's known solution, by its index; false for a wait or a refused move. */
+export function playStep(session: GameSession, level: LevelFile, index: number): boolean {
+  const step = level.solution?.[index]
+  if (step === undefined || 'wait' in step) return false
+  return applyStep(session, puzzleOf(level), sizeOf(level), step)
+}
+
+/** A move of a level's known solution as a hint: which piece goes where, and turned how. */
+export interface Hint {
+  /** The step's index in the solution. */
+  readonly index: number
+  readonly item: number
+  /** A cell for a move, or a free toolbox slot for a piece that goes back into the toolbox. */
+  readonly place: Place
+  readonly rotation: Direction
+  /** Whether the solution waits for slimes, mines or ships before this move. */
+  readonly afterWait: boolean
+}
+
+/**
+ * The first move of the level's known solution, from step `from` on, that the puzzle does not
+ * show yet. Moves the player has already made are skipped, as are pieces the game has destroyed.
+ */
+export function nextHint(level: LevelFile, puzzle: Puzzle, from = 0): Hint | undefined {
+  const start = puzzleOf(level)
+  const size = sizeOf(level)
+  const steps = level.solution ?? []
+  let afterWait = false
+  for (let index = from; index < steps.length; index++) {
+    const step = steps[index]
+    if (step === undefined) break
+    if ('wait' in step) {
+      afterWait = true
+      continue
+    }
+    const id = itemOfStep(start, size, step)
+    const item = id === undefined ? undefined : itemById(puzzle, id)
+    if (item === undefined) continue
+    const { rotation } = item.piece
+    if ('stow' in step) {
+      const slot = freeSlot(puzzle)
+      if (item.place.area !== 'toolbox' && slot !== undefined) {
+        return { index, item: item.id, place: { area: 'toolbox', slot }, rotation, afterWait }
+      }
+    } else {
+      const to: Place = { area: 'board', cell: cellByName(size, step.pos) }
+      if (!samePlace(item.place, to) || rotation !== step.rot) {
+        return { index, item: item.id, place: to, rotation: step.rot as Direction, afterWait }
+      }
+    }
+    afterWait = false
+  }
+  return undefined
+}
+
+function sizeOf(level: LevelFile): Size {
+  return { width: level.size[0], height: level.size[1] }
 }
 
 /**

@@ -84,6 +84,13 @@
         "neon"
       ]
     },
+    "showsSolutions": {
+      "type": "boolean"
+    },
+    "levelsFrom": {
+      "type": "string",
+      "pattern": "^[a-z0-9-]+$"
+    },
     "rules": {
       "type": "object",
       "properties": {

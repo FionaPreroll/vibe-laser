@@ -201,6 +201,25 @@ describe('PackEditor', () => {
     await waitFor(() => expect(shelf.find('my-1')?.pack).not.toHaveProperty('skin'))
   })
 
+  it('makes a pack of hints and solutions, and leaves the switch out of the file when off', async () => {
+    await shelf.create(PACK)
+    render(<PackEditor pack="my-1" shelf={shelf} />)
+    const box = screen.getByRole('checkbox', {
+      name: 'Players may ask for hints and watch the solution',
+    }) as HTMLInputElement
+    expect(box.checked).toBe(false)
+    await act(() => {
+      fireEvent.click(box)
+    })
+    await click('Save pack settings')
+    await waitFor(() => expect(shelf.find('my-1')?.pack.showsSolutions).toBe(true))
+    await act(() => {
+      fireEvent.click(box)
+    })
+    await click('Save pack settings')
+    await waitFor(() => expect(shelf.find('my-1')?.pack).not.toHaveProperty('showsSolutions'))
+  })
+
   it('adds skills up to four and removes the last, asking when it has levels', async () => {
     await shelf.create(PACK)
     await shelf.saveLevel('my-1', 2, 1, LEVEL)

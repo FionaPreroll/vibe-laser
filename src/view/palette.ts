@@ -34,6 +34,7 @@ export const BOARD_COLORS = {
   target: 0x59d6ff,
   blocked: 0xff5566,
   selection: 0xffffff,
+  hint: 0xb69cff,
 } as const
 
 /** Rings and lines for what actors do. */

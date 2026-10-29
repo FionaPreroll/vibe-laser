@@ -321,6 +321,27 @@ main.play {
   line-height: 1.45;
 }
 
+/* Hints & Solutions packs: help above the board, and what it says in words. */
+.solution-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 10px;
+  padding: 8px 16px 0;
+}
+
+.solution-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.solution-message {
+  flex: 1 1 260px;
+  margin: 0;
+  color: #cbb8ff;
+  font-size: 0.9375rem;
+}
+
 .play .stage {
   flex: 1;
   min-height: 0;

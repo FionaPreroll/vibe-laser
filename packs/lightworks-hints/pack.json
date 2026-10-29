@@ -1,0 +1,16 @@
+{
+  "$schema": "../pack.schema.json",
+  "version": 1,
+  "title": { "en": "Lightworks: Hints & Solutions", "de": "Lichtwerk: Tipps & Lösungen" },
+  "description": {
+    "en": "The Lightworks puzzles with help at hand: a hint shows where the next piece goes, and the whole solution plays itself if you ask.",
+    "de": "Die Lichtwerk-Rätsel mit Hilfe zur Hand: Ein Tipp zeigt, wohin das nächste Teil gehört, und auf Wunsch spielt sich die ganze Lösung vor."
+  },
+  "position": 3,
+  "skills": [
+    { "en": "Light Work", "de": "Leichte Übung" },
+    { "en": "Tricks of the Light", "de": "Lichtspiele" }
+  ],
+  "showsSolutions": true,
+  "levelsFrom": "lightworks"
+}

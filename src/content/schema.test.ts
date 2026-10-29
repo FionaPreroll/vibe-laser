@@ -178,6 +178,18 @@ describe('packSchema', () => {
     expect(packSchema.safeParse({ ...pack, skin: 'chrome' }).success).toBe(false)
   })
 
+  it('takes a Hints & Solutions pack, and the pack whose levels it borrows', () => {
+    const pack = {
+      version: 1,
+      title: { en: 'P', de: 'P' },
+      position: 3,
+      skills: [{ en: 'S', de: 'S' }],
+    }
+    const hints = packSchema.parse({ ...pack, showsSolutions: true, levelsFrom: 'lightworks' })
+    expect([hints.showsSolutions, hints.levelsFrom]).toEqual([true, 'lightworks'])
+    expect(packSchema.safeParse({ ...pack, levelsFrom: 'Not a pack!' }).success).toBe(false)
+  })
+
   it('allows at most four skills', () => {
     const skill = { en: 'S', de: 'S' }
     const parsed = packSchema.safeParse({
