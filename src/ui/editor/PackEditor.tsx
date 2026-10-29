@@ -4,8 +4,10 @@ import {
   ART_STYLES,
   type LevelFile,
   type Names,
+  PACK_SOUNDS,
   type PackFile,
   packSchema,
+  soundsOf,
 } from '../../content/schema'
 import { locale, names, t } from '../../i18n'
 import type { PackShelf } from '../../persistence/packs'
@@ -271,6 +273,29 @@ function PackSettings({ source, levels }: SettingsProps) {
       </label>
       <p id="pack-skin-hint" class="hint">
         {t('packSkinHint')}
+      </p>
+      <label class="field">
+        <span>{t('soundsLabel')}</span>
+        <select
+          value={soundsOf(file)}
+          aria-describedby="pack-sounds-hint"
+          onChange={(event) => {
+            const sounds = PACK_SOUNDS.find((each) => each === event.currentTarget.value)
+            // The laboratory's are the sounds of packs without a choice, so the file leaves them out.
+            change(({ sounds: _, ...rest }) =>
+              sounds === undefined || sounds === 'lab' ? rest : { ...rest, sounds },
+            )
+          }}
+        >
+          {PACK_SOUNDS.map((each) => (
+            <option key={each} value={each}>
+              {t(`sounds.${each}`)}
+            </option>
+          ))}
+        </select>
+      </label>
+      <p id="pack-sounds-hint" class="hint">
+        {t('soundsHint')}
       </p>
       <div class="dialog-buttons">
         <button type="submit" class="primary">
