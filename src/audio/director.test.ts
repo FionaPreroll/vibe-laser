@@ -56,7 +56,7 @@ describe('listen', () => {
     for (let tick = 0; tick < 4; tick++) session.tick()
     expect(sounds).toEqual(['collect', 'shot'])
     const slime = recorded('. T . \n . SL0 . \n Cr . .')
-    for (let tick = 0; tick < 8; tick++) slime.session.tick()
+    for (let tick = 0; tick < 12; tick++) slime.session.tick()
     expect(slime.sounds).toEqual(['eat'])
     const hole = recorded('SH2 H . \n . . . \n Cr . .')
     for (let tick = 0; tick < 4; tick++) hole.session.tick()

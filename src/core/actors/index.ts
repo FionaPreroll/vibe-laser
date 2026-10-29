@@ -14,7 +14,7 @@ export type { ActorEvent, ActorMemory, World } from './world'
 type ActorKind = 'slime' | 'mine' | 'ship'
 
 /** Ticks between two steps of each kind: slimes crawl, mines and ships are quicker. */
-export const STEP_TICKS: Readonly<Record<ActorKind, number>> = { slime: 8, mine: 4, ship: 4 }
+export const STEP_TICKS: Readonly<Record<ActorKind, number>> = { slime: 12, mine: 4, ship: 4 }
 
 const STEPPERS: Readonly<Record<ActorKind, (world: World, actor: BoardItem) => Step>> = {
   slime: stepSlime,

@@ -2,14 +2,21 @@
   "$schema": "../../../level.schema.json",
   "version": 1,
   "name": { "en": "Hungry Slime", "de": "Hungriger Schleim" },
-  "note": "The slime eats the explosive in its way; only then may the beam pass there.",
-  "size": [5, 4],
+  "note": "The beam holds the slime back. Turned up at B2, it lets the slime go, and the slime eats the explosive; then a second mirror at A2 takes the beam to the coin. Both mirrors at once blow the explosive up.",
+  "size": [5, 3],
   "objects": [
-    { "type": "explosive", "pos": "A3" },
+    { "type": "explosive", "pos": "A4" },
     { "type": "coin", "pos": "A5", "rgb": "r" },
+    { "type": "laser", "pos": "B1", "rot": 2, "rgb": "r" },
+    { "type": "filter", "pos": "B4", "rgb": "b" },
+    { "type": "filter", "pos": "C2", "rgb": "b" },
     { "type": "slime", "pos": "C3", "rot": 0 },
-    { "type": "laser", "pos": "D1", "rot": 0, "rgb": "r" }
+    { "type": "filter", "pos": "C4", "rgb": "b" }
   ],
-  "toolbox": [{ "type": "mirror", "rot": 0 }],
-  "solution": [{ "wait": 20 }, { "piece": 0, "pos": "A1", "rot": 3 }]
+  "toolbox": [{ "type": "mirror", "rot": 0, "count": 2 }],
+  "solution": [
+    { "piece": 0, "pos": "B2", "rot": 7 },
+    { "wait": 40 },
+    { "piece": 1, "pos": "A2", "rot": 3 }
+  ]
 }

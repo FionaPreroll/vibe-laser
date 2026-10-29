@@ -40,6 +40,12 @@ All changes players can notice are listed here. The format follows [Keep a Chang
 
 ### Changed
 
+- Three tutorial levels are rebuilt so that you decide what the slime and the ships do: Hungry Slime, Event Horizon and Fuel Run. A beam holds them back until you move it, and the wrong order sets off the explosive. Nothing in them hurries you any more.
+- Slimes crawl more slowly, 1.2 seconds per cell instead of 0.8, so you can watch where they go.
 - On computers without graphics acceleration, the board leaves out edge smoothing and so runs twice as smoothly.
 - The game starts faster: the board's graphics load only when the first level opens.
 - Once a level is solved, its message waits a moment, so you can watch the coins spin first.
+
+### Fixed
+
+- A spaceship that runs into a dead end turns round and flies back, instead of standing still there.

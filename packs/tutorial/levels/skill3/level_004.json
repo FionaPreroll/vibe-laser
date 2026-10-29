@@ -2,15 +2,22 @@
   "$schema": "../../../level.schema.json",
   "version": 1,
   "name": { "en": "Event Horizon", "de": "Ereignishorizont" },
-  "note": "Light falls into the black hole, so it lets the ship be. Take the beam to the coin, and the dark hole pulls the ship in.",
-  "size": [5, 5],
+  "note": "Light in the black hole keeps it from pulling, and the right laser's beam keeps the ship off the explosive. Cut the light into the hole first, and the ship falls in; then the mirror takes the right laser to the coin. The other way round, the ship rams the explosive.",
+  "size": [5, 3],
   "objects": [
-    { "type": "ship", "pos": "A3", "rot": 2 },
-    { "type": "laser", "pos": "B1", "rot": 2, "rgb": "r" },
-    { "type": "blackHole", "pos": "B5" },
-    { "type": "explosive", "pos": "D2" },
-    { "type": "coin", "pos": "E5", "rgb": "r" }
+    { "type": "blackHole", "pos": "A1" },
+    { "type": "ship", "pos": "A3", "rot": 6 },
+    { "type": "explosive", "pos": "A5" },
+    { "type": "filter", "pos": "B2", "rgb": "b" },
+    { "type": "filter", "pos": "B3", "rgb": "b" },
+    { "type": "coin", "pos": "B5", "rgb": "r" },
+    { "type": "laser", "pos": "C1", "rot": 0, "rgb": "r" },
+    { "type": "laser", "pos": "C4", "rot": 0, "rgb": "r" }
   ],
-  "toolbox": [{ "type": "mirror", "rot": 0, "count": 2 }],
-  "solution": [{ "piece": 0, "pos": "B3", "rot": 5 }, { "piece": 1, "pos": "E3", "rot": 1 }]
+  "toolbox": [{ "type": "mirror", "rot": 0 }],
+  "solution": [
+    { "piece": 0, "pos": "B1", "rot": 5 },
+    { "wait": 20 },
+    { "piece": 0, "pos": "B4", "rot": 3 }
+  ]
 }
