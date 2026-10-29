@@ -1,0 +1,23 @@
+{
+  "$schema": "../../../level.schema.json",
+  "version": 1,
+  "name": { "en": "Rainbow's End", "de": "Am Ende des Regenbogens" },
+  "note": "The prism splits white, and two color converters turn green and blue into red: one shifts forward, the other backward.",
+  "size": [6, 3],
+  "objects": [
+    { "type": "laser", "rot": 2, "rgb": "rgb", "pos": "A1" },
+    { "type": "coin", "rgb": "r", "pos": "A6" },
+    { "type": "coin", "rgb": "r", "pos": "C2" },
+    { "type": "coin", "rgb": "r", "pos": "C4" }
+  ],
+  "toolbox": [
+    { "type": "prism", "rot": 0 },
+    { "type": "colorConverter", "rot": 0 },
+    { "type": "colorConverter", "rot": 0 }
+  ],
+  "solution": [
+    { "piece": 0, "pos": "A2", "rot": 2 },
+    { "piece": 1, "pos": "B3", "rot": 3 },
+    { "piece": 2, "pos": "B2", "rot": 0 }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "$schema": "../../../level.schema.json",
+  "version": 1,
+  "name": { "en": "Split Second", "de": "Zweigstelle" },
+  "note": "The splitter goes below the anti-coin, and each branch needs a mirror.",
+  "size": [6, 4],
+  "objects": [
+    { "type": "coin", "rgb": "g", "pos": "A1" },
+    { "type": "antiCoin", "pos": "A3" },
+    { "type": "explosive", "pos": "C1" },
+    { "type": "laser", "rot": 0, "rgb": "g", "pos": "D3" },
+    { "type": "coin", "rgb": "g", "pos": "D6" }
+  ],
+  "toolbox": [
+    { "type": "splitter", "rot": 0 },
+    { "type": "mirror", "rot": 0 },
+    { "type": "mirror", "rot": 0 }
+  ],
+  "solution": [
+    { "piece": 0, "pos": "B3", "rot": 4 },
+    { "piece": 1, "pos": "B1", "rot": 1 },
+    { "piece": 2, "pos": "B6", "rot": 5 }
+  ]
+}

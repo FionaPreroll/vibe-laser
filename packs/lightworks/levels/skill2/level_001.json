@@ -1,0 +1,17 @@
+{
+  "$schema": "../../../level.schema.json",
+  "version": 1,
+  "name": { "en": "Turnstile", "de": "Drehkreuz" },
+  "note": "Three beams meet in C3, and one bender there turns all of them; red then needs a mirror.",
+  "size": [6, 5],
+  "objects": [
+    { "type": "coin", "rgb": "g", "pos": "A1" },
+    { "type": "coin", "rgb": "r", "pos": "B6" },
+    { "type": "laser", "rot": 2, "rgb": "b", "pos": "C1" },
+    { "type": "laser", "rot": 6, "rgb": "g", "pos": "C6" },
+    { "type": "laser", "rot": 0, "rgb": "r", "pos": "E3" },
+    { "type": "coin", "rgb": "b", "pos": "E5" }
+  ],
+  "toolbox": [{ "type": "bender" }, { "type": "mirror", "rot": 0 }],
+  "solution": [{ "piece": 0, "pos": "C3", "rot": 0 }, { "piece": 1, "pos": "A5", "rot": 4 }]
+}

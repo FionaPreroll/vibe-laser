@@ -1,0 +1,25 @@
+{
+  "$schema": "../../../level.schema.json",
+  "version": 1,
+  "name": { "en": "Pitchfork", "de": "Heugabel" },
+  "note": "One splicer feeds three ways; the coins in column 1 and in E5 each need a mirror.",
+  "size": [5, 5],
+  "objects": [
+    { "type": "coin", "rgb": "g", "pos": "A1" },
+    { "type": "coin", "rgb": "g", "pos": "A3" },
+    { "type": "coin", "rgb": "g", "pos": "B1" },
+    { "type": "coin", "rgb": "g", "pos": "C1" },
+    { "type": "laser", "rot": 0, "rgb": "g", "pos": "E3" },
+    { "type": "coin", "rgb": "g", "pos": "E5" }
+  ],
+  "toolbox": [
+    { "type": "splicer", "rot": 0 },
+    { "type": "mirror", "rot": 0 },
+    { "type": "mirror", "rot": 0 }
+  ],
+  "solution": [
+    { "piece": 0, "pos": "D3", "rot": 4 },
+    { "piece": 1, "pos": "D1", "rot": 1 },
+    { "piece": 2, "pos": "D5", "rot": 5 }
+  ]
+}
