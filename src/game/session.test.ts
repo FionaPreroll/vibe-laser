@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { cellByName, type Piece } from '../core/board'
 import { boardOf, createPuzzle, type Place } from '../core/level'
 import { formatBoard, parseBoard, parsePiece } from '../core/notation'
+import { isLit } from '../core/trace'
 import { type GameEvent, GameSession, STABLE_TICKS, TICK_MS } from './session'
 
 function piece(token: string): Piece {
@@ -142,6 +143,31 @@ describe('GameSession', () => {
     ])
   })
 
+  it('previews the light after a move without making it', () => {
+    const session = newSession()
+    const before = session.state.value
+    const B2 = { area: 'board', cell: 4 } as const
+    // Today the beam runs through B3; with the mirror in B2 it would end or turn there.
+    expect(isLit(before.light, 5)).toBe(true)
+    const preview = session.preview({ kind: 'move', item: MIRROR, to: B2 })
+    expect(preview && isLit(preview.light, 5)).toBe(false)
+    expect(preview?.ignites).toEqual([])
+    expect(session.state.value).toBe(before)
+    expect(session.canUndo.value).toBe(false)
+  })
+
+  it('previews nothing for moves the rules forbid, or once the level is over', () => {
+    const session = newSession()
+    expect(session.preview({ kind: 'move', item: MIRROR, to: { area: 'board', cell: 3 } })).toBe(
+      undefined,
+    )
+    expect(session.preview({ kind: 'move', item: 1, to: A1 })).toBeUndefined()
+    session.execute({ kind: 'move', item: MIRROR, to: B3 })
+    session.execute({ kind: 'rotate', item: MIRROR, steps: -1 })
+    expect(session.state.value.phase).toBe('solved')
+    expect(session.preview({ kind: 'move', item: MIRROR, to: A1 })).toBeUndefined()
+  })
+
   it('keeps a level open while coins wait in the toolbox', () => {
     const session = new GameSession(createPuzzle(parseBoard('L2r . .'), [piece('Cr')]))
     expect(session.state.value.phase).toBe('playing')
@@ -181,6 +207,17 @@ describe('GameSession with hazards and actors', () => {
     expect(events.filter((event) => event.kind === 'exploded')).toHaveLength(2)
 
     session.restart()
+    expect(session.state.value.phase).toBe('playing')
+    expect(board(session)).toBe('.   .   T   T\nL2r .   .   .')
+  })
+
+  it('previews the explosives a move would light, and lights none', () => {
+    // The mirror in the toolbox already points north-west: in B3 it would light A3.
+    const session = new GameSession(
+      createPuzzle(parseBoard('.   .   T   T \n L2r .   .   .'), [piece('M7')]),
+    )
+    const to = { area: 'board', cell: cell(session, 'B3') } as const
+    expect(session.preview({ kind: 'move', item: 3, to })?.ignites).toEqual([cell(session, 'A3')])
     expect(session.state.value.phase).toBe('playing')
     expect(board(session)).toBe('.   .   T   T\nL2r .   .   .')
   })

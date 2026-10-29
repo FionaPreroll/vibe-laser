@@ -84,6 +84,30 @@
         "neon"
       ]
     },
+    "sounds": {
+      "type": "string",
+      "enum": [
+        "lab",
+        "school",
+        "classic",
+        "space",
+        "sea",
+        "crypt",
+        "clinic"
+      ]
+    },
+    "selectScreen": {
+      "type": "string",
+      "enum": [
+        "lab",
+        "school",
+        "classic",
+        "space",
+        "sea",
+        "crypt",
+        "clinic"
+      ]
+    },
     "showsSolutions": {
       "type": "boolean"
     },

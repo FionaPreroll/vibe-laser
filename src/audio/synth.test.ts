@@ -149,6 +149,42 @@ describe('Synth', () => {
     expect(late.every((oscillator) => (oscillator.starts[0] ?? 0) >= 60)).toBe(true)
   })
 
+  it("plays effects in the voice and pitch of a pack's sounds", () => {
+    const { synth: speaker, context } = synth()
+    speaker.setVolumes(0.8, 0)
+    speaker.unlock()
+    const last = () => context.oscillators.at(-1)
+    speaker.play('turn')
+    expect([last()?.type, last()?.frequency.values]).toEqual(['triangle', [660, 620]])
+    speaker.useSounds('crypt')
+    speaker.play('turn')
+    expect(last()?.type).toBe('sawtooth')
+    expect(last()?.frequency.values.map(Math.round)).toEqual([561, 527])
+    // A sawtooth sounds louder than a triangle, so it plays more softly.
+    expect(context.gains.at(-1)?.gain.values[1]).toBeCloseTo(0.12 * 0.7)
+    // Effects with a square or sawtooth tone of their own keep it.
+    speaker.play('shot')
+    expect(last()?.type).toBe('square')
+    speaker.useSounds('lab')
+    speaker.play('turn')
+    expect([last()?.type, last()?.frequency.values]).toEqual(['triangle', [660, 620]])
+  })
+
+  it("plays music in the scale, voices and pace of a pack's sounds", () => {
+    vi.useFakeTimers()
+    const { synth: speaker, context } = synth()
+    speaker.useSounds('school')
+    speaker.unlock()
+    // With chance at one half every time: the second lowest note an octave down, and the sixth.
+    const [bass, melody] = context.oscillators
+    expect([bass?.type, bass?.frequency.values]).toEqual(['sine', [147]])
+    expect([melody?.type, melody?.frequency.values]).toEqual(['triangle', [523]])
+    // School's beats come every 0.55 s, so 1.5 s ahead hold three of them.
+    expect(context.oscillators.filter((oscillator) => oscillator.type === 'triangle')).toHaveLength(
+      3,
+    )
+  })
+
   it('closes its audio context when disposed', () => {
     const { synth: speaker, context } = synth()
     speaker.unlock()

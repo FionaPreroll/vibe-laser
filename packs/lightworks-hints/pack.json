@@ -9,7 +9,8 @@
   "position": 3,
   "skills": [
     { "en": "Light Work", "de": "Leichte Übung" },
-    { "en": "Tricks of the Light", "de": "Lichtspiele" }
+    { "en": "Tricks of the Light", "de": "Lichtspiele" },
+    { "en": "Crossfire", "de": "Kreuzfeuer" }
   ],
   "showsSolutions": true,
   "levelsFrom": "lightworks"

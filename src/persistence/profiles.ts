@@ -16,6 +16,8 @@ const settingsSchema = z
     colorBlind: z.boolean().default(false),
     // The look of every board; older saves load following each pack's skin.
     art: z.enum(LOOKS).default('pack'),
+    // Where light would go while a piece is carried; older saves load with it on.
+    beamPreview: z.boolean().default(true),
   })
   .strict()
 
@@ -58,6 +60,7 @@ export const DEFAULT_SETTINGS: Settings = {
   reducedMotion: false,
   colorBlind: false,
   art: 'pack',
+  beamPreview: true,
 }
 
 const KEY = 'save'

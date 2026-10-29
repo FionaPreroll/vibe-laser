@@ -63,6 +63,20 @@ export function SettingsDialog({ book, onClose }: Props) {
         <p id="color-blind-hint" class="hint">
           {t('colorBlindHint')}
         </p>
+        <label class="check">
+          <input
+            type="checkbox"
+            checked={settings.beamPreview}
+            aria-describedby="beam-preview-hint"
+            onChange={(event) =>
+              void book.updateSettings({ beamPreview: event.currentTarget.checked })
+            }
+          />
+          <span>{t('beamPreview')}</span>
+        </label>
+        <p id="beam-preview-hint" class="hint">
+          {t('beamPreviewHint')}
+        </p>
         <label>
           <span>{t('artLabel')}</span>
           <select

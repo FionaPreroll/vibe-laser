@@ -144,6 +144,11 @@ describe('SettingsDialog', () => {
       false,
     ])
     expect(colors.getAttribute('aria-describedby')).toBe('color-blind-hint')
+    const preview = screen.getByRole('checkbox', {
+      name: 'Show where light would go',
+    }) as HTMLInputElement
+    expect(preview.checked).toBe(true)
+    expect(preview.getAttribute('aria-describedby')).toBe('beam-preview-hint')
     const look = screen.getByLabelText('Look') as HTMLSelectElement
     expect([...look.options].map((option) => option.text)).toEqual([
       "Pack's choice",
@@ -157,6 +162,7 @@ describe('SettingsDialog', () => {
       fireEvent.input(music, { target: { value: '0' } })
       fireEvent.click(motion)
       fireEvent.click(colors)
+      fireEvent.click(preview)
       fireEvent.change(look, { target: { value: 'neon' } })
     })
     expect(book.active.value.settings).toEqual({
@@ -165,6 +171,7 @@ describe('SettingsDialog', () => {
       reducedMotion: true,
       colorBlind: true,
       art: 'neon',
+      beamPreview: false,
     })
     expect(motion.checked).toBe(true)
     expect(screen.getByLabelText('Language')).toBeTruthy()

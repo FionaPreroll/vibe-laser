@@ -201,6 +201,60 @@ describe('PackEditor', () => {
     await waitFor(() => expect(shelf.find('my-1')?.pack).not.toHaveProperty('skin'))
   })
 
+  it('saves the selection screen, and leaves the laboratory out of the file', async () => {
+    await shelf.create(PACK)
+    render(<PackEditor pack="my-1" shelf={shelf} />)
+    const choice = screen.getByRole('combobox', { name: 'Selection screen' }) as HTMLSelectElement
+    expect([...choice.options].map((option) => option.text)).toEqual([
+      'Laboratory',
+      'Schoolroom',
+      'Classic',
+      'Space station',
+      'At sea',
+      'Crypt',
+      'Clinic',
+    ])
+    expect(choice.value).toBe('lab')
+    expect(choice.getAttribute('aria-describedby')).toBe('pack-screen-hint')
+    await act(() => {
+      fireEvent.change(choice, { target: { value: 'crypt' } })
+    })
+    await click('Save pack settings')
+    await waitFor(() => expect(shelf.find('my-1')?.pack.selectScreen).toBe('crypt'))
+    await act(() => {
+      fireEvent.change(choice, { target: { value: 'lab' } })
+    })
+    await click('Save pack settings')
+    await waitFor(() => expect(shelf.find('my-1')?.pack).not.toHaveProperty('selectScreen'))
+  })
+
+  it("saves the pack's sounds, and leaves the laboratory's out of the file", async () => {
+    await shelf.create(PACK)
+    render(<PackEditor pack="my-1" shelf={shelf} />)
+    const sounds = screen.getByRole('combobox', { name: 'Sounds' }) as HTMLSelectElement
+    expect([...sounds.options].map((option) => option.text)).toEqual([
+      'Laboratory',
+      'Schoolroom',
+      'Classic',
+      'Space station',
+      'At sea',
+      'Crypt',
+      'Clinic',
+    ])
+    expect(sounds.value).toBe('lab')
+    expect(sounds.getAttribute('aria-describedby')).toBe('pack-sounds-hint')
+    await act(() => {
+      fireEvent.change(sounds, { target: { value: 'sea' } })
+    })
+    await click('Save pack settings')
+    await waitFor(() => expect(shelf.find('my-1')?.pack.sounds).toBe('sea'))
+    await act(() => {
+      fireEvent.change(sounds, { target: { value: 'lab' } })
+    })
+    await click('Save pack settings')
+    await waitFor(() => expect(shelf.find('my-1')?.pack).not.toHaveProperty('sounds'))
+  })
+
   it('makes a pack of hints and solutions, and leaves the switch out of the file when off', async () => {
     await shelf.create(PACK)
     render(<PackEditor pack="my-1" shelf={shelf} />)

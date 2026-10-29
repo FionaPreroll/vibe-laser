@@ -1,4 +1,6 @@
+import type { PackSounds } from '../content/schema'
 import type { Sound, Speaker } from './director'
+import { TYPE_GAIN, VOICES, type Voice } from './voices'
 
 interface Tone {
   readonly type: OscillatorType
@@ -55,14 +57,14 @@ const RECIPES: Readonly<Record<Sound, { tones?: readonly Tone[]; noise?: Noise }
   swallow: { tones: [{ type: 'sine', from: 700, to: 55, seconds: 0.7, gain: 0.16 }] },
 }
 
-/** A minor pentatonic scale over two octaves, for the music. */
-const SCALE = [220, 262, 294, 330, 392, 440, 523, 587, 659, 784]
-const BEAT = 0.75
 const LOOKAHEAD = 1.5
+/** Soft tones of effects, which a pack's voice may replace; square and sawtooth ones stay. */
+const SOFT: ReadonlySet<OscillatorType> = new Set<OscillatorType>(['sine', 'triangle'])
 
 /**
- * Sound effects and a slow, generated melody, made with the Web Audio API. Browsers start audio
- * only after the player clicks or presses a key, so nothing plays before `unlock`.
+ * Sound effects and a slow, generated melody, made with the Web Audio API, in the voice of the
+ * pack being played. Browsers start audio only after the player clicks or presses a key, so
+ * nothing plays before `unlock`.
  */
 export class Synth implements Speaker {
   readonly #createContext: () => AudioContext
@@ -71,6 +73,7 @@ export class Synth implements Speaker {
   #sound: GainNode | undefined
   #music: GainNode | undefined
   #volumes = { sound: 0.8, music: 0.5 }
+  #voice: Voice = VOICES.lab
   #noise: AudioBuffer | undefined
   #timer: ReturnType<typeof setInterval> | undefined
   #nextBeat = 0
@@ -103,13 +106,28 @@ export class Synth implements Speaker {
     else this.#startMusic()
   }
 
+  /** Plays effects and music in the voice of a pack's sounds, from the next note on. */
+  useSounds(sounds: PackSounds): void {
+    this.#voice = VOICES[sounds]
+  }
+
   play(sound: Sound): void {
     const context = this.#context
     const out = this.#sound
     if (context === undefined || out === undefined || this.#volumes.sound === 0) return
     const recipe = RECIPES[sound]
     const now = context.currentTime
-    for (const tone of recipe.tones ?? []) this.#tone(context, out, now, tone)
+    const { voice, pitch } = this.#voice
+    for (const tone of recipe.tones ?? []) {
+      const type = voice !== undefined && SOFT.has(tone.type) ? voice : tone.type
+      this.#tone(context, out, now, {
+        ...tone,
+        type,
+        from: tone.from * pitch,
+        ...(tone.to === undefined ? {} : { to: tone.to * pitch }),
+        gain: type === tone.type ? tone.gain : tone.gain * TYPE_GAIN[type],
+      })
+    }
     if (recipe.noise !== undefined) this.#burst(context, out, now, recipe.noise)
   }
 
@@ -188,28 +206,29 @@ export class Synth implements Speaker {
     // playing them all at once.
     if (this.#nextBeat < context.currentTime) this.#nextBeat = context.currentTime + 0.05
     while (this.#nextBeat < context.currentTime + LOOKAHEAD) {
+      const { scale, beat, density, melody, bass } = this.#voice
       const at = this.#nextBeat - context.currentTime
       if (this.#beat % 4 === 0) {
-        const root = SCALE[Math.floor(this.#random() * 3)] ?? 220
+        const root = scale[Math.floor(this.#random() * 3)] ?? 220
         this.#tone(context, out, context.currentTime, {
-          type: 'triangle',
+          type: bass,
           from: root / 2,
-          seconds: BEAT * 4,
-          gain: 0.1,
+          seconds: beat * 4,
+          gain: 0.1 * TYPE_GAIN[bass],
           delay: at,
         })
       }
-      if (this.#random() < 0.7) {
-        const note = SCALE[Math.floor(this.#random() * SCALE.length)] ?? 440
+      if (this.#random() < density) {
+        const note = scale[Math.floor(this.#random() * scale.length)] ?? 440
         this.#tone(context, out, context.currentTime, {
-          type: 'sine',
+          type: melody,
           from: note,
-          seconds: BEAT * 2,
-          gain: 0.06,
+          seconds: beat * 2,
+          gain: 0.06 * TYPE_GAIN[melody],
           delay: at,
         })
       }
-      this.#nextBeat += BEAT
+      this.#nextBeat += beat
       this.#beat++
     }
   }

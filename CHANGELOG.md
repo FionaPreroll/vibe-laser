@@ -38,7 +38,11 @@ All changes players can notice are listed here. The format follows [Keep a Chang
 - A second look for the board, in the settings: Neon draws every part as a glowing outline on a dark board.
 - Level packs can choose the look their levels are made for. The new default look in the settings, the pack's choice, shows each pack that way; Plain or Neon show every pack in one look. In the level editor, the pack settings choose a pack's look.
 - Every tutorial level explains its new part in a few words above the board, and the level editor lets authors write such an intro, in English and German, for their own levels.
-- A second level pack, Lightworks: twelve puzzles for after the tutorial, in two skills, that combine the parts in new ways, such as a prism used backwards or a slime steered with beams.
+- A second level pack, Lightworks: eighteen puzzles for after the tutorial, in three skills, that combine the parts in new ways, such as a prism used backwards or a slime steered with beams. In its third skill, Crossfire, two lasers share every board, and in one level the mirrors are fixed and only turn.
+- Three dots at the end of the button bar light up in the colors of the piece under the pointer, as in the original: a yellow piece lights red and green. After a key they follow the keyboard frame, and on touch screens they show the selected piece.
+- Each level pack can have sounds of its own: seven sets of music and effects, from the calm laboratory to a bright schoolroom, a ship at sea and an eerie crypt. The Tutorial now sounds like a schoolroom, and the level editor's pack settings choose a pack's sounds.
+- Each level pack has a selection screen of its own, as in the original: the Tutorial lays out its skills on a chalkboard, Lightworks at a laboratory console, and the level editor offers seven screens, from a classic menu to a crypt. The pack list shows every pack with a banner in its style.
+- While you carry a piece, the beams show faintly where light would go if you put it down there, and explosives it would reach get a red ring. A setting switches this off.
 - A Hints & Solutions pack, as the original offered: the Lightworks puzzles with help at hand. A hint shows where the next piece goes and how it is turned, and the whole solution plays itself if you ask. Packs made in the level editor can offer hints and solutions too.
 
 ### Changed

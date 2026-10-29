@@ -5,11 +5,13 @@ import { type Phase, STABLE_TICKS } from '../game/session'
 import { createFlatArt } from './art/flat'
 import type { ArtPack } from './art/types'
 import type { BoardController } from './controller'
-import { colorBlind } from './display'
+import { beamPreview, colorBlind } from './display'
 import { CELL, type Point, placeAt, placeCenter, type Transform } from './layout'
 import { BOARD_COLORS } from './palette'
 import { createStage, isTextField } from './stage'
 
+/** Beams while a piece is carried show where light would go, faint since nothing has moved yet. */
+const PREVIEW_ALPHA = 0.45
 /** Pointer travel in screen pixels before a press turns into a drag; fingers wobble more. */
 const DRAG_THRESHOLD = 6
 const TOUCH_DRAG_THRESHOLD = 12
@@ -99,10 +101,18 @@ export async function mountBoard(
   const render = () => {
     const { puzzle, light, spinning, phase, stable } = session.state.value
     const lifted = controller.lifted.value
+    const focused = controller.focusedPlace()
     const carried = press?.dragging ? press.id : lifted
+    // A carried piece would go down under the pointer, or in the keyboard frame.
+    const destination = press?.dragging ? target : focused
+    const preview =
+      beamPreview.value && carried !== undefined && destination !== undefined
+        ? session.preview({ kind: 'move', item: carried, to: destination })
+        : undefined
     pieces.show(puzzle, spinning, geometry, carried)
     labels.show(puzzle, geometry, colorBlind.value, carried)
-    beams.show(light, geometry, colorBlind.value)
+    beams.show(preview?.light ?? light, geometry, colorBlind.value)
+    beams.alpha = preview === undefined ? 1 : PREVIEW_ALPHA
 
     overlay.clear()
     const frame = frameStyle(phase, stable)
@@ -116,6 +126,10 @@ export async function mountBoard(
           12,
         )
         .stroke({ width: 4, ...frame })
+    }
+    for (const cell of preview?.ignites ?? []) {
+      const { x, y } = cellCenter(cell)
+      overlay.circle(x, y, 28).stroke({ width: 3, color: BOARD_COLORS.blocked, alpha: 0.9 })
     }
     const hint = controller.hint.value
     const hinted = hint === undefined ? undefined : itemById(puzzle, hint.item)
@@ -145,7 +159,6 @@ export async function mountBoard(
           : BOARD_COLORS.blocked,
       )
     }
-    const focused = controller.focusedPlace()
     const keyboard = hasFocus.value && controller.keyboardActive.value
     if (keyboard && focused !== undefined) outline(focused, BOARD_COLORS.focus)
     if (!press?.dragging) {
@@ -188,7 +201,8 @@ export async function mountBoard(
     batch(() => {
       controller.keyboardActive.value = false
       controller.lifted.value = undefined
-      // A touch decides what it selects once the finger lifts.
+      // A touch decides what it selects once the finger lifts, and fingers do not hover.
+      controller.hover(touch ? undefined : place)
       if (!touch) controller.select(item?.id)
     })
     press = {
@@ -213,7 +227,10 @@ export async function mountBoard(
     }
     const local = scene.toLocal(event.global)
     if (press === undefined) {
-      if (!fingers.has(event.pointerId)) scene.cursor = cursorAt(local)
+      if (!fingers.has(event.pointerId)) {
+        scene.cursor = cursorAt(local)
+        controller.hover(placeAt(geometry, local))
+      }
       return
     }
     const item = press.id === undefined ? undefined : itemById(session.state.value.puzzle, press.id)
@@ -260,7 +277,10 @@ export async function mountBoard(
     } else if (ended.id !== undefined && (ended.button === 0 || ended.button === 2)) {
       controller.rotate(ended.id, ended.button === 2 ? 1 : -1)
     }
-    if (!ended.touch) scene.cursor = cursorAt(scene.toLocal(event.global))
+    if (!ended.touch) {
+      scene.cursor = cursorAt(scene.toLocal(event.global))
+      controller.hover(at)
+    }
   }
   scene.on('pointerup', release)
   scene.on('pointerupoutside', release)
@@ -276,6 +296,11 @@ export async function mountBoard(
     event.preventDefault()
   }
   window.addEventListener('keydown', onKey)
+  // A mouse that leaves the board points at nothing; a drag keeps what it carries.
+  const onLeave = () => {
+    if (press === undefined) controller.hover(undefined)
+  }
+  stage.app.canvas.addEventListener('pointerleave', onLeave)
 
   const stopRendering = effect(render)
   stage.app.ticker.add((ticker) => {
@@ -295,6 +320,7 @@ export async function mountBoard(
       stopEffects()
       stopRendering()
       window.removeEventListener('keydown', onKey)
+      stage.app.canvas.removeEventListener('pointerleave', onLeave)
       stage.destroy()
     },
   }

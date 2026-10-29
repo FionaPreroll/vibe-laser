@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'preact/hooks'
 import { findPack, type Level } from '../../content/packs'
+import { selectScreenOf } from '../../content/schema'
 import { locale, t } from '../../i18n'
 import { navigate } from '../router'
 import { Missing } from './SkillsScreen'
@@ -29,8 +30,9 @@ export function LevelsScreen({ pack: id, skill: number, solved }: Props) {
   if (pack === undefined || skill === undefined) return <Missing />
 
   const many = pack.file.selectSkill && pack.skills.length > 1
+  const theme = selectScreenOf(pack.file)
   return (
-    <section class="screen" aria-labelledby="levels-title">
+    <section class={`screen select-screen theme-${theme}`} aria-labelledby="levels-title">
       <button
         type="button"
         class="back"
@@ -40,6 +42,7 @@ export function LevelsScreen({ pack: id, skill: number, solved }: Props) {
       >
         {t('back')}
       </button>
+      <p class="select-kicker">{t(`selectScreen.${theme}.kicker`)}</p>
       <h2 id="levels-title">
         {many
           ? `${pack.file.title[locale.value]} · ${skill.name[locale.value]}`

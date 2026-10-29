@@ -130,3 +130,53 @@ describe('BoardController taps', () => {
     expect(controller.selected.value).toBeUndefined()
   })
 })
+
+describe('BoardController for the color dots', () => {
+  const SLOT = { area: 'toolbox', slot: 0 } as const
+  const B1 = { area: 'board', cell: 6 } as const
+  const B2 = { area: 'board', cell: 7 } as const
+  const kind = (controller: BoardController) => controller.inspected.value?.kind
+
+  it('shows the piece under the mouse, and nothing over a free cell', () => {
+    const controller = firstLevel()
+    expect(kind(controller)).toBeUndefined()
+    controller.hover(B1)
+    expect(controller.inspected.value).toMatchObject({ kind: 'laser', color: 1 })
+    controller.hover(B2)
+    expect(kind(controller)).toBeUndefined()
+  })
+
+  it('notes a new place only when the mouse reaches one', () => {
+    const controller = firstLevel()
+    controller.hover(B1)
+    const hovered = controller.hovered.value
+    controller.hover({ area: 'board', cell: 6 })
+    expect(controller.hovered.value).toBe(hovered)
+    controller.hover(SLOT)
+    expect(controller.hovered.value).toEqual(SLOT)
+    controller.hover(undefined)
+    controller.hover(undefined)
+    expect(controller.hovered.value).toBeUndefined()
+  })
+
+  it('follows the keyboard frame after a key, and the mouse once it moves again', () => {
+    const controller = firstLevel()
+    controller.hover(B1)
+    press(controller, 'Escape')
+    expect(controller.hovered.value).toBeUndefined()
+    expect(kind(controller)).toBe('mirror')
+    press(controller, 'Enter', 'ArrowRight', 'ArrowRight', 'ArrowRight')
+    // The lifted mirror travels with the frame, over a free cell.
+    expect(kind(controller)).toBe('mirror')
+    controller.hover(B1)
+    expect(kind(controller)).toBe('laser')
+  })
+
+  it('shows the selected piece without a mouse or a key, as on touch screens', () => {
+    const controller = firstLevel()
+    controller.tap(B1)
+    expect(kind(controller)).toBe('laser')
+    controller.tap(SLOT)
+    expect(kind(controller)).toBe('mirror')
+  })
+})
