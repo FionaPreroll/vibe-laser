@@ -236,12 +236,22 @@ describe('GameSession with hazards and actors', () => {
     expect(TICK_MS).toBe(100)
   })
 
+  it('lets a ship turn round where it cannot go on, and fly back', () => {
+    const session = new GameSession(createPuzzle(parseBoard('SH2 . \n Cr Cr'), []))
+    ticks(session, 4)
+    expect(board(session)).toBe(formatBoard(parseBoard('. SH2 \n Cr Cr')))
+    ticks(session, 4)
+    expect(board(session)).toBe(formatBoard(parseBoard('. SH6 \n Cr Cr')))
+    ticks(session, 4)
+    expect(board(session)).toBe(formatBoard(parseBoard('SH6 . \n Cr Cr')))
+  })
+
   it('drops undo entries for pieces a slime has eaten', () => {
     const session = new GameSession(
       createPuzzle(parseBoard('. . . \n . . . \n . SL0 .'), [piece('M0')]),
     )
     session.execute({ kind: 'move', item: 1, to: { area: 'board', cell: cell(session, 'A2') } })
-    ticks(session, 16)
+    ticks(session, 24)
     expect(board(session)).toBe(formatBoard(parseBoard('. . . \n . . . \n . . .')))
     expect(session.undo()).toBe(false)
     expect(session.canUndo.value).toBe(false)

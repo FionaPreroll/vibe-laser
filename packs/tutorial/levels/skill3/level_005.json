@@ -6,15 +6,20 @@
     "en": "A ship that flies right over a fuel cell takes it aboard, then shoots the next explosive ahead. Fuel cells explode in light, like explosives.",
     "de": "Ein Raumschiff, das direkt über eine Brennstoffzelle fliegt, nimmt sie an Bord und schießt dann auf den nächsten Sprengstoff voraus. Brennstoffzellen explodieren bei Licht wie Sprengstoff."
   },
-  "note": "Flying over the fuel cell, the ship takes it aboard and shoots the explosive; then the beam may pass.",
-  "size": [6, 4],
+  "note": "The beam at A5 holds the ship. Turned aside at B5, it lets the ship fly over the fuel cell, which it takes aboard to shoot the explosive; then the mirror at A5 takes the beam to the coin.",
+  "size": [6, 3],
   "objects": [
     { "type": "coin", "pos": "A1", "rgb": "r" },
     { "type": "explosive", "pos": "A2" },
     { "type": "ship", "pos": "A6", "rot": 6 },
-    { "type": "fuelCell", "pos": "B5" },
-    { "type": "laser", "pos": "D3", "rot": 0, "rgb": "r" }
+    { "type": "fuelCell", "pos": "B3" },
+    { "type": "filter", "pos": "B6", "rgb": "b" },
+    { "type": "laser", "pos": "C5", "rot": 0, "rgb": "r" }
   ],
   "toolbox": [{ "type": "mirror", "rot": 0 }],
-  "solution": [{ "wait": 20 }, { "piece": 0, "pos": "A3", "rot": 5 }]
+  "solution": [
+    { "piece": 0, "pos": "B5", "rot": 3 },
+    { "wait": 40 },
+    { "piece": 0, "pos": "A5", "rot": 5 }
+  ]
 }

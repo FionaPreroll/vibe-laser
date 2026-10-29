@@ -15,11 +15,19 @@ afterEach(() => {
 })
 
 describe('SolvedDialog', () => {
-  it('offers the next unsolved level, focused, the level selection and another go', () => {
+  it('lets the coins spin a moment, then offers the next unsolved level, focused', async () => {
+    vi.useFakeTimers()
     const onNext = vi.fn()
     const onLevels = vi.fn()
     const onReplay = vi.fn()
     render(<SolvedDialog onNext={onNext} onLevels={onLevels} onReplay={onReplay} />)
+    await act(() => {
+      vi.advanceTimersByTime(1400)
+    })
+    expect(screen.queryByRole('dialog')).toBeNull()
+    await act(() => {
+      vi.advanceTimersByTime(100)
+    })
     const dialog = screen.getByRole('dialog', { name: 'Level solved' })
     expect(dialog.textContent).toContain('Every coin is spinning.')
     const next = screen.getByRole('button', { name: 'Next unsolved level' })
@@ -32,8 +40,12 @@ describe('SolvedDialog', () => {
     expect(onReplay).toHaveBeenCalledOnce()
   })
 
-  it('says when every level of the pack is solved', () => {
+  it('says when every level of the pack is solved', async () => {
+    vi.useFakeTimers()
     render(<SolvedDialog onNext={undefined} onLevels={() => {}} onReplay={() => {}} />)
+    await act(() => {
+      vi.advanceTimersByTime(1500)
+    })
     expect(screen.queryByRole('button', { name: 'Next unsolved level' })).toBeNull()
     expect(screen.getByText(/every level of this pack is solved/)).toBeTruthy()
     expect(document.activeElement).toBe(screen.getByRole('button', { name: 'Level selection' }))

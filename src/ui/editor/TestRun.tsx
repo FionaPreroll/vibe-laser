@@ -11,6 +11,8 @@ import { BoardController } from '../../view/controller'
 import { BoardCanvas } from '../BoardCanvas'
 import { FailedDialog } from '../FailedDialog'
 import { Hud } from '../Hud'
+import { useAfter } from '../pause'
+import { SOLVED_PAUSE_MS } from '../SolvedDialog'
 
 interface Props {
   readonly editor: EditorController
@@ -98,11 +100,14 @@ interface KeepProps {
   readonly onClose: () => void
 }
 
+/** Shown a moment after the test solves the level, like the game's solved dialog. */
 function KeepDialog({ onKeep, onReplay, onClose }: KeepProps) {
   const first = useRef<HTMLButtonElement>(null)
+  const shown = useAfter(SOLVED_PAUSE_MS)
   useEffect(() => {
-    first.current?.focus()
-  }, [])
+    if (shown) first.current?.focus()
+  }, [shown])
+  if (!shown) return null
   return (
     <div class="dialog-backdrop">
       <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="keep-title">
