@@ -210,7 +210,7 @@ function direction(rotation: number | undefined): 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 
   return ((((rotation ?? 0) % 8) + 8) % 8) as 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7
 }
 
-/** Name, note and size of the level. */
+/** Name, intro, note and size of the level. */
 export function LevelPanel({ editor }: { readonly editor: EditorController }) {
   const level = editor.level.value
   const [columns, rows] = level.size
@@ -228,6 +228,18 @@ export function LevelPanel({ editor }: { readonly editor: EditorController }) {
         value={level.name.de}
         maxLength={60}
         onCommit={(value) => editor.rename('de', value.trim())}
+      />
+      <CommitField
+        label={t('introEn')}
+        value={level.intro?.en ?? ''}
+        multiline
+        onCommit={(value) => editor.setIntro('en', value.trim())}
+      />
+      <CommitField
+        label={t('introDe')}
+        value={level.intro?.de ?? ''}
+        multiline
+        onCommit={(value) => editor.setIntro('de', value.trim())}
       />
       <CommitField
         label={t('noteLabel')}

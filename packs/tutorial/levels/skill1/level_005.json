@@ -2,6 +2,10 @@
   "$schema": "../../../level.schema.json",
   "version": 1,
   "name": { "en": "Through the Slit", "de": "Durch den Spalt" },
+  "intro": {
+    "en": "A slit mirror reflects on both sides, and a beam running along its surface slips through its slit. Turn the green beam without stopping the red one.",
+    "de": "Ein Schlitzspiegel spiegelt auf beiden Seiten, und ein Strahl entlang seiner Fläche schlüpft durch den Schlitz. Lenk den grünen Strahl um, ohne den roten aufzuhalten."
+  },
   "size": [5, 4],
   "objects": [
     { "type": "laser", "pos": "B1", "rot": 2, "rgb": "r" },

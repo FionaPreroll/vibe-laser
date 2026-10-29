@@ -2,6 +2,10 @@
   "$schema": "../../../level.schema.json",
   "version": 1,
   "name": { "en": "Filters", "de": "Filter" },
+  "intro": {
+    "en": "A filter lets only its own colors through. A coin wants exactly its color: white light does not make a red coin spin.",
+    "de": "Ein Filter lässt nur seine eigenen Farben durch. Eine Münze will genau ihre Farbe: Weißes Licht bringt eine rote Münze nicht zum Drehen."
+  },
   "size": [4, 2],
   "objects": [
     { "type": "laser", "pos": "A1", "rot": 2, "rgb": "rgb" },

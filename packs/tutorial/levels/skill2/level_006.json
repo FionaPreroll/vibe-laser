@@ -2,6 +2,10 @@
   "$schema": "../../../level.schema.json",
   "version": 1,
   "name": { "en": "Color Shift", "de": "Farbwechsel" },
+  "intro": {
+    "en": "A color converter shifts colors: through its narrow end red turns green, green blue and blue red; through its broad end the other way round.",
+    "de": "Ein Farbwandler verschiebt Farben: Durch das schmale Ende wird Rot zu Grün, Grün zu Blau und Blau zu Rot, durch das breite Ende umgekehrt."
+  },
   "size": [5, 2],
   "objects": [
     { "type": "laser", "pos": "A1", "rot": 2, "rgb": "r" },

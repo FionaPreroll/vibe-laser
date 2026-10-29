@@ -2,6 +2,10 @@
   "$schema": "../../../level.schema.json",
   "version": 1,
   "name": { "en": "Two Turns", "de": "Zwei Kurven" },
+  "intro": {
+    "en": "A mirror's silver side turns a beam by 90° or sends it straight back; its back stops light. This coin is two turns away.",
+    "de": "Die silberne Seite eines Spiegels lenkt einen Strahl um 90° um oder wirft ihn zurück, seine Rückseite hält Licht auf. Diese Münze liegt zwei Kurven entfernt."
+  },
   "size": [6, 4],
   "objects": [
     { "type": "laser", "pos": "A1", "rot": 2, "rgb": "b" },

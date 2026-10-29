@@ -2,6 +2,10 @@
   "$schema": "../../../level.schema.json",
   "version": 1,
   "name": { "en": "Inside and Out", "de": "Innen und außen" },
+  "intro": {
+    "en": "A complex has an outer and an inner color: through its flat end the outer color turns and the inner one goes straight on. Light of neither color stops.",
+    "de": "Ein Komplex hat eine Außen- und eine Innenfarbe: Durch das flache Ende knickt die Außenfarbe ab, die Innenfarbe läuft geradeaus. Licht keiner der beiden Farben bleibt stehen."
+  },
   "note": "Red, the outer color, turns; blue, the inner one, goes on; green stops, so A2 sees pure blue.",
   "size": [5, 4],
   "objects": [

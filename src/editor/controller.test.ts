@@ -213,6 +213,14 @@ describe('EditorController', () => {
     editor.rename('de', 'Erstes Licht')
     editor.setNote('For testing')
     expect(editor.level.value.note).toBe('For testing')
+    editor.setIntro('en', 'Mirrors turn light.')
+    expect(problemKeys(editor)).toEqual(['halfIntro'])
+    editor.setIntro('de', 'Spiegel lenken Licht.')
+    expect(problemKeys(editor)).toEqual([])
+    expect(editor.level.value.intro).toEqual({
+      en: 'Mirrors turn light.',
+      de: 'Spiegel lenken Licht.',
+    })
     editor.clear()
     expect(editor.level.value.objects).toEqual([])
     editor.undo()

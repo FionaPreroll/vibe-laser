@@ -327,6 +327,16 @@ describe('LevelEditor', () => {
     expect(gameMount.mock.lastCall?.[2]).toMatchObject({ id: 'neon' })
   })
 
+  it('shows the intro for players while testing', async () => {
+    const intro = { en: 'Mirrors turn light.', de: 'Spiegel lenken Licht.' }
+    await shelf.saveLevel('my-1', 1, 2, { ...FIRST_LIGHT, intro })
+    open(2)
+    await editorShown()
+    await click('Test')
+    await testRun()
+    expect(screen.getByText('Mirrors turn light.')).toBeTruthy()
+  })
+
   it('goes back to editing from a test, with Exit, the banner or the dialog', async () => {
     open()
     await editorShown()

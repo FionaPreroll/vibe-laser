@@ -52,11 +52,12 @@ export function finishLevel(level: LevelFile): LevelFile {
     }
   }
   // The keys in the order of the files written by hand, so a saved level differs only where it changed.
-  const { $schema, version, name, note, size, rules, solution } = level
+  const { $schema, version, name, intro, note, size, rules, solution } = level
   return {
     ...($schema === undefined ? {} : { $schema }),
     version,
     name,
+    ...(intro === undefined ? {} : { intro }),
     ...(note?.trim() ? { note: note.trim() } : {}),
     size,
     objects,
@@ -179,6 +180,14 @@ export function resizeLevel(level: LevelFile, columns: number, rows: number): Le
 
 export function renameLevel(level: LevelFile, locale: 'en' | 'de', name: string): LevelFile {
   return level.name[locale] === name ? level : { ...level, name: { ...level.name, [locale]: name } }
+}
+
+/** The intro in one language; an intro empty in both languages goes. */
+export function introLevel(level: LevelFile, locale: 'en' | 'de', text: string): LevelFile {
+  if ((level.intro?.[locale] ?? '') === text) return level
+  const intro = { en: level.intro?.en ?? '', de: level.intro?.de ?? '', [locale]: text }
+  const { intro: _, ...rest } = level
+  return intro.en === '' && intro.de === '' ? rest : { ...rest, intro }
 }
 
 export function noteLevel(level: LevelFile, note: string): LevelFile {

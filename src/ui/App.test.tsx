@@ -125,6 +125,12 @@ describe('App', () => {
     expect(await solvedIn(store)).toEqual(['tutorial/1/1'])
   })
 
+  it('tells players above the board what the level is about', async () => {
+    await start('#/play/tutorial/1/1')
+    await mounted()
+    expect(screen.getByText(/^A laser fires a beam of its color/)).toBeTruthy()
+  })
+
   it('plays a solved level again, or goes back to the level selection', async () => {
     await start('#/play/tutorial/1/1')
     const controller = await mounted()

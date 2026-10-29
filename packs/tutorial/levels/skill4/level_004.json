@@ -2,6 +2,10 @@
   "$schema": "../../../level.schema.json",
   "version": 1,
   "name": { "en": "Color Fork", "de": "Farbweiche" },
+  "intro": {
+    "en": "A selector turns its own color 45° clockwise through its flat end and lets the rest go straight on. Take green out of white, and magenta is left.",
+    "de": "Ein Selektor lenkt durch sein flaches Ende seine eigene Farbe um 45° im Uhrzeigersinn ab und lässt den Rest geradeaus. Nimm Grün aus Weiß, und Magenta bleibt übrig."
+  },
   "note": "The green selector turns green off the white beam and lets magenta on.",
   "size": [5, 4],
   "objects": [

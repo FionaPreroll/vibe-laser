@@ -2,6 +2,10 @@
   "$schema": "../../../level.schema.json",
   "version": 1,
   "name": { "en": "Meeting Point", "de": "Treffpunkt" },
+  "intro": {
+    "en": "Light mixes: red and blue make magenta. The magenta coin needs both beams on it at once.",
+    "de": "Licht mischt sich: Rot und Blau ergeben Magenta. Die magentafarbene Münze braucht beide Strahlen zugleich."
+  },
   "size": [5, 3],
   "objects": [
     { "type": "laser", "pos": "A1", "rot": 4, "rgb": "r" },

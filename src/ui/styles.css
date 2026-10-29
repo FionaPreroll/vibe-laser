@@ -312,6 +312,15 @@ main.play {
   font-weight: 500;
 }
 
+/* What a level tells players before they start, such as what a new part does. */
+.level-intro {
+  max-width: 80ch;
+  margin: 0;
+  padding: 4px 16px 0;
+  font-size: 0.9375rem;
+  line-height: 1.45;
+}
+
 .play .stage {
   flex: 1;
   min-height: 0;
@@ -849,6 +858,11 @@ button.link {
 
   .hud .hint {
     display: none;
+  }
+
+  .level-intro {
+    font-size: 0.8125rem;
+    line-height: 1.35;
   }
 }
 

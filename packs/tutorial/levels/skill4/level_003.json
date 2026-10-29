@@ -2,6 +2,10 @@
   "$schema": "../../../level.schema.json",
   "version": 1,
   "name": { "en": "Mirror Image", "de": "Spiegelbild" },
+  "intro": {
+    "en": "A prismirror is a prism in mirror image: green and blue turn the other way. Choose the one that sends each color where it belongs.",
+    "de": "Ein Prismirror ist ein Prisma im Spiegelbild: Grün und Blau knicken zur anderen Seite ab. Wähl das Teil, das jede Farbe dorthin schickt, wo sie hingehört."
+  },
   "note": "Rainbow mirrored: the prism turns green and blue the wrong way, the prismirror the right way.",
   "size": [5, 4],
   "objects": [

@@ -2,6 +2,10 @@
   "$schema": "../../../level.schema.json",
   "version": 1,
   "name": { "en": "Split", "de": "Geteilt" },
+  "intro": {
+    "en": "A splitter splits light that hits its tip into two beams, to the left and to the right.",
+    "de": "Ein Splitter teilt Licht, das seine Spitze trifft, in zwei Strahlen nach links und nach rechts."
+  },
   "size": [5, 3],
   "objects": [
     { "type": "laser", "pos": "A3", "rot": 4, "rgb": "g" },

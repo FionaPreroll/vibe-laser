@@ -2,6 +2,10 @@
   "$schema": "../../../level.schema.json",
   "version": 1,
   "name": { "en": "Handle with Care", "de": "Vorsicht, Sprengstoff" },
+  "intro": {
+    "en": "Explosives go off when light reaches them, and take their neighbours with them. After a blast, undo cannot help: only a fresh start.",
+    "de": "Sprengstoff explodiert, wenn Licht ihn erreicht, und reißt seine Nachbarn mit. Nach einer Explosion hilft kein Rückgängig, nur ein Neustart."
+  },
   "note": "The short way to the coin runs into the explosive.",
   "size": [5, 3],
   "objects": [
