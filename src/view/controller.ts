@@ -1,5 +1,6 @@
 import { batch, computed, type ReadonlySignal, type Signal, signal } from '@preact/signals-core'
 import type { Piece } from '../core/board'
+import type { Direction } from '../core/direction'
 import { itemAt, itemById, type Place, samePlace } from '../core/level'
 import type { GameSession } from '../game/session'
 import {
@@ -9,6 +10,13 @@ import {
   type SceneGeometry,
   sceneGeometry,
 } from './layout'
+
+/** A piece of a known solution, shown where it goes and turned as it should be. */
+export interface HintMarker {
+  readonly item: number
+  readonly place: Place
+  readonly rotation: Direction
+}
 
 export interface KeyModifiers {
   readonly ctrl: boolean
@@ -34,6 +42,8 @@ export class BoardController {
    * lifted or in the frame; else the selected one, as on touch screens, which have no mouse.
    */
   readonly inspected: ReadonlySignal<Piece | undefined>
+  /** A hint from a Hints & Solutions pack, until the piece is where it shows. */
+  readonly hint = signal<HintMarker | undefined>(undefined)
   /** Whether the rotate buttons can turn the selected piece. */
   readonly canRotateSelected: ReadonlySignal<boolean>
   /** While help or the settings are open, the clock stands still. */

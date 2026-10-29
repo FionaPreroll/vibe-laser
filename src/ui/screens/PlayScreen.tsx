@@ -11,6 +11,7 @@ import { BoardCanvas } from '../BoardCanvas'
 import { FailedDialog } from '../FailedDialog'
 import { Hud } from '../Hud'
 import { navigate } from '../router'
+import { SolutionBar } from '../SolutionBar'
 import { SolvedDialog } from '../SolvedDialog'
 import { Missing } from './SkillsScreen'
 
@@ -108,6 +109,9 @@ export function PlayScreen({ level: id, book, speaker, paused, onHelp }: Props) 
         })}
       </h2>
       {intro && <p class="level-intro">{intro[locale.value]}</p>}
+      {pack.file.showsSolutions && (loaded.level.file.solution?.length ?? 0) > 0 && (
+        <SolutionBar controller={controller} level={loaded.level.file} />
+      )}
       <div class="stage">
         <BoardCanvas
           controller={controller}

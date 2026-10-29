@@ -39,6 +39,8 @@ export interface BoardStage {
   readonly hasFocus: Signal<boolean>
   /** Shows a carried piece at a point, or hides it. */
   showGhost(item: Item | undefined, at: Point | undefined): void
+  /** Shows a piece faintly where a hint says it goes, turned as its piece is, or hides it. */
+  showHint(item: Item | undefined, place: Place | undefined): void
   /** Draws a frame around a cell or slot on the overlay. */
   outline(place: Place, color: number, alpha?: number): void
   /** Where the scene sits on the screen: fitted at first, then zoomed and panned by touch. */
@@ -75,7 +77,17 @@ export async function createStage(
   const effects = new EffectLayer()
   const overlay = new Graphics()
   const carried = new Container()
-  scene.addChild(drawBackground(geometry, art), beams, pieces, labels, effects, overlay, carried)
+  const hints = new Container()
+  scene.addChild(
+    drawBackground(geometry, art),
+    beams,
+    pieces,
+    labels,
+    effects,
+    overlay,
+    carried,
+    hints,
+  )
   scene.eventMode = 'static'
   scene.hitArea = new Rectangle(0, 0, geometry.width, geometry.height)
   app.stage.addChild(scene)
@@ -94,6 +106,20 @@ export async function createStage(
     ghost ??= { id: item.id, view: carried.addChild(pieces.ghostOf(item)) }
     ghost.view.position.set(at.x, at.y)
     ghost.view.rotation = (item.piece.rotation * Math.PI) / 4
+  }
+
+  let hint: { readonly key: string; readonly view: Graphics } | undefined
+  const showHint = (item: Item | undefined, place: Place | undefined) => {
+    const key = item === undefined ? '' : `${item.id}/${item.piece.rotation}`
+    if (hint !== undefined && hint.key !== key) {
+      hint.view.destroy()
+      hint = undefined
+    }
+    if (item === undefined || place === undefined) return
+    hint ??= { key, view: hints.addChild(pieces.ghostOf(item)) }
+    hint.view.alpha = 0.5
+    const { x, y } = placeCenter(geometry, place)
+    hint.view.position.set(x, y)
   }
 
   const outline = (place: Place, color: number, alpha = 1) => {
@@ -153,6 +179,7 @@ export async function createStage(
     overlay,
     hasFocus,
     showGhost,
+    showHint,
     outline,
     transform: () => transform,
     zoom: () => transform.scale / (fitScene(geometry, screen.width, screen.height).scale || 1),

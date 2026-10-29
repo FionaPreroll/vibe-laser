@@ -5,7 +5,9 @@ import { puzzleOf, rulesOf } from './level'
 import { findLevel } from './packs'
 import { type LevelFile, levelSchema } from './schema'
 import {
+  nextHint,
   playSolution,
+  playStep,
   recordMoves,
   recordSolution,
   replaySolution,
@@ -122,6 +124,59 @@ describe('playSolution', () => {
     const session = sessionOf(level)
     expect(playSolution(session, level)).toBe(3)
     expect(session.ticks).toBe(40)
+  })
+})
+
+describe('nextHint', () => {
+  it('names the first move the board does not show yet, and nothing once it shows them all', () => {
+    const level = firstLight()
+    const session = sessionOf(level)
+    const B6 = { area: 'board', cell: 11 } as const
+    expect(nextHint(level, session.state.value.puzzle)).toEqual({
+      index: 0,
+      item: 2,
+      place: B6,
+      rotation: 7,
+      afterWait: false,
+    })
+    // On its cell but not yet turned, the mirror still needs the hint.
+    session.execute({ kind: 'move', item: 2, to: B6 })
+    expect(nextHint(level, session.state.value.puzzle)?.place).toEqual(B6)
+    session.execute({ kind: 'rotate', item: 2, steps: -1 })
+    expect(nextHint(level, session.state.value.puzzle)).toBeUndefined()
+  })
+
+  it('says when a move waits for the actors, and starts at the step it is given', async () => {
+    const level = await tutorial('tutorial/3/2')
+    const session = sessionOf(level)
+    expect(playStep(session, level, 0)).toBe(true)
+    expect(nextHint(level, session.state.value.puzzle)).toMatchObject({ index: 2, afterWait: true })
+    expect(nextHint(level, session.state.value.puzzle, 3)).toBeUndefined()
+    // A wait is no move to play.
+    expect(playStep(session, level, 1)).toBe(false)
+    expect(playStep(session, level, 9)).toBe(false)
+  })
+
+  it('sends a piece back into a free toolbox slot when the solution stows it', () => {
+    const level = firstLight({
+      objects: [
+        { type: 'coin', pos: 'B6', rgb: 'r' },
+        { type: 'laser', pos: 'B1', rot: 2, rgb: 'r' },
+        { type: 'filter', pos: 'B3', rgb: 'g', moveable: true },
+      ],
+      toolbox: [],
+      solution: [{ from: 'B3', stow: true }],
+    })
+    const session = sessionOf(level)
+    expect(nextHint(level, session.state.value.puzzle)).toEqual({
+      index: 0,
+      item: 1,
+      place: { area: 'toolbox', slot: 0 },
+      rotation: 0,
+      afterWait: false,
+    })
+    expect(playStep(session, level, 0)).toBe(true)
+    expect(nextHint(level, session.state.value.puzzle)).toBeUndefined()
   })
 })
 

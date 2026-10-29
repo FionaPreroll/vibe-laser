@@ -237,6 +237,21 @@ describe('mountBoard', () => {
     expect(strokes()).toBe(warned - 1)
   })
 
+  it('shows a hinted piece where it goes, turned as it should be, until it is there', async () => {
+    const { controller, scene } = await mount()
+    const hints = scene.children[7] as Container
+    expect(hints.children).toHaveLength(0)
+    controller.hint.value = { item: MIRROR, place: B6, rotation: 7 }
+    expect(hints.children).toHaveLength(1)
+    expect(hints.children[0]?.rotation).toBeCloseTo((7 * Math.PI) / 4)
+    expect(hints.children[0]?.alpha).toBe(0.5)
+    // On its cell but not yet turned, the mirror still shows the hint.
+    controller.move(MIRROR, B6)
+    expect(hints.children).toHaveLength(1)
+    controller.rotate(MIRROR, -1)
+    expect(hints.children).toHaveLength(0)
+  })
+
   it('writes colors as letters and splits beams in color-blind mode', async () => {
     const { scene } = await mount()
     const labels = scene.children[3] as Container

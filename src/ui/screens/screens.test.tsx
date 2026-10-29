@@ -33,7 +33,8 @@ describe('PacksScreen', () => {
     render(<PacksScreen solved={new Set()} />)
     const banner = (name: RegExp) => button(name).querySelector('.card-banner')?.className
     expect(banner(/^Tutorial/)).toBe('card-banner banner-school')
-    expect(banner(/^Lightworks/)).toBe('card-banner banner-lab')
+    expect(banner(/^Lightworks(?!:)/)).toBe('card-banner banner-lab')
+    expect(banner(/^Lightworks: Hints/)).toBe('card-banner banner-lab')
   })
 
   it('opens a pack without a choice of skills at its levels', () => {

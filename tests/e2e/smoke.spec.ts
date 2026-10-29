@@ -70,6 +70,19 @@ test('lights the color dots for the piece under the mouse', async ({ page }) => 
   ).toBeVisible()
 })
 
+test('gives a hint and plays the solution in a Hints & Solutions pack', async ({ page }) => {
+  const errors = watchErrors(page)
+  await page.goto('./#/play/lightworks-hints/1/1')
+  await boardReady(page)
+  await page.getByRole('button', { name: 'Show a hint' }).click()
+  await expect(page.locator('.solution-message')).toHaveText(
+    'Next: Filter on A2, turned as the outline shows.',
+  )
+  await page.getByRole('button', { name: 'Show the solution' }).click()
+  await expect(page.getByRole('dialog', { name: 'Level solved' })).toBeVisible({ timeout: 10_000 })
+  expect(errors).toEqual([])
+})
+
 test('turns two beams with one bender, a part of the expansion packs', async ({ page }) => {
   const errors = watchErrors(page)
   await page.goto('./#/play/tutorial/4/1')

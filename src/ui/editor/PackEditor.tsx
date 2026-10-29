@@ -253,6 +253,19 @@ function PackSettings({ source, levels }: SettingsProps) {
         />
         <span>{t('selectSkillLabel')}</span>
       </label>
+      <label class="check">
+        <input
+          type="checkbox"
+          checked={file.showsSolutions === true}
+          onChange={(event) => {
+            const showsSolutions = event.currentTarget.checked
+            change(({ showsSolutions: _, ...rest }) =>
+              showsSolutions ? { ...rest, showsSolutions } : rest,
+            )
+          }}
+        />
+        <span>{t('showsSolutionsLabel')}</span>
+      </label>
       <label class="field">
         <span>{t('artLabel')}</span>
         <select

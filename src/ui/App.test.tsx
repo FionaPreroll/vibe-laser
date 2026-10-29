@@ -293,6 +293,17 @@ describe('App', () => {
     expect(audio.useSounds).toHaveBeenLastCalledWith('lab')
   })
 
+  it('offers hints and the solution in a Hints & Solutions pack only', async () => {
+    await start('#/play/lightworks-hints/1/1')
+    expect(await screen.findByRole('button', { name: 'Show a hint' })).toBeTruthy()
+    expect(
+      screen.getByRole('heading', { name: /^Lightworks: Hints & Solutions · Light Work/ }),
+    ).toBeTruthy()
+    await act(() => navigate({ name: 'play', level: 'lightworks/1/1' }))
+    await screen.findByRole('heading', { name: /^Lightworks · Light Work/ })
+    expect(screen.queryByRole('button', { name: 'Show a hint' })).toBeNull()
+  })
+
   it('plays the sounds of the game at the volumes of the profile', async () => {
     const { audio } = await start('#/play/tutorial/1/1')
     await waitFor(() => expect(audio.setVolumes).toHaveBeenLastCalledWith(0.8, 0.5))

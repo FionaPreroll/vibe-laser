@@ -84,6 +84,8 @@ export function buildPacks(
     const key = `${pack}/${skill}`
     entries.set(key, [...(entries.get(key) ?? []), entry])
   }
+  const levelsOf = (id: string, skill: number) =>
+    (entries.get(`${id}/${skill}`) ?? []).sort((a, b) => a.number - b.number)
   return [...files]
     .map(([id, file]) => ({
       id,
@@ -91,10 +93,49 @@ export function buildPacks(
       skills: file.skills.map((name, index) => ({
         number: index + 1,
         name,
-        levels: (entries.get(`${id}/${index + 1}`) ?? []).sort((a, b) => a.number - b.number),
+        levels:
+          file.levelsFrom === undefined
+            ? levelsOf(id, index + 1)
+            : borrowLevels(id, file, files, levelsOf, index + 1),
       })),
     }))
     .sort((a, b) => a.file.position - b.file.position)
+}
+
+/**
+ * The levels of a skill of the pack that `file.levelsFrom` names, under this pack's own ids, so
+ * that playing them here counts here, as the original's Hints & Solutions packs did.
+ */
+function borrowLevels(
+  id: string,
+  file: PackFile,
+  files: ReadonlyMap<string, PackFile>,
+  levelsOf: (pack: string, skill: number) => LevelEntry[],
+  skill: number,
+): LevelEntry[] {
+  const path = `/packs/${id}/pack.json`
+  const from = file.levelsFrom ?? ''
+  const source = files.get(from)
+  if (source === undefined || source.levelsFrom !== undefined) {
+    throw new ContentError(path, [`levelsFrom: ${from} is no pack with levels of its own`])
+  }
+  if (source.skills.length !== file.skills.length) {
+    throw new ContentError(path, [
+      `skills: ${from} has ${source.skills.length} skills, this pack ${file.skills.length}`,
+    ])
+  }
+  if (levelsOf(id, skill).length > 0) {
+    throw new ContentError(path, ['has level files of its own besides levelsFrom'])
+  }
+  return levelsOf(from, skill).map((borrowed) => {
+    const place = {
+      id: `${id}/${skill}/${borrowed.number}`,
+      pack: id,
+      skill,
+      number: borrowed.number,
+    }
+    return { ...place, load: async () => ({ ...place, file: (await borrowed.load()).file }) }
+  })
 }
 
 /** The built-in packs under packs/: pack.json files right away, levels when they are needed. */

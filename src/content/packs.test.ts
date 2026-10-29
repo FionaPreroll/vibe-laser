@@ -115,6 +115,47 @@ describe('buildPacks', () => {
     expect(at('/packs/y/levels/skill1/level_001.json')).toThrow(/outside the skills/)
   })
 
+  it('borrows the levels of another pack under ids of its own', async () => {
+    const hints = { ...manifest(3, 2), showsSolutions: true, levelsFrom: 'a' }
+    const packs = buildPacks(
+      { '/packs/a/pack.json': manifest(1, 2), '/packs/a-hints/pack.json': hints },
+      {
+        '/packs/a/levels/skill1/level_001.json': async () => level,
+        '/packs/a/levels/skill2/level_004.json': async () => level,
+      },
+    )
+    const borrowed = packs[1]?.skills.map((skill) => skill.levels.map((entry) => entry.id))
+    expect(borrowed).toEqual([['a-hints/1/1'], ['a-hints/2/4']])
+    const loaded = await packs[1]?.skills[1]?.levels[0]?.load()
+    expect([loaded?.id, loaded?.pack, loaded?.file.name.en]).toEqual([
+      'a-hints/2/4',
+      'a-hints',
+      'L',
+    ])
+  })
+
+  it('refuses to borrow from a pack that is missing, borrows itself, or has other skills', () => {
+    const build =
+      (extra: Record<string, unknown>, levels: Record<string, () => Promise<unknown>> = {}) =>
+      () =>
+        buildPacks(
+          {
+            '/packs/a/pack.json': manifest(1, 2),
+            '/packs/b/pack.json': { ...manifest(2, 2), levelsFrom: 'a' },
+            '/packs/c/pack.json': { ...manifest(3, 2), ...extra },
+          },
+          levels,
+        )
+    expect(build({ levelsFrom: 'z' })).toThrow(/levelsFrom: z is no pack with levels of its own/)
+    expect(build({ levelsFrom: 'b' })).toThrow(/levelsFrom: b is no pack with levels of its own/)
+    expect(build({ ...manifest(3, 1), levelsFrom: 'a' })).toThrow(
+      /skills: a has 2 skills, this pack 1/,
+    )
+    expect(
+      build({ levelsFrom: 'a' }, { '/packs/c/levels/skill1/level_001.json': async () => level }),
+    ).toThrow(/level files of its own/)
+  })
+
   it('reports every problem of a level file when it loads', async () => {
     const [pack] = buildPacks(
       { '/packs/x/pack.json': manifest(1) },
