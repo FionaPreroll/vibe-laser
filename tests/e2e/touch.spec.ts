@@ -62,3 +62,16 @@ test('asks to turn a phone held upright', async ({ page }) => {
   await page.setViewportSize({ width: 915, height: 412 })
   await expect(page.getByRole('heading', { name: 'Turn your phone' })).toBeHidden()
 })
+
+test('puts the button bar left of the board for left hands', async ({ page }) => {
+  await page.goto('./#/play/tutorial/1/1')
+  await page.getByRole('button', { name: 'Menu' }).click()
+  await page.getByRole('button', { name: 'Settings' }).click()
+  await page.getByLabel('Buttons on the left, for left hands').check()
+  await page.getByRole('button', { name: 'Close' }).click()
+  await boardReady(page)
+  const board = await page.locator('.board').boundingBox()
+  const bar = await page.getByRole('toolbar').boundingBox()
+  if (board === null || bar === null) throw new Error('board or button bar not shown')
+  expect(bar.x + bar.width).toBeLessThanOrEqual(board.x)
+})

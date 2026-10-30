@@ -252,6 +252,7 @@ describe('SettingsDialog', () => {
       fireEvent.click(colors)
       fireEvent.click(preview)
       fireEvent.change(look, { target: { value: 'neon' } })
+      fireEvent.click(screen.getByLabelText('Buttons on the left, for left hands'))
     })
     expect(book.active.value.settings).toEqual({
       soundVolume: 0.3,
@@ -261,6 +262,7 @@ describe('SettingsDialog', () => {
       art: 'neon',
       beamPreview: false,
       vibration: true,
+      leftHanded: true,
     })
     expect(motion.checked).toBe(true)
     expect(screen.getByLabelText('Language')).toBeTruthy()

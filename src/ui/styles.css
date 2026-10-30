@@ -1586,6 +1586,30 @@ button.link {
     left: auto;
     transform: none;
   }
+
+  /* Left hands: the buttons go to the left of the board, and the dialogs to its right. */
+  .left-handed .play-area {
+    flex-direction: row-reverse;
+  }
+
+  .left-handed .play-area .hud {
+    padding: 8px 10px 8px 16px;
+    border-right: 1px solid var(--line);
+    border-left: 0;
+  }
+
+  .left-handed .play-area .stage {
+    padding-right: 16px;
+    padding-left: 8px;
+  }
+
+  .left-handed .dialog-backdrop {
+    padding: 12px 12px 12px calc(var(--side-hud) + 12px);
+  }
+
+  .left-handed .end-reopen {
+    right: 12px;
+  }
 }
 
 :root {

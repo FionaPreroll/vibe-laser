@@ -154,7 +154,7 @@ export function App({ store, audio }: Props) {
   const closeOverlay = () => setOverlay(undefined)
 
   return (
-    <div class="shell">
+    <div class={book.active.value.settings.leftHanded ? 'shell left-handed' : 'shell'}>
       <header class="top-bar">
         <a class="title" href="#/">
           <h1>{t('appTitle')}</h1>
