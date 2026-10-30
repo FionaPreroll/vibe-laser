@@ -7,7 +7,7 @@ import { findLevel } from '../content/packs'
 import { createPuzzle, itemById, type Place, type Puzzle } from '../core/level'
 import { parseBoard, parsePiece } from '../core/notation'
 import { GameSession } from '../game/session'
-import { mountBoard } from './board'
+import { LONG_PRESS_MS, mountBoard } from './board'
 import { BoardController } from './controller'
 import { beamPreview, colorBlind } from './display'
 import { placeCenter } from './layout'
@@ -280,6 +280,31 @@ describe('mountBoard', () => {
     expect(itemById(controller.session.state.value.puzzle, MIRROR)?.place).toEqual(B6)
     tap(B6)
     expect(controller.session.state.value.phase).toBe('solved')
+  })
+
+  it('turns a piece right when a finger rests on it, and only once', async () => {
+    vi.useFakeTimers()
+    try {
+      const { controller, scene, screenAt, finger } = await mount()
+      const rotation = () => itemById(controller.session.state.value.puzzle, MIRROR)?.piece.rotation
+      scene.emit('pointerdown', finger(1, screenAt(SLOT)))
+      vi.advanceTimersByTime(LONG_PRESS_MS - 1)
+      expect(rotation()).toBe(0)
+      vi.advanceTimersByTime(1)
+      expect(rotation()).toBe(1)
+      scene.emit('pointerup', finger(1, screenAt(SLOT)))
+      expect(rotation()).toBe(1)
+      expect(controller.selected.value).toBe(MIRROR)
+
+      // A finger that sets off dragging turns nothing.
+      scene.emit('pointerdown', finger(1, screenAt(SLOT)))
+      scene.emit('globalpointermove', finger(1, screenAt(SLOT, 20)))
+      vi.advanceTimersByTime(LONG_PRESS_MS)
+      scene.emit('pointerup', finger(1, screenAt(SLOT, 20)))
+      expect(rotation()).toBe(1)
+    } finally {
+      vi.useRealTimers()
+    }
   })
 
   it('lets a finger wobble more than a mouse before it drags', async () => {
