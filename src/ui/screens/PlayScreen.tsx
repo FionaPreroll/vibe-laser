@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from 'preact/hooks'
 import { listen, type Speaker } from '../../audio/director'
 import { puzzleOf, rulesOf } from '../../content/level'
 import { findLevel, type Level, nextUnsolved } from '../../content/packs'
+import { parOf } from '../../content/solution'
 import { GameSession } from '../../game/session'
 import { locale, t } from '../../i18n'
 import type { ProfileBook } from '../../persistence/profiles'
@@ -83,6 +84,14 @@ export function PlayScreen({ level: id, book, speaker, paused, onHelp }: Props) 
   useEffect(() => {
     if (found !== undefined) void book.markPlayed(id)
   }, [book, id, found])
+  // With the solution at hand, par means nothing, as best does not.
+  const par = useMemo(
+    () =>
+      loaded !== undefined && 'level' in loaded && !found?.pack.file.showsSolutions
+        ? parOf(loaded.level.file, found?.pack.file.rules)
+        : undefined,
+    [loaded, found?.pack],
+  )
   const reducedMotion = book.active.value.settings.reducedMotion
   useEffect(() => {
     if (controller === undefined) return
@@ -137,6 +146,7 @@ export function PlayScreen({ level: id, book, speaker, paused, onHelp }: Props) 
           onExit={toLevels}
           onHelp={onHelp}
           onNext={next && (() => navigate({ name: 'play', level: next.id }))}
+          par={par}
         />
       </div>
       {phase === 'solved' && (
@@ -144,7 +154,7 @@ export function PlayScreen({ level: id, book, speaker, paused, onHelp }: Props) 
           onNext={next && (() => navigate({ name: 'play', level: next.id }))}
           onLevels={toLevels}
           onReplay={restart}
-          record={record}
+          record={record && { ...record, par }}
         />
       )}
       {phase === 'failed' && <FailedDialog onRestart={restart} onLevels={toLevels} />}
