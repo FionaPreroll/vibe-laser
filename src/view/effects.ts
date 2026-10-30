@@ -19,6 +19,9 @@ const BLAST = new GraphicsContext()
   .circle(0, 0, CELL / 7)
   .fill(0xffffff)
 
+const SPARKS = 14
+const SPARK_COLORS = [0xff3b3b, 0x2dff5f, 0x3d6bff, 0xffd166, 0xffffff] as const
+
 /** Short-lived animations above the board: blasts, shots and little bursts. */
 export class EffectLayer extends Container {
   readonly #effects: Effect[] = []
@@ -71,6 +74,30 @@ export class EffectLayer extends Container {
       ring.scale.set(0.6 + progress)
       ring.alpha = 1 - progress
     })
+  }
+
+  /**
+   * Sparks flying up and out from a spinning coin, in the colors of light, when the level is
+   * solved. With less motion there are none.
+   */
+  celebrate(at: Point): void {
+    if (this.reducedMotion) return
+    for (let index = 0; index < SPARKS; index++) {
+      const angle = (index / SPARKS) * Math.PI * 2 + Math.random() * 0.4
+      const speed = CELL * (0.9 + Math.random() * 0.8)
+      const color = SPARK_COLORS[index % SPARK_COLORS.length] ?? 0xffffff
+      const view = new Graphics().circle(0, 0, 4).fill(color)
+      view.blendMode = 'add'
+      this.#start(view, at, 0.9 + Math.random() * 0.3, (spark, progress) => {
+        const travel = speed * progress
+        spark.position.set(
+          at.x + Math.cos(angle) * travel,
+          // A little gravity pulls them down as they slow.
+          at.y + Math.sin(angle) * travel + CELL * 0.8 * progress * progress,
+        )
+        spark.alpha = 1 - progress
+      })
+    }
   }
 
   animate(deltaSeconds: number): void {

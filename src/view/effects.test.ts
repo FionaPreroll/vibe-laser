@@ -55,4 +55,15 @@ describe('EffectLayer', () => {
     effects.animate(0.2)
     expect(shot?.alpha).toBeLessThan(1)
   })
+
+  it('throws sparks over a solved coin, unless motion is reduced', () => {
+    const effects = new EffectLayer()
+    effects.celebrate(at(4))
+    expect(effects.playing).toBeGreaterThan(5)
+    effects.animate(2)
+    expect(effects.playing).toBe(0)
+    effects.reducedMotion = true
+    effects.celebrate(at(4))
+    expect(effects.playing).toBe(0)
+  })
 })
