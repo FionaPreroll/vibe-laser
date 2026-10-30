@@ -6,6 +6,8 @@ export type Screen =
   | { readonly name: 'skills'; readonly pack: string }
   | { readonly name: 'levels'; readonly pack: string; readonly skill: number }
   | { readonly name: 'play'; readonly level: string }
+  /** A level from a link, carried in the address itself (see src/content/share.ts). */
+  | { readonly name: 'shared'; readonly data: string }
   | { readonly name: 'profiles' }
   | { readonly name: 'about' }
   | { readonly name: 'editor' }
@@ -35,6 +37,9 @@ export function parseHash(hash: string): Screen {
   if (first === 'editor') return parseEditor(parts.slice(1))
   if (first === 'play' && parts.length === 4 && /^\d+\/\d+$/.test(`${third}/${fourth}`)) {
     return { name: 'play', level: parts.slice(1).join('/') }
+  }
+  if (first === 'level' && second !== undefined && parts.length === 2) {
+    return { name: 'shared', data: second }
   }
   if (first === 'packs' && second !== undefined && parts.length === 2) {
     return { name: 'skills', pack: second }
@@ -66,6 +71,8 @@ export function formatHash(screen: Screen): string {
       return `#/packs/${screen.pack}/${screen.skill}`
     case 'play':
       return `#/play/${screen.level}`
+    case 'shared':
+      return `#/level/${screen.data}`
     case 'profiles':
     case 'about':
     case 'editor':

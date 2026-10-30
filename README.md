@@ -22,6 +22,7 @@ Play it at https://fionapreroll.github.io/vibe-laser/.
 - Color-blind mode writes the colors of pieces as letters, R, G and B, with a complex's inner color after a slash, as in R/GB, and draws each color in a beam as a line of its own, red, green and blue always in the same order across the beam. Help explains how colors mix.
 - Keyboard: focus the board with Tab. The arrow keys move a frame over the toolbox and the board, Enter picks a piece up and puts it down, Escape cancels, Q and E rotate, Ctrl+Z undoes and Ctrl+Y or Ctrl+Shift+Z redoes.
 - The level editor in the header makes levels of your own, in packs that appear in the pack list next to the built-in ones (see [Level editor](#level-editor)).
+- A level made in the editor can travel as a link: whoever opens it plays the level at once, and can keep it in a pack of their own, Shared levels.
 - Once it has loaded, the game also plays offline, and browsers can install it as an app. When a new version is out, a notice below the header offers to reload into it.
 
 ## Parts
@@ -201,7 +202,7 @@ The build bundles every `pack.json`, and each level file becomes a small file of
 
 ## Screens and saves
 
-- The address after `#` names the screen, so the browser's back button and bookmarks work: `#/` lists the packs, `#/packs/tutorial` the skills of a pack, `#/packs/tutorial/2` the levels of a skill, `#/play/tutorial/2/5` opens a level, and `#/profiles` and `#/about` the profiles and the version with the changelog. The editor lives at `#/editor`, a pack in it at `#/editor/<pack>` and a slot at `#/editor/<pack>/2/5`.
+- The address after `#` names the screen, so the browser's back button and bookmarks work: `#/` lists the packs, `#/packs/tutorial` the skills of a pack, `#/packs/tutorial/2` the levels of a skill, `#/play/tutorial/2/5` opens a level, and `#/profiles` and `#/about` the profiles and the version with the changelog. The editor lives at `#/editor`, a pack in it at `#/editor/<pack>` and a slot at `#/editor/<pack>/2/5`. `#/level/<data>` plays a level from a link.
 - Help and the settings open over the game and stop its clock while they are open.
 - A pack shows its skills, and its level lists, on a selection screen of its own, after the original's SelectSkillDLL: a laboratory console for packs without a choice, as Deluxe had, and six more. `selectScreenOf()` in `src/content/schema.ts` names a pack's screen, and `src/ui/styles.css` draws each one with CSS alone. The pack list shows every pack with a banner in its style, where the original had a picture of 440 × 50 pixels.
 - `ProfileBook` in `src/persistence/profiles.ts` keeps all profiles in one record in IndexedDB (database `vibe-laser`, store `saves`), through idb-keyval. The record carries a version, and `migrate()` is where later formats will convert older saves; a record it cannot read starts afresh. Changes are saved one after another, so the last one always wins.
@@ -221,7 +222,9 @@ The editor is a mode of the game: the same board with different input. Its logic
 - **Panels.** The selected piece's colors, direction or heading, and whether players may move and turn it; the level's names, intro for players, note and size; its problems; and its solution.
 - **Problems** show live, in the player's language, and keep a level from being saved: a missing name or coin, an intro in only one language, a color missing, light on an explosive or every coin spinning before the first move, or a solution that no longer works. A problem with a place selects it.
 - **Test** plays the level as players will. Solved, its moves can become the level's solution: where the player left each piece, in the order of the last moves, with waits where actors make timing matter, and without the steps the level did not need. The editor then replays the solution with every random seed the golden tests use.
-- **Slots.** Copy, Paste, Swap with the copied level, Clear and Delete work as in the original's level actions; Export and Import read and write single level files. Unsaved changes survive leaving the editor while the page stays open, and closing the page asks first.
+- **Slots.** Copy, Paste, Swap with the copied level, Clear and Delete work as in the original's level actions; Export and Import read and write single level files, and Share link copies a link that carries the level. Unsaved changes survive leaving the editor while the page stays open, and closing the page asks first.
+
+- **Links.** `src/content/share.ts` compresses a level file with `deflate-raw` and writes it in base64url, so the whole level travels in the address, `#/level/<data>`, and no server is needed. The pack's rules go into the level's own, as the link carries no pack; the author's note stays behind. Opened, the level is checked against the level schema and played on its own; Add to my packs puts it into the first free slot of a pack called Shared levels, made when it is first needed.
 
 ### Built-in levels
 

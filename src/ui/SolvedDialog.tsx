@@ -10,10 +10,13 @@ interface Props {
   readonly onNext: (() => void) | undefined
   readonly onLevels: () => void
   readonly onReplay: () => void
+  /** Instead of the usual text and the way back to the level selection. */
+  readonly text?: string
+  readonly levelsLabel?: string
 }
 
 /** Shown a moment after every coin spins; the board stays locked behind it. */
-export function SolvedDialog({ onNext, onLevels, onReplay }: Props) {
+export function SolvedDialog({ onNext, onLevels, onReplay, text, levelsLabel }: Props) {
   const first = useRef<HTMLButtonElement>(null)
   const shown = useAfter(SOLVED_PAUSE_MS)
   useEffect(() => {
@@ -25,7 +28,7 @@ export function SolvedDialog({ onNext, onLevels, onReplay }: Props) {
     <div class="dialog-backdrop">
       <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="solved-title">
         <h2 id="solved-title">{t('solvedTitle')}</h2>
-        <p>{onNext ? t('solvedText') : t('packSolved')}</p>
+        <p>{text ?? (onNext ? t('solvedText') : t('packSolved'))}</p>
         <div class="dialog-buttons">
           {onNext && (
             <button type="button" class="primary" ref={first} onClick={onNext}>
@@ -33,7 +36,7 @@ export function SolvedDialog({ onNext, onLevels, onReplay }: Props) {
             </button>
           )}
           <button type="button" ref={onNext ? undefined : first} onClick={onLevels}>
-            {t('levelSelection')}
+            {levelsLabel ?? t('levelSelection')}
           </button>
           <button type="button" onClick={onReplay}>
             {t('playAgain')}

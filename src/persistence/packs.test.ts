@@ -31,6 +31,18 @@ async function shelf(store = memoryStore()) {
 }
 
 describe('PackShelf', () => {
+  it('adds a level in the first free slot, skill by skill, until the pack is full', async () => {
+    const packs = await shelf()
+    await packs.create(PACK)
+    await packs.saveLevel('my-1', 1, 1, LEVEL)
+    expect(await packs.addLevel('my-1', LEVEL)).toEqual({ skill: 1, slot: 2 })
+    for (let slot = 3; slot <= 30; slot++) await packs.saveLevel('my-1', 1, slot, LEVEL)
+    expect(await packs.addLevel('my-1', LEVEL)).toEqual({ skill: 2, slot: 1 })
+    for (let slot = 2; slot <= 30; slot++) await packs.saveLevel('my-1', 2, slot, LEVEL)
+    expect(await packs.addLevel('my-1', LEVEL)).toBeUndefined()
+    await expect(packs.addLevel('my-9', LEVEL)).rejects.toThrow(RangeError)
+  })
+
   it('starts empty and keeps packs and levels across openings', async () => {
     const store = memoryStore()
     const packs = await shelf(store)

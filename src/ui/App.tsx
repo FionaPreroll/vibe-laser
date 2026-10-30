@@ -18,6 +18,7 @@ import { LevelsScreen } from './screens/LevelsScreen'
 import { PacksScreen } from './screens/PacksScreen'
 import { PlayScreen } from './screens/PlayScreen'
 import { ProfilesScreen } from './screens/ProfilesScreen'
+import { SharedScreen } from './screens/SharedScreen'
 import { SkillsScreen } from './screens/SkillsScreen'
 import { UpdateNotice } from './UpdateNotice'
 
@@ -177,7 +178,13 @@ export function App({ store, audio }: Props) {
       </header>
       {opened.blocked && <p class="notice">{t('storageBlocked')}</p>}
       <UpdateNotice />
-      <main class={current.name === 'play' || current.name === 'editLevel' ? 'play' : 'menu'}>
+      <main
+        class={
+          current.name === 'play' || current.name === 'shared' || current.name === 'editLevel'
+            ? 'play'
+            : 'menu'
+        }
+      >
         {current.name === 'packs' && <PacksScreen solved={solved} />}
         {current.name === 'skills' && (
           <SkillsScreen pack={current.pack} solved={solved} onHelp={() => setOverlay('help')} />
@@ -193,6 +200,17 @@ export function App({ store, audio }: Props) {
             book={book}
             speaker={sound}
             paused={overlay !== undefined}
+            onHelp={() => setOverlay('help')}
+          />
+        )}
+        {current.name === 'shared' && shelf && (
+          <SharedScreen
+            key={current.data}
+            data={current.data}
+            shelf={shelf}
+            speaker={sound}
+            paused={overlay !== undefined}
+            reducedMotion={book.active.value.settings.reducedMotion}
             onHelp={() => setOverlay('help')}
           />
         )}

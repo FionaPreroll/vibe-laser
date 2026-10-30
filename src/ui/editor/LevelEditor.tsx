@@ -2,12 +2,13 @@ import { useEffect, useMemo, useRef, useState } from 'preact/hooks'
 import type { Speaker } from '../../audio/director'
 import { SLOTS } from '../../content/packs'
 import { type LevelFile, levelSchema } from '../../content/schema'
+import { encodeLevel } from '../../content/share'
 import { EditorController } from '../../editor/controller'
 import { locale, t } from '../../i18n'
 import { type PackShelf, slotOf } from '../../persistence/packs'
 import { downloadFile } from '../download'
 import { FileButton } from '../FileButton'
-import { navigate } from '../router'
+import { formatHash, navigate } from '../router'
 import { Missing } from '../screens/SkillsScreen'
 import { clipboard, drafts } from './clipboard'
 import { EditorCanvas } from './EditorCanvas'
@@ -76,7 +77,7 @@ interface WorkbenchProps extends Omit<Props, 'pack' | 'shelf'> {
   readonly saved: LevelFile | undefined
 }
 
-type Status = 'idle' | 'saved' | 'failed' | 'importFailed' | 'restored'
+type Status = 'idle' | 'saved' | 'failed' | 'importFailed' | 'restored' | 'shared' | 'shareFailed'
 
 function Workbench({ source, skill, slot, saved, speaker, paused, onHelp }: WorkbenchProps) {
   const key = `${source.id}/${skill}/${slot}`
@@ -169,6 +170,25 @@ function Workbench({ source, skill, slot, saved, speaker, paused, onHelp }: Work
       setStatus('failed')
     }
   }
+  const share = async () => {
+    try {
+      const level = editor.finished()
+      // The pack's rules travel with the level, as the link carries no pack.
+      const rules = { ...source.file.rules, ...level.rules }
+      const data = await encodeLevel(Object.keys(rules).length > 0 ? { ...level, rules } : level)
+      const url = new URL(location.href)
+      url.hash = formatHash({ name: 'shared', data })
+      try {
+        await navigator.clipboard.writeText(url.href)
+        setStatus('shared')
+      } catch {
+        prompt(t('shareLevelPrompt'), url.href)
+      }
+    } catch (error) {
+      console.error(error)
+      setStatus('shareFailed')
+    }
+  }
   const importFile = async (file: File) => {
     try {
       const parsed = levelSchema.safeParse(JSON.parse(await file.text()))
@@ -189,6 +209,8 @@ function Workbench({ source, skill, slot, saved, speaker, paused, onHelp }: Work
     failed: t('savingFailed'),
     importFailed: t('importLevelFailed'),
     restored: t('draftBack'),
+    shared: t('shareLevelCopied'),
+    shareFailed: t('shareLevelFailed'),
   }[status]
 
   return (
@@ -270,6 +292,13 @@ function Workbench({ source, skill, slot, saved, speaker, paused, onHelp }: Work
           }
         >
           {t('exportLevel')}
+        </button>
+        <button
+          type="button"
+          disabled={testing || !editor.canSave.value}
+          onClick={() => void share()}
+        >
+          {t('shareLevel')}
         </button>
         <FileButton
           label={t('importLevel')}
