@@ -113,6 +113,8 @@ export async function mountBoard(
     labels.show(puzzle, geometry, colorBlind.value, carried)
     beams.show(preview?.light ?? light, geometry, colorBlind.value)
     beams.alpha = preview === undefined ? 1 : PREVIEW_ALPHA
+    // Browser tests read whether the beams preview a move, and how many explosives it would light.
+    host.dataset.preview = preview === undefined ? 'off' : String(preview.ignites.length)
 
     overlay.clear()
     const frame = frameStyle(phase, stable)
