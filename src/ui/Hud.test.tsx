@@ -8,6 +8,7 @@ import { createPuzzle, itemById } from '../core/level'
 import { parseBoard } from '../core/notation'
 import { GameSession } from '../game/session'
 import { locale } from '../i18n'
+import { bindings, DEFAULT_BINDINGS, gamepadConnected, resolveBindings } from '../view/bindings'
 import { BoardController } from '../view/controller'
 import { Hud } from './Hud'
 import { touchScreen } from './pointer'
@@ -224,5 +225,49 @@ describe('Hud', () => {
     })
     fireEvent.click(button('Next unsolved level'))
     expect(onNext).toHaveBeenCalledOnce()
+  })
+
+  it('names the keys of its buttons, and its controller buttons once a controller is there', async () => {
+    const controller = await controllerFor('tutorial/1/1')
+    renderHud(controller)
+    expect(button('Undo').title).toBe('Undo (Ctrl+Z)')
+    expect(button('Rotate left').title).toBe('Rotate left (Q)')
+    expect(button('Exit').title).toBe('Exit')
+    const hint = () => document.getElementById('controls-hint')?.textContent
+    expect(hint()).toContain('Keyboard: ↑ ← ↓ → to move, Enter to pick up and drop')
+    await act(() => {
+      gamepadConnected.value = true
+      bindings.value = resolveBindings({ keys: { undo: ['U'] } })
+      locale.value = 'de'
+    })
+    try {
+      expect(button('Rückgängig').title).toBe('Rückgängig (U / X)')
+      expect(button('Verlassen').title).toBe('Verlassen (Back)')
+      expect(hint()).toContain('U zum Rückgängigmachen')
+    } finally {
+      gamepadConnected.value = false
+      bindings.value = DEFAULT_BINDINGS
+    }
+  })
+
+  it('lends help, leaving and the next level to keys and controllers', async () => {
+    const level = await load('tutorial/1/1')
+    const controller = new BoardController(new GameSession(puzzleOf(level.file)))
+    const onExit = vi.fn()
+    const onHelp = vi.fn()
+    const onNext = vi.fn()
+    const { unmount } = render(
+      <Hud controller={controller} onExit={onExit} onHelp={onHelp} onNext={onNext} />,
+    )
+    expect(controller.perform('next')).toBe(false)
+    controller.perform('help')
+    controller.perform('exit')
+    await act(() => {
+      playSolution(controller.session, level.file)
+    })
+    expect(controller.perform('next')).toBe(true)
+    expect([onHelp, onExit, onNext].map((each) => each.mock.calls.length)).toEqual([1, 1, 1])
+    await act(() => unmount())
+    expect(controller.perform('help')).toBe(false)
   })
 })

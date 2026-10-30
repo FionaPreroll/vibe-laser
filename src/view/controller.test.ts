@@ -6,6 +6,7 @@ import { BoardController } from './controller'
 
 const PLAIN = { ctrl: false, shift: false }
 const CTRL = { ctrl: true, shift: false }
+const MIRROR_ID = 2
 
 /** The first tutorial level: a mirror in B6, turned to the north-west, lights the coin. */
 function firstLevel(): BoardController {
@@ -178,5 +179,21 @@ describe('BoardController for the color dots', () => {
     expect(kind(controller)).toBe('laser')
     controller.tap(SLOT)
     expect(kind(controller)).toBe('mirror')
+  })
+})
+
+describe('BoardController actions', () => {
+  it('restarts, cleans up and speeds up, as the HUD buttons do', () => {
+    const controller = firstLevel()
+    controller.move(MIRROR_ID, { area: 'board', cell: 0 })
+    expect(controller.perform('cleanup')).toBe(true)
+    expect(controller.perform('cleanup')).toBe(false)
+    controller.perform('pickUp')
+    expect(controller.lifted.value).toBe(MIRROR_ID)
+    expect(controller.perform('restart')).toBe(true)
+    expect([controller.lifted.value, controller.session.moves.value]).toEqual([undefined, 0])
+    controller.perform('speed')
+    expect(controller.speed.value).toBe(2)
+    expect(controller.perform('help')).toBe(false)
   })
 })

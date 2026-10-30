@@ -5,9 +5,11 @@ import { type Color, PRIMARIES, type Primary } from '../core/color'
 import type { Puzzle } from '../core/level'
 import { STABLE_TICKS } from '../game/session'
 import { type MessageKey, t } from '../i18n'
+import type { Action } from '../view/bindings'
 import { type BoardController, nextSpeed } from '../view/controller'
 import { Icon, type IconName } from './icons'
 import { touchScreen } from './pointer'
+import { controlsText, withShortcut } from './shortcuts'
 
 const PRIMARY_NAMES: Readonly<Record<Primary, MessageKey>> = { 1: 'red', 2: 'green', 4: 'blue' }
 const PRIMARY_LETTERS: Readonly<Record<Primary, string>> = { 1: 'R', 2: 'G', 4: 'B' }
@@ -26,6 +28,18 @@ interface Props {
 export function Hud({ controller, onExit, onHelp, onNext, par }: Props) {
   const { session } = controller
   const { phase, stable, puzzle } = session.state.value
+  const solvedNext = phase === 'solved' ? onNext : undefined
+  useEffect(() => {
+    const { commands } = controller
+    commands.set('help', onHelp)
+    commands.set('exit', onExit)
+    if (solvedNext) commands.set('next', solvedNext)
+    return () => {
+      commands.delete('help')
+      commands.delete('exit')
+      commands.delete('next')
+    }
+  }, [controller, onHelp, onExit, solvedNext])
   return (
     <div class="hud">
       {phase === 'stabilizing' && (
@@ -36,37 +50,53 @@ export function Hud({ controller, onExit, onHelp, onNext, par }: Props) {
       )}
       <EatenMirrorNotice controller={controller} />
       <div class="hud-buttons" role="toolbar" aria-label={t('actions')}>
-        {phase === 'solved' && onNext && (
-          <HudButton icon="next" label={t('nextUnsolved')} primary onClick={onNext} />
+        {solvedNext && (
+          <HudButton
+            icon="next"
+            label={t('nextUnsolved')}
+            action="next"
+            primary
+            onClick={solvedNext}
+          />
         )}
-        <HudButton icon="exit" label={t('exit')} onClick={onExit} />
-        <HudButton icon="restart" label={t('restart')} onClick={() => session.restart()} />
+        <HudButton icon="exit" label={t('exit')} action="exit" onClick={onExit} />
+        <HudButton
+          icon="restart"
+          label={t('restart')}
+          action="restart"
+          onClick={() => session.restart()}
+        />
         <HudButton
           icon="cleanup"
+          action="cleanup"
           label={t('cleanup')}
           disabled={!session.canCleanup.value}
           onClick={() => session.cleanup()}
         />
         <HudButton
           icon="undo"
+          action="undo"
           label={t('undo')}
           disabled={!session.canUndo.value}
           onClick={() => session.undo()}
         />
         <HudButton
           icon="redo"
+          action="redo"
           label={t('redo')}
           disabled={!session.canRedo.value}
           onClick={() => session.redo()}
         />
         <HudButton
           icon="rotateLeft"
+          action="rotateLeft"
           label={t('rotateLeft')}
           disabled={!controller.canRotateSelected.value}
           onClick={() => controller.rotateSelected(-1)}
         />
         <HudButton
           icon="rotateRight"
+          action="rotateRight"
           label={t('rotateRight')}
           disabled={!controller.canRotateSelected.value}
           onClick={() => controller.rotateSelected(1)}
@@ -74,6 +104,7 @@ export function Hud({ controller, onExit, onHelp, onNext, par }: Props) {
         {hasActors(puzzle) && (
           <HudButton
             icon="fast"
+            action="speed"
             label={t('speedButton')}
             title={t('speed', { speed: controller.speed.value })}
             badge={`${controller.speed.value}×`}
@@ -83,7 +114,7 @@ export function Hud({ controller, onExit, onHelp, onNext, par }: Props) {
             }}
           />
         )}
-        <HudButton icon="help" label={t('help')} onClick={onHelp} />
+        <HudButton icon="help" label={t('help')} action="help" onClick={onHelp} />
         <span class="moves">
           {par === undefined
             ? t('movesCounter', { count: session.moves.value })
@@ -92,7 +123,7 @@ export function Hud({ controller, onExit, onHelp, onNext, par }: Props) {
         <ColorDots piece={controller.inspected.value} />
       </div>
       <p id="controls-hint" class="hint">
-        {t(touchScreen.value ? 'touchControls' : 'controls')}
+        {touchScreen.value ? t('touchControls') : controlsText()}
       </p>
     </div>
   )
@@ -110,6 +141,8 @@ interface ButtonProps {
   readonly pressed?: boolean
   /** The button the player most likely wants now. */
   readonly primary?: boolean
+  /** What a key or controller button does the same, named in the tooltip. */
+  readonly action?: Action
   readonly onClick: () => void
 }
 
@@ -122,13 +155,15 @@ export function HudButton({
   badge,
   pressed,
   primary,
+  action,
   onClick,
 }: ButtonProps) {
+  const tip = title ?? label
   return (
     <button
       type="button"
       class={primary ? 'hud-button primary' : 'hud-button'}
-      title={title ?? label}
+      title={action ? withShortcut(tip, action) : tip}
       disabled={disabled}
       aria-pressed={pressed}
       onClick={onClick}

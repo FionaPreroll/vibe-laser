@@ -21,6 +21,7 @@ All changes players can notice are listed here. The format follows [Keep a Chang
 - Once a level is solved, the button bar offers the next unsolved level too, so it stays at hand after the dialog is put aside.
 - Par: each level counts the moves of its known solution as a target. The button bar shows it next to your moves, the solved dialog says whether you made it, and the level list gives a star to levels solved within par.
 - A solved level throws colored sparks over its spinning coins. With less motion in the settings, there are none.
+- Keys and a game controller: the buttons of the bar name their keys in their tooltips, and new keys restart (R), clean up (C), change the speed (F), open help (H) and go on to the next level (N). WASD moves the frame too. A controller plays with the D-pad or left stick, A to pick up and drop, the shoulder buttons to rotate, X and Y to undo and redo. In the settings, under Keys and controller, every key and button can be changed.
 
 ### Changed
 
