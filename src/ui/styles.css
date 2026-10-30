@@ -296,6 +296,61 @@ button.primary {
   white-space: nowrap;
 }
 
+.menu-toggle {
+  display: none;
+  align-items: center;
+  gap: 6px;
+}
+
+/*
+ * Small screens and phones on their side: the header's buttons go behind a menu button, and open
+ * as a list below it.
+ */
+@media (max-width: 860px), (orientation: landscape) and (max-height: 500px),
+  (pointer: coarse) and (max-width: 1100px) {
+  .top-bar {
+    position: relative;
+    flex-wrap: nowrap;
+  }
+
+  .menu-toggle {
+    display: inline-flex;
+  }
+
+  .top-menu .top-controls {
+    display: none;
+  }
+
+  .top-menu .top-controls.open {
+    position: absolute;
+    top: calc(100% + 4px);
+    right: 12px;
+    z-index: 5;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 6px;
+    max-height: calc(100vh - 64px);
+    overflow-y: auto;
+    padding: 10px;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    background: var(--surface);
+    box-shadow: 0 12px 40px rgb(0 0 0 / 0.5);
+  }
+
+  .top-menu .top-controls.open button {
+    text-align: left;
+  }
+
+  .top-menu .language > span {
+    position: static;
+    width: auto;
+    height: auto;
+    clip-path: none;
+  }
+}
+
 .notice {
   margin: 0;
   padding: 8px 16px;

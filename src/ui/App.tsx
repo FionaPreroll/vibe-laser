@@ -21,6 +21,7 @@ import { PlayScreen } from './screens/PlayScreen'
 import { ProfilesScreen } from './screens/ProfilesScreen'
 import { SharedScreen } from './screens/SharedScreen'
 import { SkillsScreen } from './screens/SkillsScreen'
+import { TopMenu } from './TopMenu'
 import { UpdateNotice } from './UpdateNotice'
 
 /** The game's sound: effects for the session, music, and volumes from the settings. */
@@ -158,7 +159,7 @@ export function App({ store, audio }: Props) {
           <h1>{t('appTitle')}</h1>
           <p class="tagline">{t('tagline')}</p>
         </a>
-        <nav class="top-controls">
+        <TopMenu>
           <button type="button" onClick={() => navigate({ name: 'profiles' })}>
             {t('profileButton', { name: book.active.value.name })}
           </button>
@@ -176,7 +177,7 @@ export function App({ store, audio }: Props) {
           </button>
           <FullScreenButton />
           <LanguageSwitch />
-        </nav>
+        </TopMenu>
       </header>
       {opened.blocked && <p class="notice">{t('storageBlocked')}</p>}
       <UpdateNotice />
