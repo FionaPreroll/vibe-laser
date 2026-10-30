@@ -7,7 +7,7 @@ import { findLevel } from '../content/packs'
 import { createPuzzle, itemById, type Place, type Puzzle } from '../core/level'
 import { parseBoard, parsePiece } from '../core/notation'
 import { GameSession } from '../game/session'
-import { LONG_PRESS_MS, mountBoard } from './board'
+import { LONG_PRESS_MS, mountBoard, TOUCH_LIFT } from './board'
 import { BoardController } from './controller'
 import { beamPreview, colorBlind } from './display'
 import { placeCenter } from './layout'
@@ -316,10 +316,23 @@ describe('mountBoard', () => {
     controller.select(undefined)
     scene.emit('pointerdown', finger(1, screenAt(SLOT)))
     scene.emit('globalpointermove', finger(1, screenAt(SLOT, 20)))
-    scene.emit('globalpointermove', finger(1, screenAt(B6)))
-    scene.emit('pointerup', finger(1, screenAt(B6)))
+    // The piece floats above the finger, so the finger goes down below where it should land.
+    const below = screenAt(B6)
+    below.y += TOUCH_LIFT
+    scene.emit('globalpointermove', finger(1, below))
+    scene.emit('pointerup', finger(1, below))
     expect(itemById(controller.session.state.value.puzzle, MIRROR)?.place).toEqual(B6)
     expect(controller.selected.value).toBe(MIRROR)
+  })
+
+  it('puts a piece carried by a finger down above the finger, not under it', async () => {
+    const { controller, scene, screenAt, finger } = await mount()
+    scene.emit('pointerdown', finger(1, screenAt(SLOT)))
+    scene.emit('globalpointermove', finger(1, screenAt(SLOT, 20)))
+    const near = screenAt(B6)
+    scene.emit('globalpointermove', finger(1, near))
+    scene.emit('pointerup', finger(1, near))
+    expect(itemById(controller.session.state.value.puzzle, MIRROR)?.place).not.toEqual(B6)
   })
 
   it('zooms with two fingers, and pans a zoomed board with one', async () => {

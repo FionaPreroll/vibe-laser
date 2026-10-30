@@ -15,6 +15,8 @@ const PREVIEW_ALPHA = 0.45
 /** Pointer travel in screen pixels before a press turns into a drag; fingers wobble more. */
 const DRAG_THRESHOLD = 6
 const TOUCH_DRAG_THRESHOLD = 12
+/** A piece dragged by a finger floats this many screen pixels above it, so the finger hides neither. */
+export const TOUCH_LIFT = 56
 /** A finger held this long on a piece, without moving, turns it right, as a right click does. */
 export const LONG_PRESS_MS = 450
 /** The frame around the board tells the phase: stable, blown up or solved. */
@@ -178,6 +180,15 @@ export async function mountBoard(
     }
   }
 
+  /**
+   * Where a piece carried by a finger at this screen point floats: above the finger, and less so
+   * near the bottom of the board's canvas, so the lowest row can still be reached.
+   */
+  const lifted = ({ x, y }: Point): Point => ({
+    x,
+    y: y - Math.max(0, Math.min(TOUCH_LIFT, stage.app.screen.height - y)),
+  })
+
   const cursorAt = (point: Point): string => {
     const place = placeAt(geometry, point)
     return cursorFor(place && itemAt(session.state.value.puzzle, place), session.canPlay.value)
@@ -276,8 +287,9 @@ export async function mountBoard(
       press.last = { x: event.global.x, y: event.global.y }
       return
     }
-    target = placeAt(geometry, local)
-    showGhost(item, local)
+    const carriedAt = press.touch ? scene.toLocal(lifted(event.global)) : local
+    target = placeAt(geometry, carriedAt)
+    showGhost(item, carriedAt)
     render()
   })
   const release = (event: FederatedPointerEvent) => {
@@ -292,7 +304,10 @@ export async function mountBoard(
     press = undefined
     stopLongPress()
     if (ended === undefined || ended.panning || ended.turned) return
-    const at = placeAt(geometry, scene.toLocal(event.global))
+    const at = placeAt(
+      geometry,
+      scene.toLocal(ended.dragging && ended.touch ? lifted(event.global) : event.global),
+    )
     if (ended.dragging) {
       target = undefined
       showGhost(undefined, undefined)
