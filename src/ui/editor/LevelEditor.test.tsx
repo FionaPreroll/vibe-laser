@@ -3,6 +3,7 @@ import { act, cleanup, fireEvent, render, screen, waitFor } from '@testing-libra
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { findLevel } from '../../content/packs'
 import type { LevelFile, PackFile } from '../../content/schema'
+import { decodeLevel } from '../../content/share'
 import type { EditorController } from '../../editor/controller'
 import { PackShelf } from '../../persistence/packs'
 import { memoryStore } from '../../persistence/store'
@@ -238,6 +239,25 @@ describe('LevelEditor', () => {
     })
     await waitFor(() => expect(editor.level.value.name.en).toBe('Imported'))
     expect(status()).toBe('Unsaved changes')
+  })
+
+  it('copies a link that carries the level, or offers it to copy by hand', async () => {
+    const writeText = vi.fn().mockResolvedValue(undefined)
+    vi.stubGlobal('navigator', { ...navigator, clipboard: { writeText } })
+    open()
+    await editorShown()
+    await click('Share link')
+    await waitFor(() => expect(status()).toBe('Link copied. Anyone who opens it plays this level.'))
+    const link = new URL(writeText.mock.lastCall?.[0] as string)
+    const data = link.hash.replace('#/level/', '')
+    expect(await decodeLevel(data)).toEqual(FIRST_LIGHT)
+
+    writeText.mockRejectedValue(new Error('not allowed'))
+    const prompt = vi.fn()
+    vi.stubGlobal('prompt', prompt)
+    await click('Share link')
+    await waitFor(() => expect(prompt).toHaveBeenCalled())
+    expect(prompt.mock.lastCall?.[1]).toBe(link.href)
   })
 
   it('asks before leaving unsaved changes, and keeps them when the page leaves the editor', async () => {

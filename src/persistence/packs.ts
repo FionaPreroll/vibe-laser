@@ -4,6 +4,9 @@ import { type LevelFile, levelSchema, type PackFile, packSchema } from '../conte
 import { SaveQueue } from './queue'
 import type { KeyValueStore } from './store'
 
+/** Levels per skill, as SLOTS in src/content/packs.ts. */
+const SLOTS = 30
+
 /** A level's slot in a pack, as "2/17": skill 2, level 17. */
 const slotKey = z.string().regex(/^[1-4]\/([1-9]|[12]\d|30)$/, 'expected a slot such as "2/17"')
 const levels = z.record(slotKey, levelSchema)
@@ -102,6 +105,27 @@ export class PackShelf {
       ...pack,
       levels: { ...pack.levels, [slotOf(skill, slot)]: level },
     }))
+  }
+
+  /**
+   * Puts a level into the first free slot of a pack, skill by skill, and says where it went;
+   * undefined when every slot is taken.
+   */
+  async addLevel(
+    id: string,
+    level: LevelFile,
+  ): Promise<{ readonly skill: number; readonly slot: number } | undefined> {
+    const pack = this.find(id)
+    if (pack === undefined) throw new RangeError(`There is no pack ${id}`)
+    for (let skill = 1; skill <= pack.pack.skills.length; skill++) {
+      for (let slot = 1; slot <= SLOTS; slot++) {
+        if (pack.levels[slotOf(skill, slot)] === undefined) {
+          await this.saveLevel(id, skill, slot, level)
+          return { skill, slot }
+        }
+      }
+    }
+    return undefined
   }
 
   async deleteLevel(id: string, skill: number, slot: number): Promise<void> {
