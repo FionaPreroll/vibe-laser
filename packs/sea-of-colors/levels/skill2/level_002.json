@@ -1,0 +1,55 @@
+{
+  "$schema": "../../../level.schema.json",
+  "version": 1,
+  "name": {
+    "en": "Two Turns",
+    "de": "Zwei Wandlungen"
+  },
+  "size": [7, 6],
+  "objects": [
+    {
+      "type": "coin",
+      "pos": "C1",
+      "rgb": "g"
+    },
+    {
+      "type": "coin",
+      "pos": "E1",
+      "rgb": "r"
+    },
+    {
+      "type": "laser",
+      "pos": "F3",
+      "rot": 6,
+      "rgb": "g"
+    }
+  ],
+  "toolbox": [
+    {
+      "type": "colorConverter",
+      "rot": 0,
+      "count": 2
+    },
+    {
+      "type": "mirror",
+      "rot": 0
+    }
+  ],
+  "solution": [
+    {
+      "piece": 2,
+      "pos": "F1",
+      "rot": 1
+    },
+    {
+      "piece": 0,
+      "pos": "D1",
+      "rot": 4
+    },
+    {
+      "piece": 1,
+      "pos": "F2",
+      "rot": 6
+    }
+  ]
+}

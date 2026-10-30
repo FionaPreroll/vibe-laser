@@ -1,0 +1,73 @@
+{
+  "$schema": "../../../level.schema.json",
+  "version": 1,
+  "name": {
+    "en": "Fine Mesh",
+    "de": "Feine Maschen"
+  },
+  "size": [8, 7],
+  "objects": [
+    {
+      "type": "coin",
+      "pos": "B6",
+      "rgb": "rg"
+    },
+    {
+      "type": "laser",
+      "pos": "D5",
+      "rot": 2,
+      "rgb": "rgb"
+    },
+    {
+      "type": "coin",
+      "pos": "F6",
+      "rgb": "b"
+    },
+    {
+      "type": "coin",
+      "pos": "G5",
+      "rgb": "b"
+    }
+  ],
+  "toolbox": [
+    {
+      "type": "filter",
+      "rgb": "rg"
+    },
+    {
+      "type": "polarizer",
+      "rot": 0,
+      "rgb": "b"
+    },
+    {
+      "type": "splitter",
+      "rot": 0
+    },
+    {
+      "type": "mirror",
+      "rot": 0
+    }
+  ],
+  "solution": [
+    {
+      "piece": 2,
+      "pos": "D6",
+      "rot": 6
+    },
+    {
+      "piece": 0,
+      "pos": "C6",
+      "rot": 0
+    },
+    {
+      "piece": 1,
+      "pos": "E6",
+      "rot": 4
+    },
+    {
+      "piece": 3,
+      "pos": "G6",
+      "rot": 7
+    }
+  ]
+}

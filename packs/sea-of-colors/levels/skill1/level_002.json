@@ -1,0 +1,55 @@
+{
+  "$schema": "../../../level.schema.json",
+  "version": 1,
+  "name": {
+    "en": "Rainbow Wake",
+    "de": "Regenbogen im Kielwasser"
+  },
+  "size": [7, 6],
+  "objects": [
+    {
+      "type": "laser",
+      "pos": "D1",
+      "rot": 4,
+      "rgb": "rgb"
+    },
+    {
+      "type": "coin",
+      "pos": "D4",
+      "rgb": "r"
+    },
+    {
+      "type": "coin",
+      "pos": "F3",
+      "rgb": "g"
+    }
+  ],
+  "toolbox": [
+    {
+      "type": "prism",
+      "rot": 0
+    },
+    {
+      "type": "mirror",
+      "rot": 0,
+      "count": 2
+    }
+  ],
+  "solution": [
+    {
+      "piece": 1,
+      "pos": "E1",
+      "rot": 1
+    },
+    {
+      "piece": 0,
+      "pos": "E2",
+      "rot": 2
+    },
+    {
+      "piece": 2,
+      "pos": "E4",
+      "rot": 7
+    }
+  ]
+}
