@@ -22,6 +22,7 @@ All changes players can notice are listed here. The format follows [Keep a Chang
 - The buttons of the bar below the board carry icons. Beside the board, on a phone or tablet on its side, only the icons show, so the board gets more room; their names appear as tooltips.
 - On small screens and on phones on their side, the header's buttons sit behind a Menu button and open as a list, instead of being squeezed into one row.
 - Help and the level Fuel Run now say where a ship must be to take a fuel cell aboard: on the cell just north of it, not on the fuel cell itself, which would explode.
+- A piece dragged with a finger floats a little above it, so the finger hides neither the piece nor where its light would go.
 
 ### Fixed
 
