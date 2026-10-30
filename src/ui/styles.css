@@ -30,6 +30,8 @@ body {
   display: flex;
   flex-direction: column;
   height: 100%;
+  /* Phones on their side keep the notch and the rounded corners out of the game. */
+  padding: 0 env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
 }
 
 .top-bar {
@@ -80,6 +82,9 @@ button {
 
 button {
   cursor: pointer;
+  /* Quick taps are taps, not a double tap that zooms the page. */
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
 
 button:hover:not(:disabled) {
@@ -124,6 +129,8 @@ button.primary {
 .hud {
   padding: 8px 16px 12px;
   border-top: 1px solid var(--line);
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 .hud-buttons {
@@ -238,6 +245,15 @@ button.primary {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
+}
+
+/* An end dialog put aside, to look at the board: this brings it back. */
+.end-reopen {
+  position: fixed;
+  bottom: 112px;
+  left: 50%;
+  transform: translateX(-50%);
+  box-shadow: 0 6px 24px rgb(0 0 0 / 0.5);
 }
 
 .title {
@@ -803,7 +819,15 @@ main.play {
   font-size: 0.9375rem;
 }
 
-.play .stage {
+/* The board and its button bar: one above the other, or side by side on a phone on its side. */
+.play-area {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.play-area .stage {
   flex: 1;
   min-height: 0;
   padding: 8px 16px 4px;
@@ -1258,12 +1282,6 @@ button.link {
   color: var(--text-quiet);
 }
 
-.level-editor > .stage {
-  flex: 1;
-  min-height: 0;
-  padding: 8px 16px 4px;
-}
-
 .colors-help {
   display: flex;
   flex-wrap: wrap;
@@ -1364,6 +1382,235 @@ button.link {
   .level-intro {
     font-size: 0.8125rem;
     line-height: 1.35;
+  }
+}
+
+/*
+ * Phones on their side, and tablets on theirs: the button bar moves to the right of the board, so
+ * the board gets the whole height, and the header stays on one line.
+ */
+@media (orientation: landscape) and (max-height: 500px),
+  (orientation: landscape) and (pointer: coarse) and (max-height: 1100px) {
+  .top-bar {
+    flex-wrap: nowrap;
+  }
+
+  .top-bar h1 {
+    white-space: nowrap;
+  }
+
+  .tagline {
+    display: none;
+  }
+
+  .top-controls {
+    flex-wrap: nowrap;
+    min-width: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .language > span {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  .play-area {
+    flex-direction: row;
+  }
+
+  .play-area .stage {
+    padding: 8px 8px 8px 16px;
+  }
+
+  .play-area .hud {
+    display: flex;
+    flex-direction: column;
+    width: var(--side-hud);
+    padding: 8px 16px 8px 10px;
+    overflow-y: auto;
+    border-top: 0;
+    border-left: 1px solid var(--line);
+  }
+
+  .play-area .hud-buttons {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-content: start;
+  }
+
+  .play-area .hud-buttons button {
+    padding: 8px 4px;
+    font-size: 0.9375rem;
+  }
+
+  .play-area .moves {
+    grid-column: 1 / -1;
+    margin: 4px 0 0;
+  }
+
+  .play-area .color-dots {
+    grid-column: 1 / -1;
+  }
+
+  .play-area .stability {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .play-area .stability progress {
+    width: 100%;
+  }
+
+  /* Beside the button bar, over the board's lower right, where it hides the least. */
+  .dialog-backdrop {
+    place-items: end;
+    padding: 12px calc(var(--side-hud) + 12px) 12px 12px;
+  }
+
+  .end-reopen {
+    right: calc(var(--side-hud) + 12px);
+    bottom: 12px;
+    left: auto;
+    transform: none;
+  }
+}
+
+:root {
+  --side-hud: 240px;
+}
+
+@media (orientation: landscape) and (max-height: 500px) {
+  :root {
+    --side-hud: 196px;
+  }
+
+  .top-bar {
+    padding: 6px 12px;
+  }
+
+  .top-controls button,
+  .language select {
+    padding: 4px 7px;
+    font-size: 0.8125rem;
+  }
+
+  .level-heading,
+  .shared-bar,
+  .solution-bar,
+  .editor-bar {
+    padding-top: 4px;
+  }
+
+  .level-heading {
+    font-size: 0.8125rem;
+  }
+
+  .play-area .stage {
+    padding: 4px 8px 6px 12px;
+  }
+
+  .play-area .hud {
+    padding: 6px 12px 8px 10px;
+  }
+
+  .play-area .hud-buttons button {
+    font-size: 0.8125rem;
+  }
+
+  .play-area .stability {
+    font-size: 0.75rem;
+  }
+
+  .dialog {
+    padding: 14px 18px;
+  }
+
+  .dialog p {
+    margin-bottom: 10px;
+  }
+
+  .modal {
+    max-height: calc(100% - 8px);
+  }
+
+  .modal-backdrop {
+    padding: 8px;
+  }
+
+  .modal-header {
+    padding: 10px 16px;
+  }
+}
+
+/* A phone held upright: the game asks to be turned on its side, as many phone games do. */
+.turn-notice {
+  display: none;
+}
+
+@media (orientation: portrait) and (max-width: 600px) and (pointer: coarse) {
+  .turn-notice {
+    position: fixed;
+    inset: 0;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 24px;
+    background: var(--background);
+    text-align: center;
+  }
+
+  .turn-notice h2 {
+    margin: 0;
+    font-size: 1.25rem;
+  }
+
+  .turn-notice p {
+    max-width: 32ch;
+    margin: 0 0 8px;
+    color: var(--text-quiet);
+    line-height: 1.45;
+  }
+
+  .turn-phone {
+    width: 96px;
+    height: 96px;
+    fill: none;
+    stroke: var(--accent);
+    stroke-width: 2.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .turn-phone rect {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: turn-phone 2.4s ease-in-out infinite;
+  }
+}
+
+@keyframes turn-phone {
+  0%,
+  25% {
+    transform: rotate(0deg);
+  }
+
+  55%,
+  100% {
+    transform: rotate(-90deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .turn-phone rect {
+    animation: none;
   }
 }
 

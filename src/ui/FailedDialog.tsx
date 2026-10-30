@@ -1,6 +1,5 @@
-import { useEffect, useRef } from 'preact/hooks'
 import { t } from '../i18n'
-import { useAfter } from './pause'
+import { EndDialog } from './EndDialog'
 
 /** Long enough to watch the last blast of the chain reaction fade. */
 const DELAY_MS = 900
@@ -14,27 +13,17 @@ interface Props {
 
 /** Shown once an explosion chain has ended; only a fresh start helps. */
 export function FailedDialog({ onRestart, onLevels, leaveLabel }: Props) {
-  const button = useRef<HTMLButtonElement>(null)
-  const shown = useAfter(DELAY_MS)
-  useEffect(() => {
-    if (shown) button.current?.focus()
-  }, [shown])
-
-  if (!shown) return null
   return (
-    <div class="dialog-backdrop">
-      <div class="dialog" role="alertdialog" aria-modal="true" aria-labelledby="failed-title">
-        <h2 id="failed-title">{t('failedTitle')}</h2>
-        <p>{t('failedText')}</p>
-        <div class="dialog-buttons">
-          <button type="button" class="primary" ref={button} onClick={onRestart}>
-            {t('startAgain')}
-          </button>
-          <button type="button" onClick={onLevels}>
-            {leaveLabel ?? t('levelSelection')}
-          </button>
-        </div>
+    <EndDialog id="failed" role="alertdialog" title={t('failedTitle')} delayMs={DELAY_MS}>
+      <p>{t('failedText')}</p>
+      <div class="dialog-buttons">
+        <button type="button" class="primary" onClick={onRestart}>
+          {t('startAgain')}
+        </button>
+        <button type="button" onClick={onLevels}>
+          {leaveLabel ?? t('levelSelection')}
+        </button>
       </div>
-    </div>
+    </EndDialog>
   )
 }

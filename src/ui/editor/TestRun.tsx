@@ -9,9 +9,9 @@ import { GameSession } from '../../game/session'
 import { locale, t } from '../../i18n'
 import { BoardController } from '../../view/controller'
 import { BoardCanvas } from '../BoardCanvas'
+import { EndDialog } from '../EndDialog'
 import { FailedDialog } from '../FailedDialog'
 import { Hud } from '../Hud'
-import { useAfter } from '../pause'
 import { SOLVED_PAUSE_MS } from '../SolvedDialog'
 
 interface Props {
@@ -74,18 +74,20 @@ export function TestRun({ editor, packRules, skin, speaker, paused, onHelp, onCl
         </button>
       </div>
       {level.intro && <p class="level-intro">{level.intro[locale.value]}</p>}
-      <div class="stage">
-        <BoardCanvas
-          controller={controller}
-          skin={skin}
-          label={t('board', {
-            name: level.name.en || t('editorTitle'),
-            columns: puzzle.width,
-            rows: puzzle.height,
-          })}
-        />
+      <div class="play-area">
+        <div class="stage">
+          <BoardCanvas
+            controller={controller}
+            skin={skin}
+            label={t('board', {
+              name: level.name.en || t('editorTitle'),
+              columns: puzzle.width,
+              rows: puzzle.height,
+            })}
+          />
+        </div>
+        <Hud controller={controller} onExit={onClose} onHelp={onHelp} />
       </div>
-      <Hud controller={controller} onExit={onClose} onHelp={onHelp} />
       {phase === 'solved' && <KeepDialog onKeep={keep} onReplay={restart} onClose={onClose} />}
       {phase === 'failed' && (
         <FailedDialog onRestart={restart} onLevels={onClose} leaveLabel={t('backToEditing')} />
@@ -102,29 +104,20 @@ interface KeepProps {
 
 /** Shown a moment after the test solves the level, like the game's solved dialog. */
 function KeepDialog({ onKeep, onReplay, onClose }: KeepProps) {
-  const first = useRef<HTMLButtonElement>(null)
-  const shown = useAfter(SOLVED_PAUSE_MS)
-  useEffect(() => {
-    if (shown) first.current?.focus()
-  }, [shown])
-  if (!shown) return null
   return (
-    <div class="dialog-backdrop">
-      <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="keep-title">
-        <h2 id="keep-title">{t('solvedTitle')}</h2>
-        <p>{t('keepSolutionText')}</p>
-        <div class="dialog-buttons">
-          <button type="button" class="primary" ref={first} onClick={onKeep}>
-            {t('keepSolution')}
-          </button>
-          <button type="button" onClick={onReplay}>
-            {t('playAgain')}
-          </button>
-          <button type="button" onClick={onClose}>
-            {t('backToEditing')}
-          </button>
-        </div>
+    <EndDialog id="keep" title={t('solvedTitle')} delayMs={SOLVED_PAUSE_MS}>
+      <p>{t('keepSolutionText')}</p>
+      <div class="dialog-buttons">
+        <button type="button" class="primary" onClick={onKeep}>
+          {t('keepSolution')}
+        </button>
+        <button type="button" onClick={onReplay}>
+          {t('playAgain')}
+        </button>
+        <button type="button" onClick={onClose}>
+          {t('backToEditing')}
+        </button>
       </div>
-    </div>
+    </EndDialog>
   )
 }

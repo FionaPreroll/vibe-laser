@@ -119,14 +119,16 @@ export function SharedScreen({ data, shelf, speaker, paused, reducedMotion, onHe
         </span>
       </div>
       {level.intro && <p class="level-intro">{level.intro[locale.value]}</p>}
-      <div class="stage">
-        <BoardCanvas
-          controller={controller}
-          skin={undefined}
-          label={t('board', { name, columns: puzzle.width, rows: puzzle.height })}
-        />
+      <div class="play-area">
+        <div class="stage">
+          <BoardCanvas
+            controller={controller}
+            skin={undefined}
+            label={t('board', { name, columns: puzzle.width, rows: puzzle.height })}
+          />
+        </div>
+        <Hud controller={controller} onExit={toPacks} onHelp={onHelp} />
       </div>
-      <Hud controller={controller} onExit={toPacks} onHelp={onHelp} />
       {phase === 'solved' && (
         <SolvedDialog
           onNext={undefined}
