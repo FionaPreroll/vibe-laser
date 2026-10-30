@@ -286,7 +286,7 @@ describe('AboutScreen', () => {
     render(<AboutScreen />)
     expect(screen.getByRole('heading', { name: 'About Vibe Laser' })).toBeTruthy()
     expect(screen.getByText(/^Version \d+\.\d+\.\d+/)).toBeTruthy()
-    expect(screen.getByRole('heading', { name: 'Unreleased' })).toBeTruthy()
+    expect(screen.getByRole('heading', { name: /^0\.1\.0 - / })).toBeTruthy()
     fireEvent.click(button('Back'))
     expect(shown.value).toEqual({ name: 'packs' })
   })
@@ -306,7 +306,11 @@ describe('AboutScreen', () => {
             '',
             '- Lasers',
             '- Coins',
+            '## [0.2.0] - 2026-12-01',
+            '',
             '## [0.1.0] - 2026-11-01',
+            '',
+            '- Mirrors',
             '',
             '[Unreleased]: https://example.com/compare',
           ].join('\n'),
@@ -315,7 +319,8 @@ describe('AboutScreen', () => {
     )
     expect(container.innerHTML).toBe(
       '<div><p>Kept as in Keep a Changelog with code.</p><h3>Unreleased</h3><h4>Added</h4>' +
-        '<ul><li>Lasers</li><li>Coins</li></ul><h3>0.1.0 - 2026-11-01</h3></div>',
+        '<ul><li>Lasers</li><li>Coins</li></ul><h3>0.1.0 - 2026-11-01</h3>' +
+        '<ul><li>Mirrors</li></ul></div>',
     )
   })
 })
