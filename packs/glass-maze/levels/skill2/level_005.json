@@ -1,0 +1,68 @@
+{
+  "$schema": "../../../level.schema.json",
+  "version": 1,
+  "name": {
+    "en": "Purple Pulse",
+    "de": "Violetter Puls"
+  },
+  "size": [8, 7],
+  "objects": [
+    {
+      "type": "coin",
+      "pos": "A4",
+      "rgb": "rb"
+    },
+    {
+      "type": "coin",
+      "pos": "B5",
+      "rgb": "rb"
+    },
+    {
+      "type": "coin",
+      "pos": "D3",
+      "rgb": "rb"
+    },
+    {
+      "type": "coin",
+      "pos": "E8",
+      "rgb": "rb"
+    },
+    {
+      "type": "laser",
+      "pos": "G6",
+      "rot": 0,
+      "rgb": "rb"
+    }
+  ],
+  "toolbox": [
+    {
+      "type": "threeway",
+      "rot": 0
+    },
+    {
+      "type": "splitter",
+      "rot": 0
+    },
+    {
+      "type": "mirror",
+      "rot": 0
+    }
+  ],
+  "solution": [
+    {
+      "piece": 0,
+      "pos": "E6",
+      "rot": 0
+    },
+    {
+      "piece": 2,
+      "pos": "C4",
+      "rot": 4
+    },
+    {
+      "piece": 1,
+      "pos": "D7",
+      "rot": 5
+    }
+  ]
+}

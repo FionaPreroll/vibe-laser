@@ -1,0 +1,63 @@
+{
+  "$schema": "../../../level.schema.json",
+  "version": 1,
+  "name": {
+    "en": "Red Branches",
+    "de": "Rote Äste"
+  },
+  "size": [8, 7],
+  "objects": [
+    {
+      "type": "coin",
+      "pos": "A7",
+      "rgb": "r"
+    },
+    {
+      "type": "laser",
+      "pos": "B8",
+      "rot": 4,
+      "rgb": "r"
+    },
+    {
+      "type": "coin",
+      "pos": "C7",
+      "rgb": "r"
+    },
+    {
+      "type": "coin",
+      "pos": "E6",
+      "rgb": "r"
+    }
+  ],
+  "toolbox": [
+    {
+      "type": "splitter",
+      "rot": 0
+    },
+    {
+      "type": "slitMirror",
+      "rot": 0
+    },
+    {
+      "type": "refractor",
+      "rot": 0
+    }
+  ],
+  "solution": [
+    {
+      "piece": 1,
+      "pos": "C8",
+      "rot": 3
+    },
+    {
+      "piece": 0,
+      "pos": "C6",
+      "rot": 2
+    },
+    {
+      "piece": 2,
+      "pos": "B6",
+      "rot": 1
+    }
+  ]
+}

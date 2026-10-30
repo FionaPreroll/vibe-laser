@@ -1,0 +1,69 @@
+{
+  "$schema": "../../../level.schema.json",
+  "version": 1,
+  "name": {
+    "en": "Night Shift",
+    "de": "Nachtschicht"
+  },
+  "size": [8, 7],
+  "objects": [
+    {
+      "type": "laser",
+      "pos": "A3",
+      "rot": 4,
+      "rgb": "g"
+    },
+    {
+      "type": "laser",
+      "pos": "A7",
+      "rot": 6,
+      "rgb": "b"
+    },
+    {
+      "type": "coin",
+      "pos": "C2",
+      "rgb": "g"
+    },
+    {
+      "type": "coin",
+      "pos": "E7",
+      "rgb": "b"
+    },
+    {
+      "type": "coin",
+      "pos": "F4",
+      "rgb": "b"
+    }
+  ],
+  "toolbox": [
+    {
+      "type": "threeway",
+      "rot": 0
+    },
+    {
+      "type": "refractor",
+      "rot": 0
+    },
+    {
+      "type": "doubleMirror",
+      "rot": 0
+    }
+  ],
+  "solution": [
+    {
+      "piece": 2,
+      "pos": "A6",
+      "rot": 3
+    },
+    {
+      "piece": 1,
+      "pos": "B3",
+      "rot": 1
+    },
+    {
+      "piece": 0,
+      "pos": "D6",
+      "rot": 4
+    }
+  ]
+}

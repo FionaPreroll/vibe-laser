@@ -1,0 +1,65 @@
+{
+  "$schema": "../../../level.schema.json",
+  "version": 1,
+  "name": {
+    "en": "Zigzag",
+    "de": "Zickzack"
+  },
+  "size": [8, 7],
+  "objects": [
+    {
+      "type": "coin",
+      "pos": "A7",
+      "rgb": "g"
+    },
+    {
+      "type": "coin",
+      "pos": "A8",
+      "rgb": "g"
+    },
+    {
+      "type": "coin",
+      "pos": "C5",
+      "rgb": "g"
+    },
+    {
+      "type": "coin",
+      "pos": "D4",
+      "rgb": "g"
+    },
+    {
+      "type": "laser",
+      "pos": "F1",
+      "rot": 2,
+      "rgb": "g"
+    }
+  ],
+  "toolbox": [
+    {
+      "type": "refractor",
+      "rot": 0,
+      "count": 2
+    },
+    {
+      "type": "mirror",
+      "rot": 0
+    }
+  ],
+  "solution": [
+    {
+      "piece": 0,
+      "pos": "F2",
+      "rot": 2
+    },
+    {
+      "piece": 1,
+      "pos": "B6",
+      "rot": 1
+    },
+    {
+      "piece": 2,
+      "pos": "A6",
+      "rot": 3
+    }
+  ]
+}

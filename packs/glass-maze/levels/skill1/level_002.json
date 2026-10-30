@@ -1,0 +1,51 @@
+{
+  "$schema": "../../../level.schema.json",
+  "version": 1,
+  "name": {
+    "en": "Two Panes",
+    "de": "Zwei Scheiben"
+  },
+  "size": [7, 6],
+  "objects": [
+    {
+      "type": "coin",
+      "pos": "E1",
+      "rgb": "b"
+    },
+    {
+      "type": "coin",
+      "pos": "E2",
+      "rgb": "b"
+    },
+    {
+      "type": "coin",
+      "pos": "F5",
+      "rgb": "b"
+    },
+    {
+      "type": "laser",
+      "pos": "F6",
+      "rot": 6,
+      "rgb": "b"
+    }
+  ],
+  "toolbox": [
+    {
+      "type": "refractor",
+      "rot": 0,
+      "count": 2
+    }
+  ],
+  "solution": [
+    {
+      "piece": 0,
+      "pos": "F4",
+      "rot": 3
+    },
+    {
+      "piece": 1,
+      "pos": "E3",
+      "rot": 3
+    }
+  ]
+}

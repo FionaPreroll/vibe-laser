@@ -1,0 +1,54 @@
+{
+  "$schema": "../../../level.schema.json",
+  "version": 1,
+  "name": {
+    "en": "Splinter",
+    "de": "Splitter"
+  },
+  "size": [7, 6],
+  "objects": [
+    {
+      "type": "coin",
+      "pos": "C1",
+      "rgb": "b"
+    },
+    {
+      "type": "coin",
+      "pos": "D2",
+      "rgb": "b"
+    },
+    {
+      "type": "laser",
+      "pos": "E7",
+      "rot": 0,
+      "rgb": "b"
+    },
+    {
+      "type": "coin",
+      "pos": "F1",
+      "rgb": "b"
+    }
+  ],
+  "toolbox": [
+    {
+      "type": "splitter",
+      "rot": 0
+    },
+    {
+      "type": "mirror",
+      "rot": 0
+    }
+  ],
+  "solution": [
+    {
+      "piece": 1,
+      "pos": "D7",
+      "rot": 5
+    },
+    {
+      "piece": 0,
+      "pos": "D1",
+      "rot": 2
+    }
+  ]
+}

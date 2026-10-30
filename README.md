@@ -172,6 +172,7 @@ packs/
   lightworks-hints/          the same puzzles with hints and solutions, borrowed from lightworks
   strange-light/             eighteen puzzles with the parts of the expansion packs
   sea-of-colors/             eighteen puzzles about color: prisms, converters, filters
+  glass-maze/                eighteen puzzles about the path of light: refractors, splitters, two lasers
   powder-keg/                eighteen puzzles among explosives, anti-coins and black holes
 ```
 
@@ -180,6 +181,8 @@ The Tutorial pack teaches one part per level. Lightworks combines them: each lev
 Strange Light is the pack for the five parts of the expansion packs, drawn in Neon at the space station's console: benders and splicers in its first skill, prismirrors, selectors and complexes in its second, and in the third the same parts among explosives and anti-coins. Its levels were made by a generator that puts the pieces of a toolbox on a board, places coins where only each piece's light falls, and keeps a layout only when a search over every placement finds exactly one way to place the pieces, with no piece to spare.
 
 Sea of Colors is the pack for color, on board a ship: prisms in its first skill, color converters in its second, filters and polarizers in its third, some with two lasers of different colors. Its levels come from the same kind of generator and search as Strange Light's.
+
+Glass Maze is about the path of light, in the clinic: refractors with mirrors in its first skill, splitters and threeways in its second, and two lasers on every board in its third. It was made the same way. Mirrors, double mirrors and slit mirrors rarely share a toolbox there, since one can often stand in for another and give a second solution.
 
 Powder Keg plays in the crypt, in Neon, where light is dangerous: explosives and fuel cells in its first skill, anti-coins in its second, black holes among them all in its third. Its generator puts these hazards where light falls when a piece is missing or turned wrong, and dark in the solution, and plays each solution in an order that never lights one.
 

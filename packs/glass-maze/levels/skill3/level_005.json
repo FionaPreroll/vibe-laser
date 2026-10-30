@@ -1,0 +1,80 @@
+{
+  "$schema": "../../../level.schema.json",
+  "version": 1,
+  "name": {
+    "en": "Ward Round",
+    "de": "Visite"
+  },
+  "size": [8, 8],
+  "objects": [
+    {
+      "type": "laser",
+      "pos": "A1",
+      "rot": 2,
+      "rgb": "r"
+    },
+    {
+      "type": "laser",
+      "pos": "A3",
+      "rot": 6,
+      "rgb": "g"
+    },
+    {
+      "type": "coin",
+      "pos": "A6",
+      "rgb": "r"
+    },
+    {
+      "type": "coin",
+      "pos": "B6",
+      "rgb": "r"
+    },
+    {
+      "type": "coin",
+      "pos": "D6",
+      "rgb": "r"
+    },
+    {
+      "type": "coin",
+      "pos": "F8",
+      "rgb": "r"
+    }
+  ],
+  "toolbox": [
+    {
+      "type": "splitter",
+      "rot": 0
+    },
+    {
+      "type": "refractor",
+      "rot": 0,
+      "count": 2
+    },
+    {
+      "type": "mirror",
+      "rot": 0
+    }
+  ],
+  "solution": [
+    {
+      "piece": 1,
+      "pos": "A2",
+      "rot": 3
+    },
+    {
+      "piece": 2,
+      "pos": "C4",
+      "rot": 3
+    },
+    {
+      "piece": 0,
+      "pos": "C6",
+      "rot": 6
+    },
+    {
+      "piece": 3,
+      "pos": "F6",
+      "rot": 1
+    }
+  ]
+}

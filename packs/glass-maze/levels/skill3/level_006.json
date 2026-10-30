@@ -1,0 +1,69 @@
+{
+  "$schema": "../../../level.schema.json",
+  "version": 1,
+  "name": {
+    "en": "Second Opinion",
+    "de": "Zweite Meinung"
+  },
+  "size": [8, 7],
+  "objects": [
+    {
+      "type": "coin",
+      "pos": "B1",
+      "rgb": "b"
+    },
+    {
+      "type": "coin",
+      "pos": "B6",
+      "rgb": "r"
+    },
+    {
+      "type": "laser",
+      "pos": "C7",
+      "rot": 6,
+      "rgb": "r"
+    },
+    {
+      "type": "laser",
+      "pos": "F8",
+      "rot": 6,
+      "rgb": "b"
+    },
+    {
+      "type": "coin",
+      "pos": "G3",
+      "rgb": "b"
+    }
+  ],
+  "toolbox": [
+    {
+      "type": "refractor",
+      "rot": 0
+    },
+    {
+      "type": "splitter",
+      "rot": 0
+    },
+    {
+      "type": "slitMirror",
+      "rot": 0
+    }
+  ],
+  "solution": [
+    {
+      "piece": 2,
+      "pos": "C6",
+      "rot": 1
+    },
+    {
+      "piece": 1,
+      "pos": "F3",
+      "rot": 2
+    },
+    {
+      "piece": 0,
+      "pos": "D3",
+      "rot": 0
+    }
+  ]
+}

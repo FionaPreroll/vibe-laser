@@ -1,0 +1,68 @@
+{
+  "$schema": "../../../level.schema.json",
+  "version": 1,
+  "name": {
+    "en": "Cyan Ward",
+    "de": "Türkise Station"
+  },
+  "size": [8, 7],
+  "objects": [
+    {
+      "type": "coin",
+      "pos": "A5",
+      "rgb": "gb"
+    },
+    {
+      "type": "coin",
+      "pos": "B7",
+      "rgb": "gb"
+    },
+    {
+      "type": "laser",
+      "pos": "B8",
+      "rot": 6,
+      "rgb": "gb"
+    },
+    {
+      "type": "coin",
+      "pos": "E6",
+      "rgb": "gb"
+    },
+    {
+      "type": "coin",
+      "pos": "F6",
+      "rgb": "gb"
+    }
+  ],
+  "toolbox": [
+    {
+      "type": "threeway",
+      "rot": 0
+    },
+    {
+      "type": "refractor",
+      "rot": 0
+    },
+    {
+      "type": "doubleMirror",
+      "rot": 0
+    }
+  ],
+  "solution": [
+    {
+      "piece": 0,
+      "pos": "B6",
+      "rot": 6
+    },
+    {
+      "piece": 2,
+      "pos": "C5",
+      "rot": 2
+    },
+    {
+      "piece": 1,
+      "pos": "D6",
+      "rot": 0
+    }
+  ]
+}
