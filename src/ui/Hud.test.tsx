@@ -212,4 +212,17 @@ describe('Hud', () => {
       expect(speed().textContent).toContain(`${expected}×`)
     }
   })
+
+  it('offers the next level in the bar once the level is solved', async () => {
+    const level = await load('tutorial/1/1')
+    const controller = new BoardController(new GameSession(puzzleOf(level.file)))
+    const onNext = vi.fn()
+    render(<Hud controller={controller} onExit={() => {}} onHelp={() => {}} onNext={onNext} />)
+    expect(screen.queryByRole('button', { name: 'Next unsolved level' })).toBeNull()
+    await act(() => {
+      playSolution(controller.session, level.file)
+    })
+    fireEvent.click(button('Next unsolved level'))
+    expect(onNext).toHaveBeenCalledOnce()
+  })
 })

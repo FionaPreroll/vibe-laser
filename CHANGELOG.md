@@ -18,6 +18,7 @@ All changes players can notice are listed here. The format follows [Keep a Chang
 - While you carry a piece, dotted lines show where slimes and ships would walk if you put it down there, with a red ring where one would set off an explosive.
 - A Continue button above the level packs leads back to the level played last, or to the next unsolved level of its pack once that one is solved. Each profile remembers its own.
 - Undo right after Restart brings back the game as it was, until the next move. After a solved or exploded level, Restart still starts afresh.
+- Once a level is solved, the button bar offers the next unsolved level too, so it stays at hand after the dialog is put aside.
 
 ### Changed
 

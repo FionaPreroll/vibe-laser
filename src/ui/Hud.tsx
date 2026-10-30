@@ -16,10 +16,12 @@ interface Props {
   readonly controller: BoardController
   readonly onExit: () => void
   readonly onHelp: () => void
+  /** Once the level is solved: on to the next unsolved level, if there is one. */
+  readonly onNext?: () => void
 }
 
 /** The button bar below the board, as in the original, with the stability bar above it. */
-export function Hud({ controller, onExit, onHelp }: Props) {
+export function Hud({ controller, onExit, onHelp, onNext }: Props) {
   const { session } = controller
   const { phase, stable, puzzle } = session.state.value
   return (
@@ -32,6 +34,9 @@ export function Hud({ controller, onExit, onHelp }: Props) {
       )}
       <EatenMirrorNotice controller={controller} />
       <div class="hud-buttons" role="toolbar" aria-label={t('actions')}>
+        {phase === 'solved' && onNext && (
+          <HudButton icon="next" label={t('nextUnsolved')} primary onClick={onNext} />
+        )}
         <HudButton icon="exit" label={t('exit')} onClick={onExit} />
         <HudButton icon="restart" label={t('restart')} onClick={() => session.restart()} />
         <HudButton
@@ -97,15 +102,26 @@ interface ButtonProps {
   readonly title?: string
   /** For buttons that switch something on. */
   readonly pressed?: boolean
+  /** The button the player most likely wants now. */
+  readonly primary?: boolean
   readonly onClick: () => void
 }
 
 /** A button of the bar: an icon, and its name beside it where there is room, else as a tooltip. */
-export function HudButton({ icon, label, title, disabled, badge, pressed, onClick }: ButtonProps) {
+export function HudButton({
+  icon,
+  label,
+  title,
+  disabled,
+  badge,
+  pressed,
+  primary,
+  onClick,
+}: ButtonProps) {
   return (
     <button
       type="button"
-      class="hud-button"
+      class={primary ? 'hud-button primary' : 'hud-button'}
       title={title ?? label}
       disabled={disabled}
       aria-pressed={pressed}

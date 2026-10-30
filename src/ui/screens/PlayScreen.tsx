@@ -132,7 +132,12 @@ export function PlayScreen({ level: id, book, speaker, paused, onHelp }: Props) 
             label={t('board', { name, columns: puzzle.width, rows: puzzle.height })}
           />
         </div>
-        <Hud controller={controller} onExit={toLevels} onHelp={onHelp} />
+        <Hud
+          controller={controller}
+          onExit={toLevels}
+          onHelp={onHelp}
+          onNext={next && (() => navigate({ name: 'play', level: next.id }))}
+        />
       </div>
       {phase === 'solved' && (
         <SolvedDialog
