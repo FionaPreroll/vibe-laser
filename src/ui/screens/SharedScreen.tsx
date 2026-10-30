@@ -10,6 +10,7 @@ import { BoardController } from '../../view/controller'
 import { BoardCanvas } from '../BoardCanvas'
 import { FailedDialog } from '../FailedDialog'
 import { Hud } from '../Hud'
+import { LevelIntro } from '../LevelIntro'
 import { navigate } from '../router'
 import { SolvedDialog } from '../SolvedDialog'
 
@@ -118,7 +119,7 @@ export function SharedScreen({ data, shelf, speaker, paused, reducedMotion, onHe
           {kept ?? ''}
         </span>
       </div>
-      {level.intro && <p class="level-intro">{level.intro[locale.value]}</p>}
+      {level.intro && <LevelIntro text={level.intro[locale.value]} />}
       <div class="play-area">
         <div class="stage">
           <BoardCanvas

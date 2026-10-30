@@ -12,6 +12,7 @@ import { BoardCanvas } from '../BoardCanvas'
 import { EndDialog } from '../EndDialog'
 import { FailedDialog } from '../FailedDialog'
 import { Hud } from '../Hud'
+import { LevelIntro } from '../LevelIntro'
 import { SOLVED_PAUSE_MS } from '../SolvedDialog'
 
 interface Props {
@@ -73,7 +74,7 @@ export function TestRun({ editor, packRules, skin, speaker, paused, onHelp, onCl
           {t('backToEditing')}
         </button>
       </div>
-      {level.intro && <p class="level-intro">{level.intro[locale.value]}</p>}
+      {level.intro && <LevelIntro text={level.intro[locale.value]} />}
       <div class="play-area">
         <div class="stage">
           <BoardCanvas

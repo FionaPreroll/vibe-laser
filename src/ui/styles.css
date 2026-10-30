@@ -881,11 +881,33 @@ main.play {
 
 /* What a level tells players before they start, such as what a new part does. */
 .level-intro {
-  max-width: 80ch;
-  margin: 0;
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  max-width: calc(80ch + 32px);
   padding: 4px 16px 0;
   font-size: 0.9375rem;
   line-height: 1.45;
+}
+
+.intro-text {
+  min-width: 0;
+  margin: 0;
+}
+
+/* Read once, the intro keeps one line. */
+.level-intro.collapsed .intro-text {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+  line-clamp: 1;
+}
+
+.intro-toggle {
+  flex: none;
+  color: var(--text-quiet);
+  font-size: 0.8125rem;
 }
 
 /* Hints & Solutions packs: help above the board, and what it says in words. */
