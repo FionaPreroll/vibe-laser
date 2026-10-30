@@ -119,6 +119,7 @@ export const en = {
   colorBlindHint:
     'Pieces show their colors as letters, R, G and B, and beams draw each color as a line of its own: red, green and blue side by side.',
   beamPreview: 'Show where light would go',
+  vibration: 'Vibrate as pieces go down and turn',
   beamPreviewHint:
     'While you carry a piece, the beams show faintly where light would go if you put it down there, and explosives it would reach get a red ring.',
 
@@ -505,6 +506,7 @@ export const de: Record<MessageKey, string> = {
   colorBlindHint:
     'Teile zeigen ihre Farben als Buchstaben, R, G und B, und Strahlen zeichnen jede Farbe als eigene Linie: Rot, Grün und Blau nebeneinander.',
   beamPreview: 'Zeigen, wohin das Licht ginge',
+  vibration: 'Beim Ablegen und Drehen vibrieren',
   beamPreviewHint:
     'Während du ein Teil trägst, zeigen die Strahlen blass, wohin das Licht ginge, wenn du es dort ablegst, und Sprengstoff, den es erreichen würde, bekommt einen roten Ring.',
 

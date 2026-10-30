@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import type { Item } from '../core/level'
 import { STABLE_TICKS } from '../game/session'
-import { cursorFor, frameStyle } from './board'
+import { buzzFor, cursorFor, frameStyle } from './board'
 import { BOARD_COLORS } from './palette'
 
 const item = (moveable: boolean, rotateable: boolean): Item => ({
@@ -33,5 +33,14 @@ describe('cursorFor', () => {
     expect(cursorFor(item(false, false), true)).toBe('default')
     expect(cursorFor(undefined, true)).toBe('default')
     expect(cursorFor(item(true, true), false)).toBe('default')
+  })
+})
+
+describe('buzzFor', () => {
+  it('ticks for a move, rumbles for an explosion, and stays still otherwise', () => {
+    const move = { kind: 'command', command: { kind: 'rotate', item: 1, steps: 1 } } as const
+    expect(buzzFor([move])).toBe(12)
+    expect(buzzFor([move, { kind: 'ignited', cells: [3] }])).toEqual([80, 40, 160])
+    expect(buzzFor([{ kind: 'moved', item: 1, from: 2, to: 3 }])).toBeUndefined()
   })
 })

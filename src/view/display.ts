@@ -13,6 +13,9 @@ export const colorBlind = signal(false)
  */
 export const beamPreview = signal(true)
 
+/** A short buzz as pieces go down or turn, on devices that can vibrate. The settings switch it. */
+export const vibration = signal(true)
+
 /** The look players chose for every board: an art style, or 'pack' for the skin of each pack. */
 export const chosenArt = signal<ArtStyle | 'pack'>('pack')
 

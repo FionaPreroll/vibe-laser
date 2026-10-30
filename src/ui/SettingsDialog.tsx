@@ -77,6 +77,18 @@ export function SettingsDialog({ book, onClose }: Props) {
         <p id="beam-preview-hint" class="hint">
           {t('beamPreviewHint')}
         </p>
+        {'vibrate' in navigator && (
+          <label class="check">
+            <input
+              type="checkbox"
+              checked={settings.vibration}
+              onChange={(event) =>
+                void book.updateSettings({ vibration: event.currentTarget.checked })
+              }
+            />
+            <span>{t('vibration')}</span>
+          </label>
+        )}
         <label>
           <span>{t('artLabel')}</span>
           <select

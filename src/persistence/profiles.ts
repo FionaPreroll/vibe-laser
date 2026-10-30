@@ -18,6 +18,8 @@ const settingsSchema = z
     art: z.enum(LOOKS).default('pack'),
     // Where light would go while a piece is carried; older saves load with it on.
     beamPreview: z.boolean().default(true),
+    // A short buzz on phones as pieces go down or turn; older saves load with it on.
+    vibration: z.boolean().default(true),
   })
   .strict()
 
@@ -63,6 +65,7 @@ export const DEFAULT_SETTINGS: Settings = {
   colorBlind: false,
   art: 'pack',
   beamPreview: true,
+  vibration: true,
 }
 
 const KEY = 'save'

@@ -1,11 +1,11 @@
 import { batch, effect } from '@preact/signals-core'
 import type { FederatedPointerEvent } from 'pixi.js'
 import { type Item, itemAt, itemById, type Place, samePlace } from '../core/level'
-import { type Phase, STABLE_TICKS } from '../game/session'
+import { type GameEvent, type Phase, STABLE_TICKS } from '../game/session'
 import { createFlatArt } from './art/flat'
 import type { ArtPack } from './art/types'
 import type { BoardController } from './controller'
-import { beamPreview, colorBlind } from './display'
+import { beamPreview, colorBlind, vibration } from './display'
 import { CELL, type Point, placeAt, placeCenter, type Transform } from './layout'
 import { BOARD_COLORS } from './palette'
 import { createStage, isTextField } from './stage'
@@ -43,6 +43,12 @@ export function cursorFor(item: Item | undefined, canPlay: boolean): string {
   if (item.moveable) return 'grab'
   return item.rotateable ? 'pointer' : 'default'
 }
+/** How the phone buzzes for what happened: a tick for a move, a rumble for an explosion. */
+export function buzzFor(events: readonly GameEvent[]): number | number[] | undefined {
+  if (events.some((event) => event.kind === 'ignited')) return [80, 40, 160]
+  return events.some((event) => event.kind === 'command') ? 12 : undefined
+}
+
 const BOARD_KEYS = new Set([
   'ArrowLeft',
   'ArrowRight',
@@ -94,6 +100,8 @@ export async function mountBoard(
   const cellCenter = (cell: number) => placeCenter(geometry, { area: 'board', cell })
   const stopEffects = session.onEvents((events) => {
     for (const event of events) effects.play(event, cellCenter)
+    const buzz = buzzFor(events)
+    if (buzz !== undefined && vibration.value) navigator.vibrate?.(buzz)
   })
 
   let press: Press | undefined

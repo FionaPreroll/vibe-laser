@@ -260,8 +260,27 @@ describe('SettingsDialog', () => {
       colorBlind: true,
       art: 'neon',
       beamPreview: false,
+      vibration: true,
     })
     expect(motion.checked).toBe(true)
     expect(screen.getByLabelText('Language')).toBeTruthy()
+  })
+
+  it('offers vibration only on devices that can vibrate', async () => {
+    const book = await ProfileBook.open(memoryStore(), { name: 'Player' })
+    const { unmount } = render(<SettingsDialog book={book} onClose={() => {}} />)
+    const has = 'vibrate' in navigator
+    expect(screen.queryByLabelText('Vibrate as pieces go down and turn') !== null).toBe(has)
+    unmount()
+    Object.defineProperty(navigator, 'vibrate', { value: vi.fn(), configurable: true })
+    try {
+      render(<SettingsDialog book={book} onClose={() => {}} />)
+      await act(() => {
+        fireEvent.click(screen.getByLabelText('Vibrate as pieces go down and turn'))
+      })
+      expect(book.active.value.settings.vibration).toBe(false)
+    } finally {
+      Reflect.deleteProperty(navigator, 'vibrate')
+    }
   })
 })
