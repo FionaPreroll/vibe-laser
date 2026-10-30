@@ -37,6 +37,16 @@ export function names(key: MessageKey): Record<Locale, string> {
   return { en: format(en[key]), de: format(de[key]) }
 }
 
+/** Texts with a version of their own for one, as "solvedInMoves" and "solvedInMovesOne". */
+export type CountedKey = {
+  [K in MessageKey]: `${K}One` extends MessageKey ? K : never
+}[MessageKey]
+
+/** Text for a count, in its version for one where the count is 1. */
+export function tn(key: CountedKey, count: number): string {
+  return count === 1 ? t(`${key}One` as MessageKey) : t(key, { count })
+}
+
 /** Text in the current language, with {placeholders} filled from params. */
 export function t(key: MessageKey, params?: Readonly<Record<string, string | number>>): string {
   return format(catalogs[locale.value][key], params)

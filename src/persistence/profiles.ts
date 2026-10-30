@@ -27,6 +27,8 @@ const profileSchema = z
     name: z.string().trim().min(1).max(40),
     /** Ids of solved levels, such as "tutorial/2/5". */
     solved: z.array(z.string()),
+    /** The fewest moves each level was solved in; older saves load without any. */
+    best: z.record(z.string(), z.number().int().min(0)).default({}),
     settings: settingsSchema,
   })
   .strict()
@@ -95,6 +97,8 @@ export class ProfileBook {
   readonly active: ReadonlySignal<Profile>
   /** The active profile's solved levels. */
   readonly solved: ReadonlySignal<ReadonlySet<string>>
+  /** The active profile's fewest moves by level. */
+  readonly best: ReadonlySignal<ReadonlyMap<string, number>>
 
   private constructor(store: KeyValueStore, data: SaveData, options: Options) {
     this.#store = store
@@ -106,6 +110,7 @@ export class ProfileBook {
       return profiles.find((profile) => profile.id === active) ?? (profiles[0] as Profile)
     })
     this.solved = computed(() => new Set(this.active.value.solved))
+    this.best = computed(() => new Map(Object.entries(this.active.value.best)))
   }
 
   /** Opens the saves, or starts with one profile when there are none or they cannot be read. */
@@ -127,12 +132,19 @@ export class ProfileBook {
     return this.#queue.saved()
   }
 
-  async markSolved(levelId: string): Promise<void> {
+  /** Marks a level solved, and keeps its moves when they are the fewest so far. */
+  async markSolved(levelId: string, moves?: number): Promise<void> {
     const profile = this.active.value
-    if (profile.solved.includes(levelId)) return
+    const known = profile.solved.includes(levelId)
+    const best = profile.best[levelId]
+    const better = moves !== undefined && (best === undefined || moves < best)
+    if (known && !better) return
     const first = this.#data.value.profiles.every((each) => each.solved.length === 0)
-    await this.#change(profile.id, { solved: [...profile.solved, levelId] })
-    if (first) await this.#options.persist?.()
+    await this.#change(profile.id, {
+      ...(known ? {} : { solved: [...profile.solved, levelId] }),
+      ...(better ? { best: { ...profile.best, [levelId]: moves } } : {}),
+    })
+    if (first && !known) await this.#options.persist?.()
   }
 
   async updateSettings(changes: Partial<Settings>): Promise<void> {
@@ -236,6 +248,7 @@ function newProfile(options: Options, name: string): Profile {
     id: options.newId?.() ?? crypto.randomUUID(),
     name,
     solved: [],
+    best: {},
     settings: { ...DEFAULT_SETTINGS, ...options.settings },
   }
 }

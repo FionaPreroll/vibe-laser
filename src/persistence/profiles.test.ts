@@ -19,6 +19,7 @@ describe('ProfileBook', () => {
       id: 'id-1',
       name: 'Player',
       solved: [],
+      best: {},
       settings: DEFAULT_SETTINGS,
     })
     expect(await store.get('save')).toEqual(book.data.value)
@@ -67,6 +68,30 @@ describe('ProfileBook', () => {
     await book.markSolved('tutorial/1/2')
     expect(book.active.value.solved).toEqual(['tutorial/1/1', 'tutorial/1/2'])
     expect(persist).toHaveBeenCalledOnce()
+  })
+
+  it('keeps the fewest moves each level was solved in', async () => {
+    const { book, store } = await open()
+    await book.markSolved('tutorial/1/1', 5)
+    await book.markSolved('tutorial/1/1', 7)
+    expect(book.best.value.get('tutorial/1/1')).toBe(5)
+    await book.markSolved('tutorial/1/1', 3)
+    await book.markSolved('tutorial/1/1')
+    await book.markSolved('tutorial/1/2')
+    expect(book.active.value.best).toEqual({ 'tutorial/1/1': 3 })
+    expect(book.active.value.solved).toEqual(['tutorial/1/1', 'tutorial/1/2'])
+    expect(migrate(await store.get('save'))?.profiles[0]?.best).toEqual({ 'tutorial/1/1': 3 })
+  })
+
+  it('loads saves from before the best moves without any', () => {
+    const { best: _, ...old } = {
+      id: 'old',
+      name: 'Old',
+      solved: ['tutorial/1/1'],
+      best: {},
+      settings: DEFAULT_SETTINGS,
+    }
+    expect(migrate({ version: 1, active: 'old', profiles: [old] })?.profiles[0]?.best).toEqual({})
   })
 
   it('changes settings', async () => {

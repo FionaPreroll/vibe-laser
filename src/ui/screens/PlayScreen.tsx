@@ -33,6 +33,7 @@ type Loaded = { readonly level: Level } | { readonly failed: true }
 export function PlayScreen({ level: id, book, speaker, paused, onHelp }: Props) {
   const found = findLevel(id)
   const [loaded, setLoaded] = useState<Loaded>()
+  const [record, setRecord] = useState<{ moves: number; before: number | undefined }>()
   useEffect(() => {
     let current = true
     setLoaded(undefined)
@@ -66,10 +67,17 @@ export function PlayScreen({ level: id, book, speaker, paused, onHelp }: Props) 
       effect(() => {
         // Only the game decides; saving reads the profile, which must not run this again.
         if (controller.session.state.value.phase === 'solved') {
-          untracked(() => void book.markSolved(id))
+          untracked(() => {
+            // With the solution at hand, moves prove nothing, so such packs keep no best.
+            const moves = found?.pack.file.showsSolutions
+              ? undefined
+              : controller.session.moves.value
+            setRecord(moves === undefined ? undefined : { moves, before: book.best.value.get(id) })
+            void book.markSolved(id, moves)
+          })
         }
       }),
-    [controller, book, id],
+    [controller, book, id, found?.pack],
   )
   const reducedMotion = book.active.value.settings.reducedMotion
   useEffect(() => {
@@ -125,6 +133,7 @@ export function PlayScreen({ level: id, book, speaker, paused, onHelp }: Props) 
           onNext={next && (() => navigate({ name: 'play', level: next.id }))}
           onLevels={toLevels}
           onReplay={restart}
+          record={record}
         />
       )}
       {phase === 'failed' && <FailedDialog onRestart={restart} onLevels={toLevels} />}

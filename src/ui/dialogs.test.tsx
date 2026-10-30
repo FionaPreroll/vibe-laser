@@ -52,6 +52,24 @@ describe('SolvedDialog', () => {
   })
 })
 
+describe('SolvedDialog with moves', () => {
+  it.each([
+    [{ moves: 1, before: undefined }, 'Solved in 1 move.'],
+    [{ moves: 4, before: 6 }, 'Solved in 4 moves. A new best! Before, it took you 6 moves.'],
+    [{ moves: 4, before: 1 }, 'Solved in 4 moves. Your best is 1 move.'],
+    [{ moves: 4, before: 4 }, 'Solved in 4 moves. Your best is 4 moves.'],
+  ])('tells the moves of %o', async (record, text) => {
+    vi.useFakeTimers()
+    render(
+      <SolvedDialog onNext={undefined} onLevels={() => {}} onReplay={() => {}} record={record} />,
+    )
+    await act(() => {
+      vi.advanceTimersByTime(1500)
+    })
+    expect(document.querySelector('.solved-moves')?.textContent).toBe(text)
+  })
+})
+
 describe('FailedDialog', () => {
   it('waits for the blast to fade, then offers a fresh start or the level selection', async () => {
     vi.useFakeTimers()

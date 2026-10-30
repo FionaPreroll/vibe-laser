@@ -49,10 +49,13 @@ describe('Hud', () => {
   it('enables undo and redo as moves are made and taken back', async () => {
     const controller = await controllerFor('tutorial/1/1')
     renderHud(controller)
+    const moves = () => document.querySelector('.moves')?.textContent
     expect(button('Undo').disabled).toBe(true)
+    expect(moves()).toBe('Moves: 0')
     await act(() => {
       controller.move(2, { area: 'board', cell: 0 })
     })
+    expect(moves()).toBe('Moves: 1')
     expect(button('Undo').disabled).toBe(false)
     expect(button('Clean up').disabled).toBe(false)
     await act(() => {
@@ -60,6 +63,7 @@ describe('Hud', () => {
     })
     expect(button('Undo').disabled).toBe(true)
     expect(button('Redo').disabled).toBe(false)
+    expect(moves()).toBe('Moves: 0')
     await act(() => {
       fireEvent.click(button('Redo'))
     })
