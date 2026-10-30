@@ -1,0 +1,73 @@
+{
+  "$schema": "../../../level.schema.json",
+  "version": 1,
+  "name": {
+    "en": "Plankton",
+    "de": "Plankton"
+  },
+  "size": [8, 7],
+  "objects": [
+    {
+      "type": "coin",
+      "pos": "C6",
+      "rgb": "b"
+    },
+    {
+      "type": "laser",
+      "pos": "D5",
+      "rot": 6,
+      "rgb": "rgb"
+    },
+    {
+      "type": "coin",
+      "pos": "E4",
+      "rgb": "rgb"
+    },
+    {
+      "type": "coin",
+      "pos": "G4",
+      "rgb": "rg"
+    }
+  ],
+  "toolbox": [
+    {
+      "type": "filter",
+      "rgb": "rg"
+    },
+    {
+      "type": "polarizer",
+      "rot": 0,
+      "rgb": "b"
+    },
+    {
+      "type": "splitter",
+      "rot": 0
+    },
+    {
+      "type": "mirror",
+      "rot": 0
+    }
+  ],
+  "solution": [
+    {
+      "piece": 2,
+      "pos": "D4",
+      "rot": 2
+    },
+    {
+      "piece": 3,
+      "pos": "C4",
+      "rot": 3
+    },
+    {
+      "piece": 1,
+      "pos": "C5",
+      "rot": 2
+    },
+    {
+      "piece": 0,
+      "pos": "F4",
+      "rot": 0
+    }
+  ]
+}

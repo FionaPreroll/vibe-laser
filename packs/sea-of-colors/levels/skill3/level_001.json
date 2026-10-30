@@ -1,0 +1,60 @@
+{
+  "$schema": "../../../level.schema.json",
+  "version": 1,
+  "name": {
+    "en": "The Sieve",
+    "de": "Das Sieb"
+  },
+  "size": [7, 6],
+  "objects": [
+    {
+      "type": "coin",
+      "pos": "A3",
+      "rgb": "rgb"
+    },
+    {
+      "type": "laser",
+      "pos": "A4",
+      "rot": 6,
+      "rgb": "rgb"
+    },
+    {
+      "type": "coin",
+      "pos": "B1",
+      "rgb": "gb"
+    },
+    {
+      "type": "coin",
+      "pos": "C6",
+      "rgb": "gb"
+    }
+  ],
+  "toolbox": [
+    {
+      "type": "filter",
+      "rgb": "gb"
+    },
+    {
+      "type": "mirror",
+      "rot": 0,
+      "count": 2
+    }
+  ],
+  "solution": [
+    {
+      "piece": 1,
+      "pos": "A1",
+      "rot": 3
+    },
+    {
+      "piece": 0,
+      "pos": "A2",
+      "rot": 0
+    },
+    {
+      "piece": 2,
+      "pos": "C1",
+      "rot": 1
+    }
+  ]
+}

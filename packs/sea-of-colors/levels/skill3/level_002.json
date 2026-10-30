@@ -1,0 +1,64 @@
+{
+  "$schema": "../../../level.schema.json",
+  "version": 1,
+  "name": {
+    "en": "One Way Out",
+    "de": "Nur ein Ausweg"
+  },
+  "size": [7, 6],
+  "objects": [
+    {
+      "type": "coin",
+      "pos": "A3",
+      "rgb": "r"
+    },
+    {
+      "type": "coin",
+      "pos": "A7",
+      "rgb": "r"
+    },
+    {
+      "type": "coin",
+      "pos": "C6",
+      "rgb": "rb"
+    },
+    {
+      "type": "laser",
+      "pos": "D4",
+      "rot": 2,
+      "rgb": "rb"
+    }
+  ],
+  "toolbox": [
+    {
+      "type": "polarizer",
+      "rot": 0,
+      "rgb": "r"
+    },
+    {
+      "type": "mirror",
+      "rot": 0
+    },
+    {
+      "type": "splitter",
+      "rot": 0
+    }
+  ],
+  "solution": [
+    {
+      "piece": 1,
+      "pos": "D6",
+      "rot": 7
+    },
+    {
+      "piece": 2,
+      "pos": "A6",
+      "rot": 4
+    },
+    {
+      "piece": 0,
+      "pos": "B6",
+      "rot": 0
+    }
+  ]
+}

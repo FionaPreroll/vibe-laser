@@ -1,0 +1,58 @@
+{
+  "$schema": "../../../level.schema.json",
+  "version": 1,
+  "name": {
+    "en": "Low Tide",
+    "de": "Ebbe"
+  },
+  "size": [8, 7],
+  "objects": [
+    {
+      "type": "coin",
+      "pos": "E3",
+      "rgb": "rgb"
+    },
+    {
+      "type": "coin",
+      "pos": "G1",
+      "rgb": "r"
+    },
+    {
+      "type": "laser",
+      "pos": "G4",
+      "rot": 0,
+      "rgb": "rgb"
+    }
+  ],
+  "toolbox": [
+    {
+      "type": "prism",
+      "rot": 0
+    },
+    {
+      "type": "colorConverter",
+      "rot": 0
+    },
+    {
+      "type": "mirror",
+      "rot": 0
+    }
+  ],
+  "solution": [
+    {
+      "piece": 2,
+      "pos": "E4",
+      "rot": 5
+    },
+    {
+      "piece": 0,
+      "pos": "E1",
+      "rot": 0
+    },
+    {
+      "piece": 1,
+      "pos": "F1",
+      "rot": 0
+    }
+  ]
+}

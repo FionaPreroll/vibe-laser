@@ -1,0 +1,17 @@
+{
+  "$schema": "../pack.schema.json",
+  "version": 1,
+  "title": { "en": "Sea of Colors", "de": "Farbenmeer" },
+  "description": {
+    "en": "Eighteen puzzles about color, on board a ship: prisms fan white light out, color converters change it, and filters and polarizers sort it.",
+    "de": "Achtzehn Rätsel rund um die Farben, an Bord eines Schiffs: Prismen fächern weißes Licht auf, Farbwandler verwandeln es, und Filter und Polarisatoren sortieren es."
+  },
+  "position": 5,
+  "skills": [
+    { "en": "Prisms", "de": "Prismen" },
+    { "en": "Converters", "de": "Farbwandler" },
+    { "en": "Filters", "de": "Filter" }
+  ],
+  "sounds": "sea",
+  "selectScreen": "sea"
+}

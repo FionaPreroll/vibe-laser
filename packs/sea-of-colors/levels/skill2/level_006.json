@@ -1,0 +1,66 @@
+{
+  "$schema": "../../../level.schema.json",
+  "version": 1,
+  "name": {
+    "en": "Yellow Sails",
+    "de": "Gelbe Segel"
+  },
+  "size": [8, 7],
+  "objects": [
+    {
+      "type": "laser",
+      "pos": "A4",
+      "rot": 6,
+      "rgb": "rg"
+    },
+    {
+      "type": "coin",
+      "pos": "B2",
+      "rgb": "gb"
+    },
+    {
+      "type": "coin",
+      "pos": "D2",
+      "rgb": "gb"
+    },
+    {
+      "type": "coin",
+      "pos": "F1",
+      "rgb": "rg"
+    }
+  ],
+  "toolbox": [
+    {
+      "type": "colorConverter",
+      "rot": 0,
+      "count": 2
+    },
+    {
+      "type": "mirror",
+      "rot": 0,
+      "count": 2
+    }
+  ],
+  "solution": [
+    {
+      "piece": 2,
+      "pos": "A2",
+      "rot": 3
+    },
+    {
+      "piece": 0,
+      "pos": "A3",
+      "rot": 2
+    },
+    {
+      "piece": 1,
+      "pos": "E2",
+      "rot": 4
+    },
+    {
+      "piece": 3,
+      "pos": "F2",
+      "rot": 7
+    }
+  ]
+}

@@ -1,0 +1,60 @@
+{
+  "$schema": "../../../level.schema.json",
+  "version": 1,
+  "name": {
+    "en": "Green Lagoon",
+    "de": "Grüne Lagune"
+  },
+  "size": [8, 7],
+  "objects": [
+    {
+      "type": "coin",
+      "pos": "D7",
+      "rgb": "g"
+    },
+    {
+      "type": "coin",
+      "pos": "E7",
+      "rgb": "g"
+    },
+    {
+      "type": "coin",
+      "pos": "F7",
+      "rgb": "g"
+    },
+    {
+      "type": "laser",
+      "pos": "G1",
+      "rot": 2,
+      "rgb": "rgb"
+    }
+  ],
+  "toolbox": [
+    {
+      "type": "prism",
+      "rot": 0,
+      "count": 2
+    },
+    {
+      "type": "mirror",
+      "rot": 0
+    }
+  ],
+  "solution": [
+    {
+      "piece": 0,
+      "pos": "G2",
+      "rot": 5
+    },
+    {
+      "piece": 1,
+      "pos": "C6",
+      "rot": 1
+    },
+    {
+      "piece": 2,
+      "pos": "C7",
+      "rot": 5
+    }
+  ]
+}

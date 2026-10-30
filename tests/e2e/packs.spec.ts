@@ -51,3 +51,13 @@ test('opens Strange Light at the space station and plays its first level', async
   await page.getByRole('button', { name: /^1\. Bend in the Road/ }).click()
   await expect(page.locator('.board')).toHaveAttribute('data-art', 'neon')
 })
+
+test('opens Sea of Colors at sea and plays its first level', async ({ page }) => {
+  await page.goto('./')
+  await page.getByRole('button', { name: /^Sea of Colors/ }).click()
+  await expect(page.locator('.select-screen')).toHaveClass(/theme-sea/)
+  await page.getByRole('button', { name: /^1\. Prisms/ }).click()
+  await expect(page.getByRole('button', { name: /^\d\. / })).toHaveCount(6)
+  await page.getByRole('button', { name: /^1\. Spray of Light/ }).click()
+  await expect(page.locator('.board')).toBeVisible()
+})

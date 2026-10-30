@@ -1,0 +1,60 @@
+{
+  "$schema": "../../../level.schema.json",
+  "version": 1,
+  "name": {
+    "en": "Three Greens",
+    "de": "Dreimal Grün"
+  },
+  "size": [8, 7],
+  "objects": [
+    {
+      "type": "laser",
+      "pos": "A7",
+      "rot": 6,
+      "rgb": "rgb"
+    },
+    {
+      "type": "coin",
+      "pos": "C4",
+      "rgb": "g"
+    },
+    {
+      "type": "coin",
+      "pos": "E4",
+      "rgb": "g"
+    },
+    {
+      "type": "coin",
+      "pos": "E8",
+      "rgb": "g"
+    }
+  ],
+  "toolbox": [
+    {
+      "type": "prism",
+      "rot": 0,
+      "count": 2
+    },
+    {
+      "type": "mirror",
+      "rot": 0
+    }
+  ],
+  "solution": [
+    {
+      "piece": 0,
+      "pos": "A6",
+      "rot": 1
+    },
+    {
+      "piece": 1,
+      "pos": "D3",
+      "rot": 0
+    },
+    {
+      "piece": 2,
+      "pos": "E3",
+      "rot": 1
+    }
+  ]
+}

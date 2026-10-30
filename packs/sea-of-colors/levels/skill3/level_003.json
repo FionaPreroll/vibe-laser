@@ -1,0 +1,69 @@
+{
+  "$schema": "../../../level.schema.json",
+  "version": 1,
+  "name": {
+    "en": "Net and Line",
+    "de": "Netz und Leine"
+  },
+  "size": [8, 7],
+  "objects": [
+    {
+      "type": "laser",
+      "pos": "A2",
+      "rot": 2,
+      "rgb": "rgb"
+    },
+    {
+      "type": "coin",
+      "pos": "B7",
+      "rgb": "b"
+    },
+    {
+      "type": "laser",
+      "pos": "C8",
+      "rot": 4,
+      "rgb": "r"
+    },
+    {
+      "type": "coin",
+      "pos": "D8",
+      "rgb": "r"
+    },
+    {
+      "type": "coin",
+      "pos": "F8",
+      "rgb": "b"
+    }
+  ],
+  "toolbox": [
+    {
+      "type": "filter",
+      "rgb": "g"
+    },
+    {
+      "type": "prism",
+      "rot": 0
+    },
+    {
+      "type": "mirror",
+      "rot": 0
+    }
+  ],
+  "solution": [
+    {
+      "piece": 1,
+      "pos": "A7",
+      "rot": 2
+    },
+    {
+      "piece": 0,
+      "pos": "E8",
+      "rot": 0
+    },
+    {
+      "piece": 2,
+      "pos": "F7",
+      "rot": 1
+    }
+  ]
+}

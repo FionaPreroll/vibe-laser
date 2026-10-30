@@ -1,0 +1,66 @@
+{
+  "$schema": "../../../level.schema.json",
+  "version": 1,
+  "name": {
+    "en": "Two Lighthouses",
+    "de": "Zwei Leuchttürme"
+  },
+  "size": [8, 7],
+  "objects": [
+    {
+      "type": "laser",
+      "pos": "B1",
+      "rot": 2,
+      "rgb": "b"
+    },
+    {
+      "type": "coin",
+      "pos": "C5",
+      "rgb": "b"
+    },
+    {
+      "type": "coin",
+      "pos": "E7",
+      "rgb": "b"
+    },
+    {
+      "type": "coin",
+      "pos": "F8",
+      "rgb": "rb"
+    },
+    {
+      "type": "laser",
+      "pos": "G8",
+      "rot": 0,
+      "rgb": "r"
+    }
+  ],
+  "toolbox": [
+    {
+      "type": "prism",
+      "rot": 0
+    },
+    {
+      "type": "mirror",
+      "rot": 0,
+      "count": 2
+    }
+  ],
+  "solution": [
+    {
+      "piece": 1,
+      "pos": "B5",
+      "rot": 5
+    },
+    {
+      "piece": 2,
+      "pos": "E5",
+      "rot": 1
+    },
+    {
+      "piece": 0,
+      "pos": "E8",
+      "rot": 2
+    }
+  ]
+}

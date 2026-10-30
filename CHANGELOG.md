@@ -4,6 +4,10 @@ All changes players can notice are listed here. The format follows [Keep a Chang
 
 ## [Unreleased]
 
+### Added
+
+- A new level pack, Sea of Colors: eighteen puzzles about color, in three skills. Prisms fan white light out, Converters change its color, and Filters sort it with filters and polarizers. Its skills are chosen in a ship's log, with the sounds of the sea.
+
 ## [0.1.0] - 2026-10-30
 
 The first version.
