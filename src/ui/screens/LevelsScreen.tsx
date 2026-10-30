@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'preact/hooks'
 import { findPack, type Level } from '../../content/packs'
 import { selectScreenOf } from '../../content/schema'
-import { locale, t } from '../../i18n'
+import { locale, t, tn } from '../../i18n'
 import { navigate } from '../router'
 import { Missing } from './SkillsScreen'
 
@@ -9,10 +9,12 @@ interface Props {
   readonly pack: string
   readonly skill: number
   readonly solved: ReadonlySet<string>
+  /** The fewest moves each level was solved in. */
+  readonly best?: ReadonlyMap<string, number>
 }
 
 /** The levels of a skill, all open from the start, with a mark on the solved ones. */
-export function LevelsScreen({ pack: id, skill: number, solved }: Props) {
+export function LevelsScreen({ pack: id, skill: number, solved, best }: Props) {
   const pack = findPack(id)
   const skill = pack?.skills[number - 1]
   const [levels, setLevels] = useState<readonly Level[]>([])
@@ -52,6 +54,7 @@ export function LevelsScreen({ pack: id, skill: number, solved }: Props) {
         {skill.levels.map((entry) => {
           const name = levels.find((level) => level.id === entry.id)?.file.name[locale.value]
           const done = solved.has(entry.id)
+          const fewest = best?.get(entry.id)
           return (
             <li key={entry.id}>
               <button
@@ -60,7 +63,11 @@ export function LevelsScreen({ pack: id, skill: number, solved }: Props) {
                 onClick={() => navigate({ name: 'play', level: entry.id })}
               >
                 <span>{name ? t('levelLabel', { number: entry.number, name }) : entry.number}</span>
-                {done && <span class="mark">{t('solvedMark')}</span>}
+                {done && (
+                  <span class="mark">
+                    {fewest === undefined ? t('solvedMark') : tn('solvedMarkBest', fewest)}
+                  </span>
+                )}
               </button>
             </li>
           )

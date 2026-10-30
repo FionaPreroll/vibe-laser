@@ -190,7 +190,12 @@ export function App({ store, audio }: Props) {
           <SkillsScreen pack={current.pack} solved={solved} onHelp={() => setOverlay('help')} />
         )}
         {current.name === 'levels' && (
-          <LevelsScreen pack={current.pack} skill={current.skill} solved={solved} />
+          <LevelsScreen
+            pack={current.pack}
+            skill={current.skill}
+            solved={solved}
+            best={book.best.value}
+          />
         )}
         {current.name === 'play' && (
           // One screen per level, so nothing of a finished game carries over to the next.

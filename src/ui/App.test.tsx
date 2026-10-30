@@ -118,6 +118,7 @@ describe('App', () => {
     const { store } = await start('#/play/tutorial/1/1')
     await solve(await mounted(), 'tutorial/1/1')
     const dialog = await solvedDialog()
+    expect(within(dialog).getByText('Solved in 2 moves.')).toBeTruthy()
     await waitFor(async () => expect(await solvedIn(store)).toEqual(['tutorial/1/1']))
     await act(() => {
       fireEvent.click(within(dialog).getByRole('button', { name: 'Next unsolved level' }))
@@ -128,7 +129,7 @@ describe('App', () => {
     await click('Exit')
     const levels = await screen.findAllByRole('button', { name: /^\d\. / })
     expect(levels.map((level) => level.textContent)).toEqual([
-      '1. First Lightsolved',
+      '1. First Lightsolved · best 2 moves',
       '2. Two Turns',
       '3. Meeting Point',
       '4. Dark Coin',

@@ -133,11 +133,18 @@ button.primary {
 }
 
 /* The original's RGB dots, at the end of the button bar: lit in the colors of the piece pointed at. */
+.moves {
+  margin-left: auto;
+  color: var(--text-quiet);
+  font-size: 0.875rem;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
 .color-dots {
   display: flex;
   align-items: center;
   gap: 4px;
-  margin-left: auto;
 }
 
 .color-dot {

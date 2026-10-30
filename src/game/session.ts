@@ -81,6 +81,8 @@ export class GameSession {
   readonly canPlay: ReadonlySignal<boolean>
   readonly canUndo: ReadonlySignal<boolean>
   readonly canRedo: ReadonlySignal<boolean>
+  /** Player moves that stand now: undo takes one back, redo makes it again, restart clears them. */
+  readonly moves: ReadonlySignal<number>
   /** Whether Cleanup would move anything. */
   readonly canCleanup: ReadonlySignal<boolean>
 
@@ -93,6 +95,7 @@ export class GameSession {
     this.canPlay = computed(() => isPlaying(this.#state.value.phase))
     this.canUndo = computed(() => this.canPlay.value && this.#undo.value.length > 0)
     this.canRedo = computed(() => this.canPlay.value && this.#redo.value.length > 0)
+    this.moves = computed(() => this.#undo.value.length)
     this.canCleanup = computed(() => {
       const { puzzle, light } = this.#state.value
       return this.canPlay.value && cleanupCommand(puzzle, light) !== undefined

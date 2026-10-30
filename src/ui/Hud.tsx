@@ -63,6 +63,7 @@ export function Hud({ controller, onExit, onHelp }: Props) {
         <button type="button" onClick={onHelp}>
           {t('help')}
         </button>
+        <span class="moves">{t('movesCounter', { count: session.moves.value })}</span>
         <ColorDots piece={controller.inspected.value} />
       </div>
       <p id="controls-hint" class="hint">
