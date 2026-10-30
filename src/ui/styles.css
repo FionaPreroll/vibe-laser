@@ -1548,7 +1548,8 @@ button.link {
   }
 
   .modal {
-    max-height: calc(100% - 8px);
+    /* The whole screen but a margin, so a long dialog scrolls inside itself. */
+    max-height: calc(100dvh - 16px);
   }
 
   .modal-backdrop {
