@@ -169,3 +169,16 @@ test.describe('with a German browser', () => {
     ).toBeVisible()
   })
 })
+
+test('shows where a slime would walk while a piece is carried', async ({ page }) => {
+  await page.goto('./#/play/tutorial/3/2')
+  const mirror = await centerOf(page, { slot: 0 })
+  const b2 = await centerOf(page, { cell: [1, 1] })
+  await page.mouse.move(mirror.x, mirror.y)
+  await page.mouse.down()
+  await page.mouse.move(b2.x, b2.y, { steps: 5 })
+  // The mirror takes the beam out of row B, so the slime would set off north.
+  await expect(page.locator('.board')).toHaveAttribute('data-paths', '1')
+  await page.mouse.up()
+  await expect(page.locator('.board')).toHaveAttribute('data-paths', '0')
+})

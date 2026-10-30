@@ -67,7 +67,8 @@ export function Hud({ controller, onExit, onHelp }: Props) {
         {hasActors(puzzle) && (
           <HudButton
             icon="fast"
-            label={t('speed', { speed: controller.speed.value })}
+            label={t('speedButton')}
+            title={t('speed', { speed: controller.speed.value })}
             badge={`${controller.speed.value}×`}
             pressed={controller.speed.value > 1}
             onClick={() => {
@@ -92,18 +93,20 @@ interface ButtonProps {
   readonly disabled?: boolean
   /** A short mark that stays in view beside the icon, such as the speed. */
   readonly badge?: string
+  /** The tooltip, when it says more than the label. */
+  readonly title?: string
   /** For buttons that switch something on. */
   readonly pressed?: boolean
   readonly onClick: () => void
 }
 
 /** A button of the bar: an icon, and its name beside it where there is room, else as a tooltip. */
-export function HudButton({ icon, label, disabled, badge, pressed, onClick }: ButtonProps) {
+export function HudButton({ icon, label, title, disabled, badge, pressed, onClick }: ButtonProps) {
   return (
     <button
       type="button"
       class="hud-button"
-      title={label}
+      title={title ?? label}
       disabled={disabled}
       aria-pressed={pressed}
       onClick={onClick}

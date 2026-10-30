@@ -54,6 +54,7 @@ export const en = {
   rotateLeft: 'Rotate left',
   rotateRight: 'Rotate right',
   speed: 'Speed: {speed} times',
+  speedButton: 'Speed',
   controls:
     'Drag pieces from the toolbox onto the board. Click a piece to rotate it left, right-click to rotate it right. Keyboard: arrow keys, Enter to pick up and drop, Q and E to rotate, Ctrl+Z to undo.',
   touchControls:
@@ -444,6 +445,7 @@ export const de: Record<MessageKey, string> = {
   rotateLeft: 'Nach links drehen',
   rotateRight: 'Nach rechts drehen',
   speed: 'Tempo: {speed}-fach',
+  speedButton: 'Tempo',
   controls:
     'Ziehe Teile aus der Ablage auf das Spielfeld. Ein Klick dreht ein Teil nach links, ein Rechtsklick nach rechts. Tastatur: Pfeiltasten, Enter zum Aufnehmen und Ablegen, Q und E zum Drehen, Strg+Z zum Rückgängigmachen.',
   touchControls:
