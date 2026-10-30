@@ -9,6 +9,7 @@ import { PackShelf } from '../persistence/packs'
 import { ProfileBook } from '../persistence/profiles'
 import { browserStore, type KeyValueStore, memoryStore } from '../persistence/store'
 import { beamPreview, chosenArt, colorBlind } from '../view/display'
+import { FullScreenButton, TurnNotice } from './FullScreen'
 import { HelpDialog } from './HelpDialog'
 import { LanguageSwitch } from './LanguageSwitch'
 import { followAddress, isEditorScreen, navigate, type Screen, screen } from './router'
@@ -173,6 +174,7 @@ export function App({ store, audio }: Props) {
           <button type="button" onClick={() => navigate({ name: 'about' })}>
             {t('about')}
           </button>
+          <FullScreenButton />
           <LanguageSwitch />
         </nav>
       </header>
@@ -236,6 +238,7 @@ export function App({ store, audio }: Props) {
       </main>
       {overlay === 'help' && <HelpDialog onClose={closeOverlay} />}
       {overlay === 'settings' && <SettingsDialog book={book} onClose={closeOverlay} />}
+      <TurnNotice />
     </div>
   )
 }

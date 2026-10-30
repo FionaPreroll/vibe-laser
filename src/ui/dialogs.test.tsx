@@ -70,6 +70,59 @@ describe('SolvedDialog with moves', () => {
   })
 })
 
+describe('SolvedDialog put aside', () => {
+  it.each([
+    [
+      'Escape',
+      () => {
+        fireEvent.keyDown(window, { key: 'Escape' })
+      },
+    ],
+    [
+      'a click on the backdrop',
+      () => {
+        const backdrop = document.querySelector('.dialog-backdrop') as HTMLElement
+        fireEvent.pointerDown(backdrop)
+        fireEvent.click(backdrop)
+      },
+    ],
+  ])('steps aside after %s and comes back with its button', async (_, dismiss) => {
+    vi.useFakeTimers()
+    const onLevels = vi.fn()
+    render(<SolvedDialog onNext={undefined} onLevels={onLevels} onReplay={() => {}} />)
+    await act(() => {
+      vi.advanceTimersByTime(1500)
+    })
+    await act(dismiss)
+    expect(screen.queryByRole('dialog')).toBeNull()
+    expect(onLevels).not.toHaveBeenCalled()
+    const again = screen.getByRole('button', { name: 'Level solved: show again' })
+    expect(document.activeElement).toBe(again)
+    await act(() => {
+      fireEvent.click(again)
+    })
+    expect(screen.getByRole('dialog', { name: 'Level solved' })).toBeTruthy()
+    expect(document.activeElement).toBe(screen.getByRole('button', { name: 'Level selection' }))
+  })
+
+  it('stays open after a click inside it, or a drag that only ends outside', async () => {
+    vi.useFakeTimers()
+    render(<SolvedDialog onNext={undefined} onLevels={() => {}} onReplay={() => {}} />)
+    await act(() => {
+      vi.advanceTimersByTime(1500)
+    })
+    const dialog = screen.getByRole('dialog', { name: 'Level solved' })
+    const backdrop = document.querySelector('.dialog-backdrop') as HTMLElement
+    await act(() => {
+      fireEvent.pointerDown(dialog)
+      fireEvent.click(dialog)
+      fireEvent.pointerDown(dialog)
+      fireEvent.click(backdrop)
+    })
+    expect(screen.getByRole('dialog', { name: 'Level solved' })).toBeTruthy()
+  })
+})
+
 describe('FailedDialog', () => {
   it('waits for the blast to fade, then offers a fresh start or the level selection', async () => {
     vi.useFakeTimers()
@@ -113,6 +166,23 @@ describe('Modal', () => {
     unmount()
     await waitFor(() => expect(document.activeElement).toBe(opener))
     opener.remove()
+  })
+
+  it('closes with a click on the backdrop, but not with one inside', () => {
+    const onClose = vi.fn()
+    render(
+      <Modal id="test" title="Notes" onClose={onClose}>
+        <p>Some notes</p>
+      </Modal>,
+    )
+    const dialog = screen.getByRole('dialog', { name: 'Notes' })
+    fireEvent.pointerDown(dialog)
+    fireEvent.click(dialog)
+    expect(onClose).not.toHaveBeenCalled()
+    const backdrop = document.querySelector('.modal-backdrop') as HTMLElement
+    fireEvent.pointerDown(backdrop)
+    fireEvent.click(backdrop)
+    expect(onClose).toHaveBeenCalledOnce()
   })
 
   it('leaves the focus where the player put it when the screen behind it changes', () => {

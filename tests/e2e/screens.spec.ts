@@ -43,6 +43,9 @@ test('opens help and the settings over the game, and keeps the settings', async 
   await expect(help.getByText('Fuel cell', { exact: true })).toBeAttached()
   await page.keyboard.press('Escape')
   await expect(help).toBeHidden()
+  await page.getByRole('toolbar').getByRole('button', { name: 'Help' }).click()
+  await page.mouse.click(4, 300)
+  await expect(help).toBeHidden()
 
   await page.getByRole('button', { name: 'Settings' }).click()
   const settings = page.getByRole('dialog', { name: 'Settings' })
@@ -71,6 +74,19 @@ test('changes the look in the middle of a level, and the game goes on', async ({
   const mirror = await centerOf(page, { cell: [5, 1] })
   await page.mouse.click(mirror.x, mirror.y)
   await expect(page.getByRole('dialog', { name: 'Level solved' })).toBeVisible()
+})
+
+test('puts the solved dialog aside to look at the board, and brings it back', async ({ page }) => {
+  await page.goto('./#/play/tutorial/1/1')
+  await placeMirrorWithKeyboard(page)
+  await page.keyboard.press('q')
+  const dialog = page.getByRole('dialog', { name: 'Level solved' })
+  await expect(dialog).toBeVisible()
+  await page.mouse.click(4, 300)
+  await expect(dialog).toBeHidden()
+  await page.getByRole('button', { name: 'Level solved: show again' }).click()
+  await dialog.getByText('Level selection').click()
+  await expect(page.getByRole('button', { name: /^1\. First Light/ })).toContainText('solved')
 })
 
 test('gives a new profile progress of its own', async ({ page }) => {

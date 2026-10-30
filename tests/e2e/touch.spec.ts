@@ -1,7 +1,8 @@
 import { expect, type Page, test } from '@playwright/test'
 import { boardReady, centerOf } from './board'
 
-test.use({ viewport: { width: 412, height: 915 }, hasTouch: true, isMobile: true })
+// A phone on its side, as the game asks to be played.
+test.use({ viewport: { width: 915, height: 412 }, hasTouch: true, isMobile: true })
 
 /** The board's current scale on the screen, as the stage reports it for tests. */
 async function scale(page: Page): Promise<number> {
@@ -41,4 +42,23 @@ test('zooms the board with two fingers', async ({ page }) => {
   }
   await client.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] })
   await expect.poll(() => scale(page)).toBeCloseTo(fitted * 2.5)
+})
+
+test('puts the button bar beside the board on a phone on its side', async ({ page }) => {
+  await page.goto('./#/play/tutorial/1/1')
+  await boardReady(page)
+  const board = await page.locator('.board').boundingBox()
+  const bar = await page.getByRole('toolbar').boundingBox()
+  if (board === null || bar === null) throw new Error('board or button bar not shown')
+  expect(bar.x).toBeGreaterThanOrEqual(board.x + board.width)
+  expect(bar.y).toBeLessThan(board.y + board.height / 2)
+  await expect(page.getByRole('heading', { name: 'Turn your phone' })).toBeHidden()
+})
+
+test('asks to turn a phone held upright', async ({ page }) => {
+  await page.setViewportSize({ width: 412, height: 915 })
+  await page.goto('./#/play/tutorial/1/1')
+  await expect(page.getByRole('heading', { name: 'Turn your phone' })).toBeVisible()
+  await page.setViewportSize({ width: 915, height: 412 })
+  await expect(page.getByRole('heading', { name: 'Turn your phone' })).toBeHidden()
 })

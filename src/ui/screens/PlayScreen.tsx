@@ -120,14 +120,16 @@ export function PlayScreen({ level: id, book, speaker, paused, onHelp }: Props) 
       {pack.file.showsSolutions && (loaded.level.file.solution?.length ?? 0) > 0 && (
         <SolutionBar controller={controller} level={loaded.level.file} />
       )}
-      <div class="stage">
-        <BoardCanvas
-          controller={controller}
-          skin={pack.file.skin}
-          label={t('board', { name, columns: puzzle.width, rows: puzzle.height })}
-        />
+      <div class="play-area">
+        <div class="stage">
+          <BoardCanvas
+            controller={controller}
+            skin={pack.file.skin}
+            label={t('board', { name, columns: puzzle.width, rows: puzzle.height })}
+          />
+        </div>
+        <Hud controller={controller} onExit={toLevels} onHelp={onHelp} />
       </div>
-      <Hud controller={controller} onExit={toLevels} onHelp={onHelp} />
       {phase === 'solved' && (
         <SolvedDialog
           onNext={next && (() => navigate({ name: 'play', level: next.id }))}
