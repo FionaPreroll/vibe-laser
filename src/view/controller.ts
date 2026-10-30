@@ -23,6 +23,14 @@ export interface KeyModifiers {
   readonly shift: boolean
 }
 
+export const SPEEDS = [1, 2, 4] as const
+export type Speed = (typeof SPEEDS)[number]
+
+/** The next speed of the fast-forward button, round from 4 back to 1. */
+export function nextSpeed(speed: Speed): Speed {
+  return SPEEDS[(SPEEDS.indexOf(speed) + 1) % SPEEDS.length] ?? 1
+}
+
 /**
  * UI state around one game session: the selected piece, the keyboard focus, and a piece lifted
  * with the keyboard. Pointer, keyboard and HUD input all end up here as session commands.
@@ -50,6 +58,8 @@ export class BoardController {
   readonly paused = signal(false)
   /** Actors jump instead of gliding, and blasts flash instead of swelling. */
   readonly reducedMotion = signal(false)
+  /** How fast the game's clock runs: slimes, mines and ships at 1, 2 or 4 times their pace. */
+  readonly speed = signal<Speed>(1)
 
   constructor(session: GameSession) {
     this.session = session

@@ -14,6 +14,7 @@ All changes players can notice are listed here. The format follows [Keep a Chang
 - On a touch screen, holding a finger on a piece turns it right, as a right click does.
 - On phones that can vibrate, a short buzz as pieces go down or turn, and a rumble when an explosive goes off. The settings switch it off.
 - A setting for left hands puts the buttons left of the board on a phone or tablet on its side.
+- With slimes, mines or ships on the board, a button in the bar runs them two or four times as fast, and the stability bar with them.
 
 ### Changed
 

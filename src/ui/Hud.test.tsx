@@ -186,4 +186,23 @@ describe('Hud', () => {
     })
     expect(screen.queryByText(/eaten a mirror/)).toBeNull()
   })
+
+  it('runs slimes, mines and ships faster, only where there are some', async () => {
+    const calm = await controllerFor('tutorial/1/1')
+    const { unmount } = renderHud(calm)
+    expect(screen.queryByRole('button', { name: /^Speed/ })).toBeNull()
+    unmount()
+
+    const controller = await controllerFor('tutorial/3/2')
+    renderHud(controller)
+    const speed = () => screen.getByRole('button', { name: /^Speed/ })
+    expect(speed().getAttribute('aria-pressed')).toBe('false')
+    for (const expected of [2, 4, 1]) {
+      await act(() => {
+        fireEvent.click(speed())
+      })
+      expect(controller.speed.value).toBe(expected)
+      expect(speed().textContent).toContain(`${expected}×`)
+    }
+  })
 })

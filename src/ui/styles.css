@@ -161,6 +161,11 @@ button.primary {
   gap: 6px;
 }
 
+.hud-badge {
+  font-size: 0.8125rem;
+  font-variant-numeric: tabular-nums;
+}
+
 /* The original's RGB dots, at the end of the button bar: lit in the colors of the piece pointed at. */
 .moves {
   margin-left: auto;

@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'preact/hooks'
+import { ACTOR_KINDS } from '../core/actors/kinds'
 import type { Piece } from '../core/board'
 import { type Color, PRIMARIES, type Primary } from '../core/color'
+import type { Puzzle } from '../core/level'
 import { STABLE_TICKS } from '../game/session'
 import { type MessageKey, t } from '../i18n'
-import type { BoardController } from '../view/controller'
+import { type BoardController, nextSpeed } from '../view/controller'
 import { Icon, type IconName } from './icons'
 import { touchScreen } from './pointer'
 
@@ -19,7 +21,7 @@ interface Props {
 /** The button bar below the board, as in the original, with the stability bar above it. */
 export function Hud({ controller, onExit, onHelp }: Props) {
   const { session } = controller
-  const { phase, stable } = session.state.value
+  const { phase, stable, puzzle } = session.state.value
   return (
     <div class="hud">
       {phase === 'stabilizing' && (
@@ -62,6 +64,17 @@ export function Hud({ controller, onExit, onHelp }: Props) {
           disabled={!controller.canRotateSelected.value}
           onClick={() => controller.rotateSelected(1)}
         />
+        {hasActors(puzzle) && (
+          <HudButton
+            icon="fast"
+            label={t('speed', { speed: controller.speed.value })}
+            badge={`${controller.speed.value}×`}
+            pressed={controller.speed.value > 1}
+            onClick={() => {
+              controller.speed.value = nextSpeed(controller.speed.value)
+            }}
+          />
+        )}
         <HudButton icon="help" label={t('help')} onClick={onHelp} />
         <span class="moves">{t('movesCounter', { count: session.moves.value })}</span>
         <ColorDots piece={controller.inspected.value} />
@@ -77,16 +90,39 @@ interface ButtonProps {
   readonly icon: IconName
   readonly label: string
   readonly disabled?: boolean
+  /** A short mark that stays in view beside the icon, such as the speed. */
+  readonly badge?: string
+  /** For buttons that switch something on. */
+  readonly pressed?: boolean
   readonly onClick: () => void
 }
 
 /** A button of the bar: an icon, and its name beside it where there is room, else as a tooltip. */
-export function HudButton({ icon, label, disabled, onClick }: ButtonProps) {
+export function HudButton({ icon, label, disabled, badge, pressed, onClick }: ButtonProps) {
   return (
-    <button type="button" class="hud-button" title={label} disabled={disabled} onClick={onClick}>
+    <button
+      type="button"
+      class="hud-button"
+      title={label}
+      disabled={disabled}
+      aria-pressed={pressed}
+      onClick={onClick}
+    >
       <Icon name={icon} />
+      {badge && (
+        <span class="hud-badge" aria-hidden="true">
+          {badge}
+        </span>
+      )}
       <span class="hud-label">{label}</span>
     </button>
+  )
+}
+
+/** Slimes, mines or ships on the board, whose pace the fast-forward button can change. */
+function hasActors(puzzle: Puzzle): boolean {
+  return puzzle.items.some(
+    ({ piece, place }) => place.area === 'board' && ACTOR_KINDS.has(piece.kind),
   )
 }
 
