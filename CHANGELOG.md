@@ -46,6 +46,7 @@ All changes players can notice are listed here. The format follows [Keep a Chang
 - A Hints & Solutions pack, as the original offered: the Lightworks puzzles with help at hand. A hint shows where the next piece goes and how it is turned, and the whole solution plays itself if you ask. Packs made in the level editor can offer hints and solutions too.
 - Share a level you made as a link: Share link in the level editor copies it, and whoever opens the link plays the level at once, with no file to pass around. Solved or not, Add to my packs keeps it in a pack called Shared levels.
 - The button bar counts your moves, and a solved level tells you how many you needed and whether that beats your best. The level list shows each level's best next to its mark.
+- A third level pack, Strange Light: eighteen puzzles with the parts of the expansion packs, in three skills. Bent Light is about benders and splicers, Color Sorting about prismirrors, selectors and complexes, and Danger Zone puts them among explosives and anti-coins. It glows in Neon at the space station's console, with the sounds of space.
 
 ### Changed
 

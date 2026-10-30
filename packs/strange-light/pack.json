@@ -1,0 +1,18 @@
+{
+  "$schema": "../pack.schema.json",
+  "version": 1,
+  "title": { "en": "Strange Light", "de": "Seltsames Licht" },
+  "description": {
+    "en": "Eighteen puzzles with the parts of the expansion packs: benders, splicers, prismirrors, selectors and complexes, and at the end explosives and anti-coins as well.",
+    "de": "Achtzehn Rätsel mit den Teilen der Erweiterungen: Bendern, Splicern, Prismirrors, Selektoren und Komplexen, und zum Schluss auch mit Sprengstoff und Anti-Münzen."
+  },
+  "position": 4,
+  "skills": [
+    { "en": "Bent Light", "de": "Krummes Licht" },
+    { "en": "Color Sorting", "de": "Farben sortieren" },
+    { "en": "Danger Zone", "de": "Gefahrenzone" }
+  ],
+  "skin": "neon",
+  "sounds": "space",
+  "selectScreen": "space"
+}

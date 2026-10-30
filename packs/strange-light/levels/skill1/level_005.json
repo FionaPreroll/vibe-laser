@@ -1,0 +1,15 @@
+{
+  "$schema": "../../../level.schema.json",
+  "version": 1,
+  "name": { "en": "Mirror Image", "de": "Spiegelbild" },
+  "note": "The prismirror splits white light to the left, the other way from a prism, and a mirror sends one color on.",
+  "size": [7, 5],
+  "objects": [
+    { "type": "coin", "pos": "A3", "rgb": "r" },
+    { "type": "coin", "pos": "A5", "rgb": "g" },
+    { "type": "coin", "pos": "C2", "rgb": "b" },
+    { "type": "laser", "pos": "D1", "rot": 2, "rgb": "rgb" }
+  ],
+  "toolbox": [{ "type": "prismirror", "rot": 0 }, { "type": "mirror", "rot": 0 }],
+  "solution": [{ "piece": 0, "pos": "D2", "rot": 2 }, { "piece": 1, "pos": "D3", "rot": 7 }]
+}

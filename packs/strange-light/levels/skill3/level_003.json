@@ -1,0 +1,25 @@
+{
+  "$schema": "../../../level.schema.json",
+  "version": 1,
+  "name": { "en": "Powder Keg", "de": "Pulverfass" },
+  "note": "A red selector and two mirrors, with explosives and an anti-coin in the corners.",
+  "size": [7, 5],
+  "objects": [
+    { "type": "antiCoin", "pos": "A1" },
+    { "type": "explosive", "pos": "A2" },
+    { "type": "coin", "pos": "C3", "rgb": "r" },
+    { "type": "coin", "pos": "C5", "rgb": "r" },
+    { "type": "laser", "pos": "D7", "rot": 6, "rgb": "rgb" },
+    { "type": "coin", "pos": "E5", "rgb": "r" },
+    { "type": "explosive", "pos": "E6" }
+  ],
+  "toolbox": [
+    { "type": "selector", "rot": 0, "rgb": "r" },
+    { "type": "mirror", "rot": 0, "count": 2 }
+  ],
+  "solution": [
+    { "piece": 0, "pos": "D6", "rot": 6 },
+    { "piece": 1, "pos": "A3", "rot": 4 },
+    { "piece": 2, "pos": "B2", "rot": 2 }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "$schema": "../../../level.schema.json",
+  "version": 1,
+  "name": { "en": "Last Light", "de": "Letztes Licht" },
+  "note": "The last puzzle: splicer, complex and mirror among explosives and an anti-coin.",
+  "size": [8, 6],
+  "objects": [
+    { "type": "explosive", "pos": "A1" },
+    { "type": "laser", "pos": "B1", "rot": 2, "rgb": "rgb" },
+    { "type": "coin", "pos": "C7", "rgb": "r" },
+    { "type": "coin", "pos": "C8", "rgb": "gb" },
+    { "type": "explosive", "pos": "D4" },
+    { "type": "antiCoin", "pos": "E4" },
+    { "type": "coin", "pos": "F5", "rgb": "rgb" }
+  ],
+  "toolbox": [
+    { "type": "complex", "rot": 0, "rgb": "r", "inner": "gb" },
+    { "type": "splicer", "rot": 0 },
+    { "type": "mirror", "rot": 0 }
+  ],
+  "solution": [
+    { "piece": 0, "pos": "B6", "rot": 2 },
+    { "piece": 1, "pos": "B5", "rot": 6 },
+    { "piece": 2, "pos": "B8", "rot": 5 }
+  ]
+}

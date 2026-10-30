@@ -1,0 +1,17 @@
+{
+  "$schema": "../../../level.schema.json",
+  "version": 1,
+  "name": { "en": "Inner Light", "de": "Inneres Licht" },
+  "note": "A complex turns its outer red aside and lets its inner cyan through; only red counts here.",
+  "size": [7, 5],
+  "objects": [
+    { "type": "coin", "pos": "B1", "rgb": "r" },
+    { "type": "laser", "pos": "C7", "rot": 6, "rgb": "rgb" },
+    { "type": "coin", "pos": "D3", "rgb": "r" }
+  ],
+  "toolbox": [
+    { "type": "complex", "rot": 0, "rgb": "r", "inner": "gb" },
+    { "type": "mirror", "rot": 0 }
+  ],
+  "solution": [{ "piece": 0, "pos": "C6", "rot": 1 }, { "piece": 1, "pos": "E4", "rot": 0 }]
+}

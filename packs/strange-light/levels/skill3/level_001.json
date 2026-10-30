@@ -1,0 +1,16 @@
+{
+  "$schema": "../../../level.schema.json",
+  "version": 1,
+  "name": { "en": "Short Fuse", "de": "Kurze Lunte" },
+  "note": "Two explosives right where the obvious path would run: the bender has to go elsewhere.",
+  "size": [6, 5],
+  "objects": [
+    { "type": "laser", "pos": "B1", "rot": 2, "rgb": "r" },
+    { "type": "explosive", "pos": "C2" },
+    { "type": "coin", "pos": "D2", "rgb": "r" },
+    { "type": "explosive", "pos": "D3" },
+    { "type": "coin", "pos": "E1", "rgb": "r" }
+  ],
+  "toolbox": [{ "type": "bender" }, { "type": "mirror", "rot": 0 }],
+  "solution": [{ "piece": 0, "pos": "B2", "rot": 0 }, { "piece": 1, "pos": "C3", "rot": 6 }]
+}

@@ -1,0 +1,17 @@
+{
+  "$schema": "../../../level.schema.json",
+  "version": 1,
+  "name": { "en": "Keep in the Dark", "de": "Im Dunkeln bleiben" },
+  "note": "Green and blue lasers, but only blue coins: the green beam must miss both anti-coins.",
+  "size": [7, 5],
+  "objects": [
+    { "type": "coin", "pos": "A6", "rgb": "b" },
+    { "type": "laser", "pos": "C1", "rot": 2, "rgb": "g" },
+    { "type": "laser", "pos": "D1", "rot": 2, "rgb": "b" },
+    { "type": "antiCoin", "pos": "D7" },
+    { "type": "coin", "pos": "E2", "rgb": "b" },
+    { "type": "antiCoin", "pos": "E4" }
+  ],
+  "toolbox": [{ "type": "splicer", "rot": 0 }, { "type": "mirror", "rot": 0 }],
+  "solution": [{ "piece": 0, "pos": "D2", "rot": 6 }, { "piece": 1, "pos": "D6", "rot": 7 }]
+}

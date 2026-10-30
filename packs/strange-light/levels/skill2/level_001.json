@@ -1,0 +1,14 @@
+{
+  "$schema": "../../../level.schema.json",
+  "version": 1,
+  "name": { "en": "Red Turns Off", "de": "Rot biegt ab" },
+  "note": "A yellow beam: the red selector turns red aside and lets green run on, and a mirror sends one of them to its coin.",
+  "size": [6, 5],
+  "objects": [
+    { "type": "coin", "pos": "A3", "rgb": "r" },
+    { "type": "laser", "pos": "C6", "rot": 6, "rgb": "rg" },
+    { "type": "coin", "pos": "D4", "rgb": "g" }
+  ],
+  "toolbox": [{ "type": "selector", "rot": 0, "rgb": "r" }, { "type": "mirror", "rot": 0 }],
+  "solution": [{ "piece": 0, "pos": "C5", "rot": 6 }, { "piece": 1, "pos": "C4", "rot": 3 }]
+}
