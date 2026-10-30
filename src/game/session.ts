@@ -1,5 +1,6 @@
 import { batch, computed, type ReadonlySignal, type Signal, signal } from '@preact/signals-core'
 import { type ActorEvent, forgetPaths, stepActors, type World } from '../core/actors'
+import { type PredictedPath, predictPaths } from '../core/actors/predict'
 import { coinSpins, isSolved } from '../core/coins'
 import { applyCommand, type Command, cleanupCommand } from '../core/commands'
 import { burn, litExplosives } from '../core/explosions'
@@ -139,6 +140,21 @@ export class GameSession {
     if (applied === undefined) return undefined
     const light = trace(boardOf(applied.puzzle), this.#rules).light
     return { light, ignites: litExplosives(applied.puzzle, light) }
+  }
+
+  /**
+   * Where slimes and ships would go after a command, or from here without one, for the faint
+   * paths drawn while a piece is carried. Undefined when the command is not allowed now.
+   */
+  previewPaths(command?: Command): PredictedPath[] | undefined {
+    if (!this.canPlay.value) return undefined
+    const current = this.#state.value
+    if (command === undefined) return predictPaths(current, this.#rules)
+    const applied = applyCommand(current.puzzle, command)
+    if (applied === undefined) return undefined
+    const light = trace(boardOf(applied.puzzle), this.#rules).light
+    const world = { ...current, puzzle: applied.puzzle, light, memory: forgetPaths(current.memory) }
+    return predictPaths(world, this.#rules)
   }
 
   /** Cleanup: unlit moveable pieces go back into the toolbox, as one undoable step. */

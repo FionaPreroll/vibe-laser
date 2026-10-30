@@ -126,7 +126,7 @@ export const en = {
   leftHanded: 'Buttons on the left, for left hands',
   leftHandedHint: 'On a phone or tablet on its side, the buttons sit left of the board.',
   beamPreviewHint:
-    'While you carry a piece, the beams show faintly where light would go if you put it down there, and explosives it would reach get a red ring.',
+    'While you carry a piece, the beams show faintly where light would go if you put it down there, and explosives it would reach get a red ring. Dotted lines show where slimes and ships would then walk.',
 
   helpTitle: 'How to play',
   helpGoal:
@@ -519,7 +519,7 @@ export const de: Record<MessageKey, string> = {
   leftHandedHint:
     'Auf einem Handy oder Tablet im Querformat stehen die Knöpfe links vom Spielfeld.',
   beamPreviewHint:
-    'Während du ein Teil trägst, zeigen die Strahlen blass, wohin das Licht ginge, wenn du es dort ablegst, und Sprengstoff, den es erreichen würde, bekommt einen roten Ring.',
+    'Während du ein Teil trägst, zeigen die Strahlen blass, wohin das Licht ginge, wenn du es dort ablegst, und Sprengstoff, den es erreichen würde, bekommt einen roten Ring. Gepunktete Linien zeigen, wohin Schleime und Raumschiffe dann laufen würden.',
 
   helpTitle: 'So wird gespielt',
   helpGoal:

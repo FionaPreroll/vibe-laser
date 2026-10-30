@@ -15,6 +15,7 @@ All changes players can notice are listed here. The format follows [Keep a Chang
 - On phones that can vibrate, a short buzz as pieces go down or turn, and a rumble when an explosive goes off. The settings switch it off.
 - A setting for left hands puts the buttons left of the board on a phone or tablet on its side.
 - With slimes, mines or ships on the board, a button in the bar runs them two or four times as fast, and the stability bar with them.
+- While you carry a piece, dotted lines show where slimes and ships would walk if you put it down there, with a red ring where one would set off an explosive.
 
 ### Changed
 

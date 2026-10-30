@@ -1,5 +1,6 @@
 import { batch, effect } from '@preact/signals-core'
 import type { FederatedPointerEvent } from 'pixi.js'
+import type { PredictedPath } from '../core/actors/predict'
 import { type Item, itemAt, itemById, type Place, samePlace } from '../core/level'
 import { type GameEvent, type Phase, STABLE_TICKS } from '../game/session'
 import { createFlatArt } from './art/flat'
@@ -10,6 +11,8 @@ import { CELL, type Point, placeAt, placeCenter, type Transform } from './layout
 import { BOARD_COLORS } from './palette'
 import { createStage, isTextField } from './stage'
 
+/** The faint paths of actors while a piece is carried: slimes green, ships blue. */
+const PATH_COLORS = { slime: 0x7dff9a, ship: 0x59d6ff } as const
 /** Beams while a piece is carried show where light would go, faint since nothing has moved yet. */
 const PREVIEW_ALPHA = 0.45
 /** Pointer travel in screen pixels before a press turns into a drag; fingers wobble more. */
@@ -148,6 +151,12 @@ export async function mountBoard(
         )
         .stroke({ width: 4, ...frame })
     }
+    const paths =
+      preview === undefined || carried === undefined || destination === undefined
+        ? undefined
+        : session.previewPaths({ kind: 'move', item: carried, to: destination })
+    for (const path of paths ?? []) drawPath(path)
+    host.dataset.paths = String(paths?.filter((path) => path.cells.length > 1).length ?? 0)
     for (const cell of preview?.ignites ?? []) {
       const { x, y } = cellCenter(cell)
       overlay.circle(x, y, 28).stroke({ width: 3, color: BOARD_COLORS.blocked, alpha: 0.9 })
@@ -196,6 +205,25 @@ export async function mountBoard(
     x,
     y: y - Math.max(0, Math.min(TOUCH_LIFT, stage.app.screen.height - y)),
   })
+
+  /** Where a slime or ship would go: a faint line of dots, and a red ring where it would blow up. */
+  const drawPath = ({ kind, cells, ignites }: PredictedPath) => {
+    if (cells.length < 2) return
+    const color = PATH_COLORS[kind]
+    const points = cells.map(cellCenter)
+    const [first, ...rest] = points
+    if (first === undefined) return
+    overlay.moveTo(first.x, first.y)
+    for (const { x, y } of rest) overlay.lineTo(x, y)
+    overlay.stroke({ width: 3, color, alpha: 0.35 })
+    for (const { x, y } of rest) overlay.circle(x, y, 5).fill({ color, alpha: 0.6 })
+    const last = points.at(-1)
+    if (ignites && last !== undefined) {
+      overlay
+        .circle(last.x, last.y, 24)
+        .stroke({ width: 3, color: BOARD_COLORS.blocked, alpha: 0.9 })
+    }
+  }
 
   const cursorAt = (point: Point): string => {
     const place = placeAt(geometry, point)
