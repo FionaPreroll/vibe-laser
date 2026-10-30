@@ -77,7 +77,7 @@ describe('SolutionBar', () => {
     await act(() => void controller.session.restart())
     expect(status()).toBe('')
     await act(() => void vi.advanceTimersByTime(SOLUTION_STEP_MS * 3))
-    expect(controller.session.canUndo.value).toBe(false)
+    expect(controller.session.moves.value).toBe(0)
     expect(button('Show the solution')).toBeTruthy()
   })
 

@@ -61,6 +61,14 @@ export interface Preview {
   readonly ignites: readonly number[]
 }
 
+/** What a restart puts aside for undo. */
+interface Snapshot {
+  readonly state: GameState
+  readonly undo: readonly Command[]
+  readonly redo: readonly Command[]
+  readonly ticks: number
+}
+
 /**
  * One level in play, and the only writer of its state. Undo applies the stored inverse of a
  * command to the current puzzle instead of restoring a snapshot, so whatever slimes, mines, ships
@@ -74,6 +82,9 @@ export class GameSession {
   readonly #undo = signal<readonly Command[]>([])
   readonly #redo = signal<readonly Command[]>([])
   readonly #listeners = new Set<Listener>()
+  /** The game as it was before a restart, until the next move: undo brings it back. */
+  readonly #beforeRestart = signal<Snapshot | undefined>(undefined)
+  readonly #restarts = signal(0)
   #ticks = 0
   #pending = 0
 
@@ -86,6 +97,8 @@ export class GameSession {
   readonly moves: ReadonlySignal<number>
   /** Whether Cleanup would move anything. */
   readonly canCleanup: ReadonlySignal<boolean>
+  /** How often the level was started again, so views can drop what belonged to the last go. */
+  readonly restarts: ReadonlySignal<number> = this.#restarts
 
   constructor(start: Puzzle, rules: Rules = DEFAULT_RULES, seed = 1) {
     this.#start = start
@@ -94,7 +107,11 @@ export class GameSession {
     this.#state = signal(this.#initial())
     this.state = this.#state
     this.canPlay = computed(() => isPlaying(this.#state.value.phase))
-    this.canUndo = computed(() => this.canPlay.value && this.#undo.value.length > 0)
+    this.canUndo = computed(
+      () =>
+        this.canPlay.value &&
+        (this.#undo.value.length > 0 || this.#beforeRestart.value !== undefined),
+    )
     this.canRedo = computed(() => this.canPlay.value && this.#redo.value.length > 0)
     this.moves = computed(() => this.#undo.value.length)
     this.canCleanup = computed(() => {
@@ -116,13 +133,29 @@ export class GameSession {
       this.#undo.value = [...this.#undo.value, applied.inverse]
       this.#redo.value = []
       this.#state.value = applied.state
+      this.#beforeRestart.value = undefined
     })
     this.#emit(applied.events)
     return true
   }
 
-  /** Takes back the latest player command that still applies; entries that no longer apply are dropped. */
+  /**
+   * Takes back the latest player command that still applies; entries that no longer apply are
+   * dropped. Right after a restart, it brings back the game as it was before.
+   */
   undo(): boolean {
+    const before = this.#beforeRestart.value
+    if (before !== undefined && this.#undo.value.length === 0 && this.canPlay.value) {
+      this.#ticks = before.ticks
+      this.#pending = 0
+      batch(() => {
+        this.#undo.value = before.undo
+        this.#redo.value = before.redo
+        this.#state.value = before.state
+        this.#beforeRestart.value = undefined
+      })
+      return true
+    }
     return this.#travel(this.#undo, this.#redo)
   }
 
@@ -163,14 +196,24 @@ export class GameSession {
     return command !== undefined && this.execute(command)
   }
 
-  /** Back to the start of the level; the history is gone. */
+  /**
+   * Back to the start of the level. A game still in play is kept until the next move, so that undo
+   * can bring it back; after a solved or failed level the history is gone.
+   */
   restart(): void {
+    const state = this.#state.value
+    const keep = isPlaying(state.phase) && this.#undo.value.length > 0
+    const before = keep
+      ? { state, undo: this.#undo.value, redo: this.#redo.value, ticks: this.#ticks }
+      : undefined
     this.#ticks = 0
     this.#pending = 0
     batch(() => {
       this.#undo.value = []
       this.#redo.value = []
       this.#state.value = this.#initial()
+      this.#beforeRestart.value = before
+      this.#restarts.value++
     })
   }
 

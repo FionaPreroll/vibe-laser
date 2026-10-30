@@ -314,3 +314,31 @@ describe('GameSession.previewPaths', () => {
     expect(session.previewPaths()?.[0]?.cells).toEqual([12, 7, 2])
   })
 })
+
+describe('GameSession restart and undo', () => {
+  it('keeps the game a restart put aside until the next move', () => {
+    const session = newSession()
+    const first = session.state.value.puzzle.items.find((item) => item.place.area === 'toolbox')
+    if (first === undefined) throw new Error('No toolbox piece')
+    session.execute({ kind: 'move', item: first.id, to: { area: 'board', cell: 0 } })
+    const played = session.state.value
+    session.restart()
+    expect(session.restarts.value).toBe(1)
+    expect(session.canUndo.value).toBe(true)
+    expect(session.undo()).toBe(true)
+    expect(session.state.value).toBe(played)
+    expect(session.moves.value).toBe(1)
+
+    session.restart()
+    session.execute({ kind: 'move', item: first.id, to: { area: 'board', cell: 1 } })
+    session.undo()
+    // The new move ended the chance to undo the restart.
+    expect(session.canUndo.value).toBe(false)
+  })
+
+  it('starts afresh without undo when nothing was played', () => {
+    const session = newSession()
+    session.restart()
+    expect(session.canUndo.value).toBe(false)
+  })
+})
