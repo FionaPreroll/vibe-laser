@@ -54,6 +54,7 @@ export const en = {
   rotateLeft: 'Rotate left',
   rotateRight: 'Rotate right',
   speed: 'Speed: {speed} times',
+  speedButton: 'Speed',
   controls:
     'Drag pieces from the toolbox onto the board. Click a piece to rotate it left, right-click to rotate it right. Keyboard: arrow keys, Enter to pick up and drop, Q and E to rotate, Ctrl+Z to undo.',
   touchControls:
@@ -126,7 +127,7 @@ export const en = {
   leftHanded: 'Buttons on the left, for left hands',
   leftHandedHint: 'On a phone or tablet on its side, the buttons sit left of the board.',
   beamPreviewHint:
-    'While you carry a piece, the beams show faintly where light would go if you put it down there, and explosives it would reach get a red ring.',
+    'While you carry a piece, the beams show faintly where light would go if you put it down there, and explosives it would reach get a red ring. Dotted lines show where slimes and ships would then walk.',
 
   helpTitle: 'How to play',
   helpGoal:
@@ -444,6 +445,7 @@ export const de: Record<MessageKey, string> = {
   rotateLeft: 'Nach links drehen',
   rotateRight: 'Nach rechts drehen',
   speed: 'Tempo: {speed}-fach',
+  speedButton: 'Tempo',
   controls:
     'Ziehe Teile aus der Ablage auf das Spielfeld. Ein Klick dreht ein Teil nach links, ein Rechtsklick nach rechts. Tastatur: Pfeiltasten, Enter zum Aufnehmen und Ablegen, Q und E zum Drehen, Strg+Z zum Rückgängigmachen.',
   touchControls:
@@ -519,7 +521,7 @@ export const de: Record<MessageKey, string> = {
   leftHandedHint:
     'Auf einem Handy oder Tablet im Querformat stehen die Knöpfe links vom Spielfeld.',
   beamPreviewHint:
-    'Während du ein Teil trägst, zeigen die Strahlen blass, wohin das Licht ginge, wenn du es dort ablegst, und Sprengstoff, den es erreichen würde, bekommt einen roten Ring.',
+    'Während du ein Teil trägst, zeigen die Strahlen blass, wohin das Licht ginge, wenn du es dort ablegst, und Sprengstoff, den es erreichen würde, bekommt einen roten Ring. Gepunktete Linien zeigen, wohin Schleime und Raumschiffe dann laufen würden.',
 
   helpTitle: 'So wird gespielt',
   helpGoal:

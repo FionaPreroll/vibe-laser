@@ -1,4 +1,6 @@
 import { describe, expect, it } from 'vitest'
+import { puzzleOf } from '../content/level'
+import { findLevel } from '../content/packs'
 import { cellByName, type Piece } from '../core/board'
 import { boardOf, createPuzzle, type Place } from '../core/level'
 import { formatBoard, parseBoard, parsePiece } from '../core/notation'
@@ -292,5 +294,23 @@ describe('GameSession with hazards and actors', () => {
     expect(board(session)).toBe(formatBoard(parseBoard('. . . \n . . . \n . . .')))
     expect(session.undo()).toBe(false)
     expect(session.canUndo.value).toBe(false)
+  })
+})
+
+describe('GameSession.previewPaths', () => {
+  it('shows the way a slime would take once a beam no longer holds it', async () => {
+    const level = await findLevel('tutorial/3/2')?.entry.load()
+    if (level === undefined) throw new Error('No level tutorial/3/2')
+    const session = new GameSession(puzzleOf(level.file))
+    // The beam along row B holds the slime at C3.
+    expect(session.previewPaths()?.[0]?.cells).toEqual([12])
+    const mirror = session.state.value.puzzle.items.find((item) => item.piece.kind === 'mirror')
+    if (mirror === undefined) throw new Error('No mirror')
+    const b2 = { area: 'board', cell: 6 } as const
+    expect(session.previewPaths({ kind: 'move', item: mirror.id, to: b2 })).toBeDefined()
+    session.execute({ kind: 'move', item: mirror.id, to: b2 })
+    session.execute({ kind: 'rotate', item: mirror.id, steps: 7 })
+    // Turned up, the mirror frees the slime: it walks north to A3 and eats the explosive at A4.
+    expect(session.previewPaths()?.[0]?.cells).toEqual([12, 7, 2])
   })
 })
