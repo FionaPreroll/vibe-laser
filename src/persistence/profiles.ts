@@ -22,6 +22,9 @@ const settingsSchema = z
     vibration: z.boolean().default(true),
     // Buttons left of the board on a phone or tablet on its side; older saves load with them right.
     leftHanded: z.boolean().default(false),
+    // Keys and controller buttons the player changed, by action; older saves load with the defaults.
+    keyBindings: z.record(z.string(), z.array(z.string())).default({}),
+    padBindings: z.record(z.string(), z.array(z.number().int().min(0))).default({}),
   })
   .strict()
 
@@ -71,6 +74,8 @@ export const DEFAULT_SETTINGS: Settings = {
   beamPreview: true,
   vibration: true,
   leftHanded: false,
+  keyBindings: {},
+  padBindings: {},
 }
 
 const KEY = 'save'

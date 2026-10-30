@@ -3,6 +3,7 @@ import type { Piece } from '../core/board'
 import type { Direction } from '../core/direction'
 import { itemAt, itemById, type Place, samePlace } from '../core/level'
 import type { GameSession } from '../game/session'
+import { type Action, actionOfKey, BOARD_ACTIONS, bindings } from './bindings'
 import {
   type GridPoint,
   gridOfPlace,
@@ -60,6 +61,8 @@ export class BoardController {
   readonly reducedMotion = signal(false)
   /** How fast the game's clock runs: slimes, mines and ships at 1, 2 or 4 times their pace. */
   readonly speed = signal<Speed>(1)
+  /** What the screen does for help, the next level and leaving, while it offers them. */
+  readonly commands = new Map<Action, () => void>()
 
   constructor(session: GameSession) {
     this.session = session
@@ -134,40 +137,67 @@ export class BoardController {
 
   /** Handles a key pressed on the board; true when the key did something on the board. */
   handleKey(key: string, modifiers: KeyModifiers): boolean {
-    if (modifiers.ctrl) {
-      const letter = key.toLowerCase()
-      if (letter === 'z') return modifiers.shift ? this.session.redo() : this.session.undo()
-      if (letter === 'y') return this.session.redo()
-      return false
-    }
-    // The keyboard takes over from the mouse until the mouse moves again.
-    batch(() => {
-      this.keyboardActive.value = true
-      this.hovered.value = undefined
+    const action = actionOfKey(bindings.value, {
+      key,
+      ctrlKey: modifiers.ctrl,
+      metaKey: false,
+      shiftKey: modifiers.shift,
+      altKey: false,
     })
-    switch (key) {
-      case 'ArrowLeft':
+    return action !== undefined && this.perform(action)
+  }
+
+  /**
+   * Does what a key or a controller button is bound to; true when it did something. Help, the
+   * next level and leaving belong to the screen, which sets them in `commands`.
+   */
+  perform(action: Action): boolean {
+    if (BOARD_ACTIONS.has(action)) {
+      // The keyboard takes over from the mouse until the mouse moves again.
+      batch(() => {
+        this.keyboardActive.value = true
+        this.hovered.value = undefined
+      })
+    }
+    switch (action) {
+      case 'left':
         return this.#step(-1, 0)
-      case 'ArrowRight':
+      case 'right':
         return this.#step(1, 0)
-      case 'ArrowUp':
+      case 'up':
         return this.#step(0, -1)
-      case 'ArrowDown':
+      case 'down':
         return this.#step(0, 1)
-      case 'Enter':
-      case ' ':
+      case 'pickUp':
         return this.#pickUpOrDrop()
-      case 'Escape':
+      case 'cancel':
         this.lifted.value = undefined
         return true
-      case 'q':
-      case 'Q':
+      case 'rotateLeft':
         return this.#rotateAtFocus(-1)
-      case 'e':
-      case 'E':
+      case 'rotateRight':
         return this.#rotateAtFocus(1)
-      default:
-        return false
+      case 'undo':
+        return this.session.undo()
+      case 'redo':
+        return this.session.redo()
+      case 'restart':
+        batch(() => {
+          this.selected.value = undefined
+          this.lifted.value = undefined
+        })
+        this.session.restart()
+        return true
+      case 'cleanup':
+        return this.session.cleanup()
+      case 'speed':
+        this.speed.value = nextSpeed(this.speed.value)
+        return true
+      default: {
+        const command = this.commands.get(action)
+        command?.()
+        return command !== undefined
+      }
     }
   }
 

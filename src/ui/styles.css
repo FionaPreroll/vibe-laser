@@ -1044,6 +1044,36 @@ main.play {
   gap: 6px;
 }
 
+.bindings summary {
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.bindings table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 8px 0 12px;
+}
+
+.bindings th,
+.bindings td {
+  padding: 3px 4px;
+  text-align: left;
+}
+
+.bindings tbody th {
+  font-weight: normal;
+}
+
+.binding {
+  min-width: 7em;
+  font-variant-numeric: tabular-nums;
+}
+
+.binding.waiting {
+  outline: 2px solid currentColor;
+}
+
 .settings label.check {
   display: flex;
   align-items: center;

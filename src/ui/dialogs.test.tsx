@@ -226,6 +226,49 @@ describe('HelpDialog', () => {
 })
 
 describe('SettingsDialog', () => {
+  it('binds an action to the next key or controller button, and only that action', async () => {
+    const book = await ProfileBook.open(memoryStore(), { name: 'Player' })
+    const onClose = vi.fn()
+    render(<SettingsDialog book={book} onClose={onClose} />)
+    const restartKey = () => screen.getByRole('button', { name: /^Key for Restart:/ })
+    expect(restartKey().textContent).toBe('R')
+    await act(() => void fireEvent.click(restartKey()))
+    expect(restartKey().textContent).toBe('Press a key…')
+    // Escape binds, rather than closing the settings; Q leaves Rotate left behind.
+    await act(() => void fireEvent.keyDown(window, { key: 'Shift' }))
+    await act(() => void fireEvent.keyDown(window, { key: 'q' }))
+    expect(restartKey().textContent).toBe('Q')
+    expect(screen.getByRole('button', { name: /^Key for Rotate left:/ }).textContent).toBe('none')
+    expect(book.active.value.settings.keyBindings).toEqual({ restart: ['Q'], rotateLeft: [] })
+    await act(() => void fireEvent.click(restartKey()))
+    await act(() => void fireEvent.keyDown(window, { key: 'Escape' }))
+    expect(onClose).not.toHaveBeenCalled()
+    expect(restartKey().textContent).toBe('Esc')
+    expect(screen.getByRole('button', { name: /^Key for Let go:/ }).textContent).toBe('none')
+
+    const pads = [{ buttons: [{ pressed: false }, { pressed: false }], axes: [] }]
+    Object.defineProperty(navigator, 'getGamepads', { value: () => pads, configurable: true })
+    try {
+      const undoPad = () => screen.getByRole('button', { name: /^Controller button for Undo:/ })
+      expect(undoPad().textContent).toBe('X')
+      await act(() => void fireEvent.click(undoPad()))
+      expect(undoPad().textContent).toBe('Press a button…')
+      // Buttons held when the wait starts do not count, so the press comes a few frames later.
+      await new Promise((resolve) => setTimeout(resolve, 50))
+      pads[0] = { buttons: [{ pressed: false }, { pressed: true }], axes: [] }
+      await waitFor(() => expect(undoPad().textContent).toBe('B'))
+      expect(book.active.value.settings.padBindings).toEqual({ undo: [1], cancel: [] })
+    } finally {
+      Reflect.deleteProperty(navigator, 'getGamepads')
+    }
+
+    await act(
+      () => void fireEvent.click(screen.getByRole('button', { name: 'Restore the defaults' })),
+    )
+    expect(book.active.value.settings.keyBindings).toEqual({})
+    expect(book.active.value.settings.padBindings).toEqual({})
+  })
+
   it('changes the volumes, motion and colors of the active profile', async () => {
     const book = await ProfileBook.open(memoryStore(), { name: 'Player' })
     render(<SettingsDialog book={book} onClose={() => {}} />)
@@ -271,6 +314,8 @@ describe('SettingsDialog', () => {
       beamPreview: false,
       vibration: true,
       leftHanded: true,
+      keyBindings: {},
+      padBindings: {},
     })
     expect(motion.checked).toBe(true)
     expect(screen.getByLabelText('Language')).toBeTruthy()

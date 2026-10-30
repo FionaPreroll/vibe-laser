@@ -8,6 +8,7 @@ import { t } from '../i18n'
 import { PackShelf } from '../persistence/packs'
 import { ProfileBook } from '../persistence/profiles'
 import { browserStore, type KeyValueStore, memoryStore } from '../persistence/store'
+import { bindings, resolveBindings } from '../view/bindings'
 import { beamPreview, chosenArt, colorBlind, vibration } from '../view/display'
 import { FullScreenButton, TurnNotice } from './FullScreen'
 import { HelpDialog } from './HelpDialog'
@@ -144,6 +145,7 @@ export function App({ store, audio }: Props) {
         chosenArt.value = settings.art
         beamPreview.value = settings.beamPreview
         vibration.value = settings.vibration
+        bindings.value = resolveBindings({ keys: settings.keyBindings, pad: settings.padBindings })
       }),
     [book],
   )

@@ -7,6 +7,7 @@ import { findLevel } from '../content/packs'
 import { createPuzzle, itemById, type Place, type Puzzle } from '../core/level'
 import { parseBoard, parsePiece } from '../core/notation'
 import { GameSession } from '../game/session'
+import { bindings, DEFAULT_BINDINGS, gamepadConnected, resolveBindings } from './bindings'
 import { LONG_PRESS_MS, mountBoard, TOUCH_LIFT } from './board'
 import { BoardController } from './controller'
 import { beamPreview, colorBlind } from './display'
@@ -401,6 +402,63 @@ describe('mountBoard', () => {
     expect(controller.session.canUndo.value).toBe(true)
     key('z', { ctrlKey: true })
     expect(controller.session.canUndo.value).toBe(false)
+  })
+
+  it('follows the keys the player chose, and screen-wide ones need no focus', async () => {
+    const { controller, host, key } = await mount()
+    bindings.value = resolveBindings({ keys: { pickUp: ['X'], restart: ['T'] } })
+    try {
+      host.dispatchEvent(new FocusEvent('focus'))
+      key('Enter')
+      expect(controller.lifted.value).toBeUndefined()
+      key('x')
+      expect(controller.lifted.value).toBe(MIRROR)
+      host.dispatchEvent(new FocusEvent('blur'))
+      key('ArrowRight')
+      expect(controller.focus.value).toEqual({ column: -2, row: 0 })
+      controller.session.execute({ kind: 'rotate', item: MIRROR, steps: 1 })
+      key('t', { repeat: true })
+      expect(controller.session.moves.value).toBe(1)
+      key('t')
+      expect(controller.session.moves.value).toBe(0)
+      expect(controller.lifted.value).toBeUndefined()
+    } finally {
+      bindings.value = DEFAULT_BINDINGS
+    }
+  })
+
+  it('plays with a controller, one step per press, but not while paused', async () => {
+    const pad = { buttons: [] as { pressed: boolean }[], axes: [0, 0] }
+    const press = (...buttons: number[]) => {
+      pad.buttons = Array.from({ length: 16 }, (_, index) => ({ pressed: buttons.includes(index) }))
+    }
+    const frames = () => new Promise((resolve) => setTimeout(resolve, 60))
+    press()
+    Object.defineProperty(navigator, 'getGamepads', { value: () => [pad], configurable: true })
+    try {
+      const { controller } = await mount()
+      press(0)
+      await frames()
+      expect(controller.lifted.value).toBe(MIRROR)
+      expect(controller.keyboardActive.value).toBe(true)
+      press()
+      await frames()
+      press(15)
+      await frames()
+      expect(controller.focus.value).toEqual({ column: -1, row: 0 })
+      press()
+      controller.paused.value = true
+      await frames()
+      press(1)
+      await frames()
+      controller.paused.value = false
+      await frames()
+      // B was held through the pause, so it counts only once it is let go and pressed again.
+      expect(controller.lifted.value).toBe(MIRROR)
+      expect(gamepadConnected.value).toBe(true)
+    } finally {
+      Reflect.deleteProperty(navigator, 'getGamepads')
+    }
   })
 
   it('runs the clock and plays effects for what happens', async () => {

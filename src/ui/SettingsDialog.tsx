@@ -1,5 +1,6 @@
 import { t } from '../i18n'
 import { LOOKS, type ProfileBook } from '../persistence/profiles'
+import { KeyBindings } from './KeyBindings'
 import { LanguageSwitch } from './LanguageSwitch'
 import { Modal } from './Modal'
 
@@ -124,6 +125,7 @@ export function SettingsDialog({ book, onClose }: Props) {
           {t('artHint')}
         </p>
         <LanguageSwitch />
+        <KeyBindings book={book} />
       </div>
     </Modal>
   )

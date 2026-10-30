@@ -5,8 +5,10 @@ import { type Item, itemAt, itemById, type Place, samePlace } from '../core/leve
 import { type GameEvent, type Phase, STABLE_TICKS } from '../game/session'
 import { createFlatArt } from './art/flat'
 import type { ArtPack } from './art/types'
+import { type Action, actionOfKey, BOARD_ACTIONS, bindings } from './bindings'
 import type { BoardController } from './controller'
 import { beamPreview, colorBlind, vibration } from './display'
+import { watchGamepads } from './gamepad'
 import { CELL, type Point, placeAt, placeCenter, type Transform } from './layout'
 import { BOARD_COLORS } from './palette'
 import { createStage, isTextField } from './stage'
@@ -52,19 +54,8 @@ export function buzzFor(events: readonly GameEvent[]): number | number[] | undef
   return events.some((event) => event.kind === 'command') ? 12 : undefined
 }
 
-const BOARD_KEYS = new Set([
-  'ArrowLeft',
-  'ArrowRight',
-  'ArrowUp',
-  'ArrowDown',
-  'Enter',
-  ' ',
-  'Escape',
-  'q',
-  'Q',
-  'e',
-  'E',
-])
+/** Screen-wide keys that may repeat while held; a held R restarts once. */
+const REPEATING: ReadonlySet<Action> = new Set(['undo', 'redo'])
 
 export interface BoardView {
   destroy(): void
@@ -363,15 +354,19 @@ export async function mountBoard(
   scene.on('pointercancel', release)
 
   const onKey = (event: KeyboardEvent) => {
-    if (controller.paused.value) return
-    const ctrl = event.ctrlKey || event.metaKey
-    const undoKey = ctrl && ['z', 'y'].includes(event.key.toLowerCase())
-    if (!undoKey && (!hasFocus.value || !BOARD_KEYS.has(event.key))) return
-    if (undoKey && isTextField(event.target)) return
-    controller.handleKey(event.key, { ctrl, shift: event.shiftKey })
-    event.preventDefault()
+    if (controller.paused.value || isTextField(event.target)) return
+    const action = actionOfKey(bindings.value, event)
+    if (action === undefined) return
+    // Keys that drive the board need it to have focus; the others work all over the screen.
+    if (BOARD_ACTIONS.has(action) ? !hasFocus.value : event.repeat && !REPEATING.has(action)) return
+    if (controller.perform(action) || BOARD_ACTIONS.has(action)) event.preventDefault()
   }
   window.addEventListener('keydown', onKey)
+  const stopGamepads = watchGamepads(
+    () => bindings.value,
+    () => controller.paused.value,
+    (action) => controller.perform(action),
+  )
   // A mouse that leaves the board points at nothing; a drag keeps what it carries.
   const onLeave = () => {
     if (press === undefined) controller.hover(undefined)
@@ -416,6 +411,7 @@ export async function mountBoard(
       stopRendering()
       stopCelebrating()
       window.removeEventListener('keydown', onKey)
+      stopGamepads()
       stage.app.canvas.removeEventListener('pointerleave', onLeave)
       stage.destroy()
     },

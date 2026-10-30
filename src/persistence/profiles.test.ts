@@ -54,6 +54,8 @@ describe('ProfileBook', () => {
       beamPreview: true,
       vibration: true,
       leftHanded: false,
+      keyBindings: {},
+      padBindings: {},
     })
   })
 
