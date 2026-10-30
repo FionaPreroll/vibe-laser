@@ -12,7 +12,7 @@ Play it at https://fionapreroll.github.io/vibe-laser/.
 - Stuck? The Hints & Solutions pack has the Lightworks levels with help: a hint shows where the next piece goes and how it is turned, outlined on the board and said in words, and the whole solution plays itself if you ask.
 - Drag pieces from the toolbox on the left onto the board. Click a piece to turn it left, right-click to turn it right.
 - While you carry a piece, the beams show faintly where light would go if you put it down there, and explosives that light would reach get a red ring. Nothing changes until you let go.
-- On a touch screen, tap a piece to select it and tap it again to turn it left, or tap a free place to move the selected piece there; dragging works too. Pinch to zoom in on the board, up to four times its size, and drag an empty spot to look around.
+- On a touch screen, tap a piece to select it and tap it again to turn it left, hold a finger on it to turn it right, or tap a free place to move the selected piece there; dragging works too. Pinch to zoom in on the board, up to four times its size, and drag an empty spot to look around.
 - The button bar counts your moves: every piece put down, turned or cleaned up counts one, undo takes one back and Restart starts from nothing. Solved, a level tells you its moves, and the level list shows the fewest you needed, apart from the Hints & Solutions pack, where the solution is at hand.
 - A level is solved when every coin spins: each colored coin needs light of exactly its color, and dark anti-coins must stay out of the light.
 - Keep light away from explosives. One that goes off sets off its neighbours too, and the level is lost; only starting again helps.

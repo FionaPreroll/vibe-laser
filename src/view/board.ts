@@ -15,6 +15,8 @@ const PREVIEW_ALPHA = 0.45
 /** Pointer travel in screen pixels before a press turns into a drag; fingers wobble more. */
 const DRAG_THRESHOLD = 6
 const TOUCH_DRAG_THRESHOLD = 12
+/** A finger held this long on a piece, without moving, turns it right, as a right click does. */
+export const LONG_PRESS_MS = 450
 /** The frame around the board tells the phase: stable, blown up or solved. */
 const FRAME_COLORS: Partial<Record<Phase, number>> = {
   stabilizing: BOARD_COLORS.target,
@@ -67,6 +69,8 @@ interface Press {
   last: Point
   dragging: boolean
   panning: boolean
+  /** A long press has turned the piece already; letting go does nothing more. */
+  turned: boolean
 }
 
 /**
@@ -97,6 +101,11 @@ export async function mountBoard(
   let pinching: { readonly start: Transform; readonly from: readonly [Point, Point] } | undefined
   /** After a pinch, the fingers still down neither tap nor drag. */
   let gesture = false
+  let longPress: ReturnType<typeof setTimeout> | undefined
+  const stopLongPress = () => {
+    clearTimeout(longPress)
+    longPress = undefined
+  }
 
   const render = () => {
     const { puzzle, light, spinning, phase, stable } = session.state.value
@@ -183,6 +192,7 @@ export async function mountBoard(
       showGhost(undefined, undefined)
     }
     press = undefined
+    stopLongPress()
     gesture = true
     pinching = { start: stage.transform(), from: [first, second] }
     render()
@@ -216,6 +226,16 @@ export async function mountBoard(
       last: { x: event.global.x, y: event.global.y },
       dragging: false,
       panning: false,
+      turned: false,
+    }
+    stopLongPress()
+    if (touch && item?.rotateable) {
+      const held = press
+      longPress = setTimeout(() => {
+        longPress = undefined
+        if (press !== held || held.dragging || held.panning || !session.canPlay.value) return
+        held.turned = controller.rotate(item.id, 1)
+      }, LONG_PRESS_MS)
     }
   })
   scene.on('globalpointermove', (event: FederatedPointerEvent) => {
@@ -239,6 +259,8 @@ export async function mountBoard(
     if (!press.dragging && !press.panning) {
       const travel = Math.hypot(event.global.x - press.x, event.global.y - press.y)
       if (travel < (press.touch ? TOUCH_DRAG_THRESHOLD : DRAG_THRESHOLD)) return
+      if (press.turned) return
+      stopLongPress()
       if (item?.moveable && session.canPlay.value) {
         press.dragging = true
         controller.select(item.id)
@@ -268,7 +290,8 @@ export async function mountBoard(
     }
     const ended = press
     press = undefined
-    if (ended === undefined || ended.panning) return
+    stopLongPress()
+    if (ended === undefined || ended.panning || ended.turned) return
     const at = placeAt(geometry, scene.toLocal(event.global))
     if (ended.dragging) {
       target = undefined
@@ -319,6 +342,7 @@ export async function mountBoard(
 
   return {
     destroy() {
+      stopLongPress()
       stopEffects()
       stopRendering()
       window.removeEventListener('keydown', onKey)

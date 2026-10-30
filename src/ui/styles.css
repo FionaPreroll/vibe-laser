@@ -119,6 +119,10 @@ button.primary {
   display: block;
   /* Touch drags move pieces instead of scrolling the page. */
   touch-action: none;
+  /* A finger held on a piece turns it, rather than selecting or offering to save the picture. */
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
 }
 
 .board-failed {
