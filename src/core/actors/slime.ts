@@ -34,7 +34,15 @@ export function stepSlime(world: World, slime: BoardItem): Step {
       const puzzle = removeItems(world.puzzle, [slime.id, occupant.id])
       return {
         world: remember({ ...world, puzzle }, slime.id, undefined),
-        events: [{ kind: 'ate', item: slime.id, food: occupant.id, cell: next }],
+        events: [
+          {
+            kind: 'ate',
+            item: slime.id,
+            food: occupant.id,
+            meal: occupant.piece.kind === 'explosive' ? 'explosive' : 'mirror',
+            cell: next,
+          },
+        ],
         ignites: [],
       }
     }

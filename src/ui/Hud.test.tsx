@@ -166,4 +166,24 @@ describe('Hud', () => {
     await act(() => controller.hover({ area: 'board', cell: 1 }))
     expect(dots().getAttribute('aria-label')).toBe('Farben des Teils unter dem Zeiger: keine')
   })
+
+  it('says when the slime eats a mirror, and puts that away on a restart', async () => {
+    const level = await load('tutorial/3/2')
+    const controller = new BoardController(new GameSession(puzzleOf(level.file)))
+    renderHud(controller)
+    expect(screen.queryByText(/eaten a mirror/)).toBeNull()
+    await act(() => {
+      // The first mirror lets the slime go; the second waits, unlit, in its way.
+      playSolution(controller.session, {
+        ...level.file,
+        solution: [{ piece: 0, pos: 'B2', rot: 7 }, { piece: 1, pos: 'A3', rot: 0 }, { wait: 40 }],
+      })
+    })
+    expect(screen.getByRole('status').textContent).toContain('The slime has eaten a mirror')
+    const restarts = screen.getAllByRole('button', { name: 'Restart' })
+    await act(() => {
+      fireEvent.click(restarts[0] as HTMLButtonElement)
+    })
+    expect(screen.queryByText(/eaten a mirror/)).toBeNull()
+  })
 })

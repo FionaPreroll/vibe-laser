@@ -56,6 +56,8 @@ export const en = {
     'Drag pieces from the toolbox onto the board, or tap a piece and then a free place. Tap a selected piece to rotate it left; the buttons rotate it either way. Pinch to zoom, and drag an empty spot to move the zoomed board.',
   stabilizing: 'System stable: every coin spins. Wait until the bar is full.',
   stability: 'Stability',
+  mirrorEaten:
+    'The slime has eaten a mirror, and undo cannot bring it back. If you need it, start the level again.',
   colorDots: 'Colors of the piece under the pointer: {colors}',
   colorDotsComplex: '{outer}, inside {inner}',
   colorDotsNone: 'none',
@@ -115,7 +117,7 @@ export const en = {
 
   helpTitle: 'How to play',
   helpGoal:
-    'Move and turn the pieces from the toolbox until every coin spins: each colored coin needs light of exactly its color, and dark anti-coins must stay out of the light. Keep light, mines and ships away from explosives.',
+    'Move and turn the pieces from the toolbox until every coin spins: each colored coin needs light of exactly its color, and dark anti-coins must stay out of the light. Keep light, mines and ships away from explosives. Slimes, mines and ships never cross a beam: a beam holds them back, and once it is turned away, they move on.',
   helpParts: 'Parts',
   helpColors: 'Colors',
   helpColorsText:
@@ -183,7 +185,7 @@ export const en = {
   'parts.blackHole.text': 'Swallows light. While it is dark, it pulls in ships in line with it.',
   'parts.slime': 'Slime',
   'parts.slime.text':
-    'Walks ahead and turns right where something is in its way. It eats the first explosive, or plain mirror without light, that it runs into.',
+    'Walks ahead and turns right where a beam, a piece or the edge is in its way; a beam across its path holds it back. It eats the first explosive, or plain mirror without light, that it runs into.',
   'parts.mine': 'Robot mine',
   'parts.mine.text':
     'Jumps around and bounces off beams and pieces. Running into an explosive sets it off.',
@@ -431,6 +433,8 @@ export const de: Record<MessageKey, string> = {
     'Ziehe Teile aus der Ablage auf das Spielfeld, oder tippe ein Teil und dann einen freien Platz an. Tippe ein ausgewähltes Teil an, um es nach links zu drehen; die Knöpfe drehen in beide Richtungen. Mit zwei Fingern zoomst du, und auf einem leeren Feld verschiebst du das gezoomte Spielfeld.',
   stabilizing: 'System stabil: Alle Münzen drehen sich. Warte, bis der Balken voll ist.',
   stability: 'Stabilität',
+  mirrorEaten:
+    'Der Schleim hat einen Spiegel gefressen, und Rückgängig holt ihn nicht zurück. Brauchst du ihn, starte das Level neu.',
   colorDots: 'Farben des Teils unter dem Zeiger: {colors}',
   colorDotsComplex: '{outer}, innen {inner}',
   colorDotsNone: 'keine',
@@ -492,7 +496,7 @@ export const de: Record<MessageKey, string> = {
 
   helpTitle: 'So wird gespielt',
   helpGoal:
-    'Verschiebe und drehe die Teile aus der Ablage, bis sich jede Münze dreht: Jede farbige Münze braucht Licht genau ihrer Farbe, und dunkle Anti-Münzen müssen im Dunkeln bleiben. Halte Licht, Minen und Raumschiffe von Sprengstoff fern.',
+    'Verschiebe und drehe die Teile aus der Ablage, bis sich jede Münze dreht: Jede farbige Münze braucht Licht genau ihrer Farbe, und dunkle Anti-Münzen müssen im Dunkeln bleiben. Halte Licht, Minen und Raumschiffe von Sprengstoff fern. Schleime, Minen und Raumschiffe kommen nie durch einen Strahl: Ein Strahl hält sie auf, und sobald er weggelenkt ist, laufen sie weiter.',
   helpParts: 'Teile',
   helpColors: 'Farben',
   helpColorsText:
@@ -562,7 +566,7 @@ export const de: Record<MessageKey, string> = {
     'Schluckt Licht. Solange es dunkel ist, zieht es Raumschiffe an, die mit ihm in einer Linie stehen.',
   'parts.slime': 'Schleim',
   'parts.slime.text':
-    'Läuft geradeaus und biegt rechts ab, wo etwas im Weg ist. Er frisst den ersten Sprengstoff oder unbeleuchteten einfachen Spiegel, auf den er trifft.',
+    'Läuft geradeaus und biegt rechts ab, wo ein Strahl, ein Teil oder der Rand im Weg ist; ein Strahl vor ihm hält ihn auf. Er frisst den ersten Sprengstoff oder unbeleuchteten einfachen Spiegel, auf den er trifft.',
   'parts.mine': 'Robotmine',
   'parts.mine.text':
     'Springt umher und prallt an Strahlen und Teilen ab. Trifft sie auf Sprengstoff, geht er hoch.',

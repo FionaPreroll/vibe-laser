@@ -63,7 +63,7 @@ describe('slime', () => {
     `)
     const { world, events } = walk(start, 1, 3)
     expectBoard(world, '. . . \n . . . \n . . .')
-    expect(events.at(-1)).toEqual({ kind: 'ate', item: 1, food: 0, cell: 1 })
+    expect(events.at(-1)).toEqual({ kind: 'ate', item: 1, food: 0, meal: 'explosive', cell: 1 })
   })
 
   it('eats a plain mirror only while no light touches it', () => {
@@ -71,7 +71,9 @@ describe('slime', () => {
       .   M0  .
       .   SL0 .
     `)
-    expectBoard(walk(dark, 1, 1).world, '. . . \n . . .')
+    const eaten = walk(dark, 1, 1)
+    expectBoard(eaten.world, '. . . \n . . .')
+    expect(eaten.events.at(-1)).toMatchObject({ kind: 'ate', meal: 'mirror' })
     const lit = worldOf(`
       L2r M0  .
       .   SL0 .
