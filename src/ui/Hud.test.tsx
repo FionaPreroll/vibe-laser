@@ -4,7 +4,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest'
 import { puzzleOf } from '../content/level'
 import { findLevel, type Level } from '../content/packs'
 import { playSolution } from '../content/solution'
-import { createPuzzle } from '../core/level'
+import { createPuzzle, itemById } from '../core/level'
 import { parseBoard } from '../core/notation'
 import { GameSession } from '../game/session'
 import { locale } from '../i18n'
@@ -90,16 +90,23 @@ describe('Hud', () => {
     expect(controller.session.state.value.puzzle.items[2]?.piece.rotation).toBe(0)
   })
 
-  it('restarts the level', async () => {
+  it('restarts the level, and undo brings the game back', async () => {
     const controller = await controllerFor('tutorial/1/1')
     renderHud(controller)
+    const place = () => itemById(controller.session.state.value.puzzle, 2)?.place
     await act(() => {
       controller.move(2, { area: 'board', cell: 0 })
     })
     await act(() => {
       fireEvent.click(button('Restart'))
     })
-    expect(controller.session.canUndo.value).toBe(false)
+    expect(controller.session.moves.value).toBe(0)
+    expect(place()).toEqual({ area: 'toolbox', slot: 0 })
+    await act(() => {
+      fireEvent.click(button('Undo'))
+    })
+    expect(place()).toEqual({ area: 'board', cell: 0 })
+    expect(controller.session.moves.value).toBe(1)
   })
 
   it('leaves the level and asks for help', async () => {

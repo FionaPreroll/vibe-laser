@@ -143,10 +143,10 @@ function EatenMirrorNotice({ controller }: { readonly controller: BoardControlle
       }),
     [session],
   )
-  const restarted = session.moves.value === 0 && !session.canUndo.value
+  const restarts = session.restarts.value
   useEffect(() => {
-    if (restarted) setEaten(false)
-  }, [restarted])
+    if (restarts >= 0) setEaten(false)
+  }, [restarts])
   if (!eaten) return null
   return (
     <div class="hud-notice" role="status">
