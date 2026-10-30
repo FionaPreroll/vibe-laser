@@ -4,6 +4,7 @@ import { type Color, PRIMARIES, type Primary } from '../core/color'
 import { STABLE_TICKS } from '../game/session'
 import { type MessageKey, t } from '../i18n'
 import type { BoardController } from '../view/controller'
+import { Icon, type IconName } from './icons'
 import { touchScreen } from './pointer'
 
 const PRIMARY_NAMES: Readonly<Record<Primary, MessageKey>> = { 1: 'red', 2: 'green', 4: 'blue' }
@@ -29,42 +30,39 @@ export function Hud({ controller, onExit, onHelp }: Props) {
       )}
       <EatenMirrorNotice controller={controller} />
       <div class="hud-buttons" role="toolbar" aria-label={t('actions')}>
-        <button type="button" onClick={onExit}>
-          {t('exit')}
-        </button>
-        <button type="button" onClick={() => session.restart()}>
-          {t('restart')}
-        </button>
-        <button
-          type="button"
+        <HudButton icon="exit" label={t('exit')} onClick={onExit} />
+        <HudButton icon="restart" label={t('restart')} onClick={() => session.restart()} />
+        <HudButton
+          icon="cleanup"
+          label={t('cleanup')}
           disabled={!session.canCleanup.value}
           onClick={() => session.cleanup()}
-        >
-          {t('cleanup')}
-        </button>
-        <button type="button" disabled={!session.canUndo.value} onClick={() => session.undo()}>
-          {t('undo')}
-        </button>
-        <button type="button" disabled={!session.canRedo.value} onClick={() => session.redo()}>
-          {t('redo')}
-        </button>
-        <button
-          type="button"
+        />
+        <HudButton
+          icon="undo"
+          label={t('undo')}
+          disabled={!session.canUndo.value}
+          onClick={() => session.undo()}
+        />
+        <HudButton
+          icon="redo"
+          label={t('redo')}
+          disabled={!session.canRedo.value}
+          onClick={() => session.redo()}
+        />
+        <HudButton
+          icon="rotateLeft"
+          label={t('rotateLeft')}
           disabled={!controller.canRotateSelected.value}
           onClick={() => controller.rotateSelected(-1)}
-        >
-          {t('rotateLeft')}
-        </button>
-        <button
-          type="button"
+        />
+        <HudButton
+          icon="rotateRight"
+          label={t('rotateRight')}
           disabled={!controller.canRotateSelected.value}
           onClick={() => controller.rotateSelected(1)}
-        >
-          {t('rotateRight')}
-        </button>
-        <button type="button" onClick={onHelp}>
-          {t('help')}
-        </button>
+        />
+        <HudButton icon="help" label={t('help')} onClick={onHelp} />
         <span class="moves">{t('movesCounter', { count: session.moves.value })}</span>
         <ColorDots piece={controller.inspected.value} />
       </div>
@@ -72,6 +70,23 @@ export function Hud({ controller, onExit, onHelp }: Props) {
         {t(touchScreen.value ? 'touchControls' : 'controls')}
       </p>
     </div>
+  )
+}
+
+interface ButtonProps {
+  readonly icon: IconName
+  readonly label: string
+  readonly disabled?: boolean
+  readonly onClick: () => void
+}
+
+/** A button of the bar: an icon, and its name beside it where there is room, else as a tooltip. */
+export function HudButton({ icon, label, disabled, onClick }: ButtonProps) {
+  return (
+    <button type="button" class="hud-button" title={label} disabled={disabled} onClick={onClick}>
+      <Icon name={icon} />
+      <span class="hud-label">{label}</span>
+    </button>
   )
 }
 

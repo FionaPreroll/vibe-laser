@@ -139,6 +139,24 @@ button.primary {
   gap: 8px;
 }
 
+.icon {
+  flex: none;
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.hud-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
 /* The original's RGB dots, at the end of the button bar: lit in the colors of the piece pointed at. */
 .moves {
   margin-left: auto;
@@ -1457,8 +1475,22 @@ button.link {
   }
 
   .play-area .hud-buttons button {
-    padding: 8px 4px;
-    font-size: 0.9375rem;
+    padding: 10px 4px;
+  }
+
+  .play-area .hud-buttons .icon {
+    width: 22px;
+    height: 22px;
+  }
+
+  /* Beside the board only the icons show; their names stay for tooltips and screen readers. */
+  .play-area .hud-label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
   }
 
   .play-area .moves {
@@ -1479,6 +1511,10 @@ button.link {
     width: 100%;
   }
 
+  .play-area .hud .hint {
+    display: none;
+  }
+
   /* Beside the button bar, over the board's lower right, where it hides the least. */
   .dialog-backdrop {
     place-items: end;
@@ -1494,12 +1530,12 @@ button.link {
 }
 
 :root {
-  --side-hud: 240px;
+  --side-hud: 156px;
 }
 
 @media (orientation: landscape) and (max-height: 500px) {
   :root {
-    --side-hud: 196px;
+    --side-hud: 132px;
   }
 
   .top-bar {
@@ -1532,7 +1568,7 @@ button.link {
   }
 
   .play-area .hud-buttons button {
-    font-size: 0.8125rem;
+    padding: 8px 4px;
   }
 
   .play-area .stability {
