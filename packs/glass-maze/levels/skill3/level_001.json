@@ -1,0 +1,60 @@
+{
+  "$schema": "../../../level.schema.json",
+  "version": 1,
+  "name": {
+    "en": "Crossing",
+    "de": "Kreuzung"
+  },
+  "size": [7, 7],
+  "objects": [
+    {
+      "type": "laser",
+      "pos": "A1",
+      "rot": 4,
+      "rgb": "r"
+    },
+    {
+      "type": "coin",
+      "pos": "C1",
+      "rgb": "r"
+    },
+    {
+      "type": "laser",
+      "pos": "C7",
+      "rot": 0,
+      "rgb": "g"
+    },
+    {
+      "type": "coin",
+      "pos": "E7",
+      "rgb": "r"
+    },
+    {
+      "type": "coin",
+      "pos": "F6",
+      "rgb": "r"
+    }
+  ],
+  "toolbox": [
+    {
+      "type": "doubleMirror",
+      "rot": 0
+    },
+    {
+      "type": "refractor",
+      "rot": 0
+    }
+  ],
+  "solution": [
+    {
+      "piece": 0,
+      "pos": "G1",
+      "rot": 1
+    },
+    {
+      "piece": 1,
+      "pos": "G5",
+      "rot": 2
+    }
+  ]
+}

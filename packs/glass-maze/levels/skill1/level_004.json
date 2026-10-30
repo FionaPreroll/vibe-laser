@@ -1,0 +1,63 @@
+{
+  "$schema": "../../../level.schema.json",
+  "version": 1,
+  "name": {
+    "en": "Yellow Diagonal",
+    "de": "Gelbe Diagonale"
+  },
+  "size": [8, 7],
+  "objects": [
+    {
+      "type": "laser",
+      "pos": "A1",
+      "rot": 3,
+      "rgb": "rg"
+    },
+    {
+      "type": "coin",
+      "pos": "B2",
+      "rgb": "rg"
+    },
+    {
+      "type": "coin",
+      "pos": "C4",
+      "rgb": "rg"
+    },
+    {
+      "type": "coin",
+      "pos": "F3",
+      "rgb": "rg"
+    }
+  ],
+  "toolbox": [
+    {
+      "type": "refractor",
+      "rot": 0
+    },
+    {
+      "type": "doubleMirror",
+      "rot": 0
+    },
+    {
+      "type": "refractor",
+      "rot": 0
+    }
+  ],
+  "solution": [
+    {
+      "piece": 0,
+      "pos": "C3",
+      "rot": 3
+    },
+    {
+      "piece": 1,
+      "pos": "C5",
+      "rot": 1
+    },
+    {
+      "piece": 2,
+      "pos": "D5",
+      "rot": 1
+    }
+  ]
+}

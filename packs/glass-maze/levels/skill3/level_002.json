@@ -1,0 +1,55 @@
+{
+  "$schema": "../../../level.schema.json",
+  "version": 1,
+  "name": {
+    "en": "Face to Face",
+    "de": "Auge in Auge"
+  },
+  "size": [7, 7],
+  "objects": [
+    {
+      "type": "coin",
+      "pos": "D7",
+      "rgb": "r"
+    },
+    {
+      "type": "laser",
+      "pos": "F1",
+      "rot": 2,
+      "rgb": "r"
+    },
+    {
+      "type": "laser",
+      "pos": "F7",
+      "rot": 6,
+      "rgb": "b"
+    },
+    {
+      "type": "coin",
+      "pos": "G6",
+      "rgb": "b"
+    }
+  ],
+  "toolbox": [
+    {
+      "type": "slitMirror",
+      "rot": 0
+    },
+    {
+      "type": "mirror",
+      "rot": 0
+    }
+  ],
+  "solution": [
+    {
+      "piece": 0,
+      "pos": "F6",
+      "rot": 3
+    },
+    {
+      "piece": 1,
+      "pos": "D6",
+      "rot": 3
+    }
+  ]
+}

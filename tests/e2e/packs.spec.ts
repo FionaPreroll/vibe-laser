@@ -71,3 +71,13 @@ test('opens Powder Keg in the crypt and plays its first level', async ({ page })
   await page.getByRole('button', { name: /^1\. Short Fuse/ }).click()
   await expect(page.locator('.board')).toHaveAttribute('data-art', 'neon')
 })
+
+test('opens Glass Maze in the clinic and plays its first level', async ({ page }) => {
+  await page.goto('./')
+  await page.getByRole('button', { name: /^Glass Maze/ }).click()
+  await expect(page.locator('.select-screen')).toHaveClass(/theme-clinic/)
+  await page.getByRole('button', { name: /^1\. Refraction/ }).click()
+  await expect(page.getByRole('button', { name: /^\d\. / })).toHaveCount(6)
+  await page.getByRole('button', { name: /^1\. Bent Glass/ }).click()
+  await expect(page.locator('.board')).toBeVisible()
+})

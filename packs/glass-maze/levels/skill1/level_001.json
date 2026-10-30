@@ -1,0 +1,49 @@
+{
+  "$schema": "../../../level.schema.json",
+  "version": 1,
+  "name": {
+    "en": "Bent Glass",
+    "de": "Gebogenes Glas"
+  },
+  "size": [7, 6],
+  "objects": [
+    {
+      "type": "coin",
+      "pos": "A2",
+      "rgb": "r"
+    },
+    {
+      "type": "coin",
+      "pos": "B6",
+      "rgb": "r"
+    },
+    {
+      "type": "laser",
+      "pos": "C1",
+      "rot": 0,
+      "rgb": "r"
+    }
+  ],
+  "toolbox": [
+    {
+      "type": "refractor",
+      "rot": 0
+    },
+    {
+      "type": "mirror",
+      "rot": 0
+    }
+  ],
+  "solution": [
+    {
+      "piece": 1,
+      "pos": "A1",
+      "rot": 3
+    },
+    {
+      "piece": 0,
+      "pos": "A5",
+      "rot": 3
+    }
+  ]
+}

@@ -1,0 +1,60 @@
+{
+  "$schema": "../../../level.schema.json",
+  "version": 1,
+  "name": {
+    "en": "Green Stairs",
+    "de": "Grüne Treppe"
+  },
+  "size": [8, 7],
+  "objects": [
+    {
+      "type": "coin",
+      "pos": "E6",
+      "rgb": "g"
+    },
+    {
+      "type": "coin",
+      "pos": "F2",
+      "rgb": "g"
+    },
+    {
+      "type": "coin",
+      "pos": "F3",
+      "rgb": "g"
+    },
+    {
+      "type": "laser",
+      "pos": "G7",
+      "rot": 0,
+      "rgb": "g"
+    }
+  ],
+  "toolbox": [
+    {
+      "type": "refractor",
+      "rot": 0,
+      "count": 2
+    },
+    {
+      "type": "mirror",
+      "rot": 0
+    }
+  ],
+  "solution": [
+    {
+      "piece": 2,
+      "pos": "E7",
+      "rot": 5
+    },
+    {
+      "piece": 0,
+      "pos": "E5",
+      "rot": 2
+    },
+    {
+      "piece": 1,
+      "pos": "F4",
+      "rot": 2
+    }
+  ]
+}

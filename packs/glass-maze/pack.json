@@ -1,0 +1,17 @@
+{
+  "$schema": "../pack.schema.json",
+  "version": 1,
+  "title": { "en": "Glass Maze", "de": "Glaslabyrinth" },
+  "description": {
+    "en": "Eighteen puzzles about the path of light, in the clinic of light: refractors bend it, splitters and threeways divide it, and in the end two lasers share every board.",
+    "de": "Achtzehn Rätsel über den Weg des Lichts, in der Lichtklinik: Refraktoren knicken es, Splitter und Threeways teilen es, und zum Schluss teilen sich zwei Laser jedes Brett."
+  },
+  "position": 6,
+  "skills": [
+    { "en": "Refraction", "de": "Lichtbrechung" },
+    { "en": "Split Beams", "de": "Geteilte Strahlen" },
+    { "en": "Two Lasers", "de": "Zwei Laser" }
+  ],
+  "sounds": "clinic",
+  "selectScreen": "clinic"
+}

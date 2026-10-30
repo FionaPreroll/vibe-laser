@@ -1,0 +1,65 @@
+{
+  "$schema": "../../../level.schema.json",
+  "version": 1,
+  "name": {
+    "en": "Through the Slit",
+    "de": "Durch den Schlitz"
+  },
+  "size": [8, 7],
+  "objects": [
+    {
+      "type": "coin",
+      "pos": "B3",
+      "rgb": "r"
+    },
+    {
+      "type": "laser",
+      "pos": "C8",
+      "rot": 4,
+      "rgb": "r"
+    },
+    {
+      "type": "coin",
+      "pos": "D4",
+      "rgb": "r"
+    },
+    {
+      "type": "coin",
+      "pos": "E5",
+      "rgb": "r"
+    },
+    {
+      "type": "coin",
+      "pos": "E7",
+      "rgb": "r"
+    }
+  ],
+  "toolbox": [
+    {
+      "type": "refractor",
+      "rot": 0,
+      "count": 2
+    },
+    {
+      "type": "slitMirror",
+      "rot": 0
+    }
+  ],
+  "solution": [
+    {
+      "piece": 0,
+      "pos": "D8",
+      "rot": 1
+    },
+    {
+      "piece": 2,
+      "pos": "F6",
+      "rot": 0
+    },
+    {
+      "piece": 1,
+      "pos": "C3",
+      "rot": 0
+    }
+  ]
+}
