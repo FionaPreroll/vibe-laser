@@ -352,7 +352,7 @@ export async function mountBoard(
 
   const stopRendering = effect(render)
   stage.app.ticker.add((ticker) => {
-    if (!controller.paused.value) session.advance(ticker.deltaMS)
+    if (!controller.paused.value) session.advance(ticker.deltaMS * controller.speed.value)
     const reduced = controller.reducedMotion.value
     // An endless time step lets gliding actors arrive at once.
     pieces.animate(
