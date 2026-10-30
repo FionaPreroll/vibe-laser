@@ -379,6 +379,24 @@ export async function mountBoard(
   stage.app.canvas.addEventListener('pointerleave', onLeave)
 
   const stopRendering = effect(render)
+  // Solved: sparks over every spinning coin, once.
+  let celebrated = false
+  const stopCelebrating = effect(() => {
+    const { phase, spinning, puzzle } = session.state.value
+    if (phase !== 'solved') {
+      celebrated = false
+      return
+    }
+    if (celebrated) return
+    celebrated = true
+    effects.reducedMotion = controller.reducedMotion.peek()
+    for (const id of spinning) {
+      const coin = itemById(puzzle, id)
+      if (coin?.place.area === 'board' && coin.piece.kind === 'coin') {
+        effects.celebrate(cellCenter(coin.place.cell))
+      }
+    }
+  })
   stage.app.ticker.add((ticker) => {
     if (!controller.paused.value) session.advance(ticker.deltaMS * controller.speed.value)
     const reduced = controller.reducedMotion.value
@@ -396,6 +414,7 @@ export async function mountBoard(
       stopLongPress()
       stopEffects()
       stopRendering()
+      stopCelebrating()
       window.removeEventListener('keydown', onKey)
       stage.app.canvas.removeEventListener('pointerleave', onLeave)
       stage.destroy()

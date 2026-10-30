@@ -20,6 +20,7 @@ All changes players can notice are listed here. The format follows [Keep a Chang
 - Undo right after Restart brings back the game as it was, until the next move. After a solved or exploded level, Restart still starts afresh.
 - Once a level is solved, the button bar offers the next unsolved level too, so it stays at hand after the dialog is put aside.
 - Par: each level counts the moves of its known solution as a target. The button bar shows it next to your moves, the solved dialog says whether you made it, and the level list gives a star to levels solved within par.
+- A solved level throws colored sparks over its spinning coins. With less motion in the settings, there are none.
 
 ### Changed
 
