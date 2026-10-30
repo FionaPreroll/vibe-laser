@@ -1,0 +1,23 @@
+{
+  "$schema": "../../../level.schema.json",
+  "version": 1,
+  "name": { "en": "Sorting Office", "de": "Sortierstelle" },
+  "note": "White light passes two selectors in a row, red and blue, which each take their own color out of the beam.",
+  "size": [7, 5],
+  "objects": [
+    { "type": "laser", "pos": "B1", "rot": 2, "rgb": "rgb" },
+    { "type": "coin", "pos": "D3", "rgb": "b" },
+    { "type": "coin", "pos": "E2", "rgb": "b" },
+    { "type": "coin", "pos": "E7", "rgb": "r" }
+  ],
+  "toolbox": [
+    { "type": "selector", "rot": 0, "rgb": "r" },
+    { "type": "selector", "rot": 0, "rgb": "b" },
+    { "type": "mirror", "rot": 0 }
+  ],
+  "solution": [
+    { "piece": 0, "pos": "B4", "rot": 2 },
+    { "piece": 1, "pos": "B3", "rot": 2 },
+    { "piece": 2, "pos": "C4", "rot": 6 }
+  ]
+}

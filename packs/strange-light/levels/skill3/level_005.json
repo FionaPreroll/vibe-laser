@@ -1,0 +1,26 @@
+{
+  "$schema": "../../../level.schema.json",
+  "version": 1,
+  "name": { "en": "Minefield", "de": "Minenfeld" },
+  "note": "The prismirror fans white light out between three explosives; a bender and a mirror bring the colors down.",
+  "size": [8, 6],
+  "objects": [
+    { "type": "coin", "pos": "A1", "rgb": "r" },
+    { "type": "explosive", "pos": "B3" },
+    { "type": "explosive", "pos": "B5" },
+    { "type": "explosive", "pos": "B8" },
+    { "type": "laser", "pos": "C8", "rot": 6, "rgb": "rgb" },
+    { "type": "coin", "pos": "D1", "rgb": "b" },
+    { "type": "coin", "pos": "F4", "rgb": "g" }
+  ],
+  "toolbox": [
+    { "type": "prismirror", "rot": 0 },
+    { "type": "bender" },
+    { "type": "mirror", "rot": 0 }
+  ],
+  "solution": [
+    { "piece": 0, "pos": "C7", "rot": 6 },
+    { "piece": 1, "pos": "C3", "rot": 0 },
+    { "piece": 2, "pos": "D7", "rot": 7 }
+  ]
+}

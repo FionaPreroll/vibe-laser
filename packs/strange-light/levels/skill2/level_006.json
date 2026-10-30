@@ -1,0 +1,23 @@
+{
+  "$schema": "../../../level.schema.json",
+  "version": 1,
+  "name": { "en": "Grand Sorter", "de": "Große Sortiermaschine" },
+  "note": "Splicer, complex and mirror sort one white beam onto three coins.",
+  "size": [8, 6],
+  "objects": [
+    { "type": "coin", "pos": "A2", "rgb": "b" },
+    { "type": "coin", "pos": "D8", "rgb": "rg" },
+    { "type": "laser", "pos": "E8", "rot": 6, "rgb": "rgb" },
+    { "type": "coin", "pos": "F2", "rgb": "rg" }
+  ],
+  "toolbox": [
+    { "type": "complex", "rot": 0, "rgb": "b", "inner": "rg" },
+    { "type": "splicer", "rot": 0 },
+    { "type": "mirror", "rot": 0 }
+  ],
+  "solution": [
+    { "piece": 0, "pos": "E6", "rot": 6 },
+    { "piece": 1, "pos": "E2", "rot": 2 },
+    { "piece": 2, "pos": "D2", "rot": 3 }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "$schema": "../../../level.schema.json",
+  "version": 1,
+  "name": { "en": "Blind Spots", "de": "Tote Winkel" },
+  "note": "Two lasers side by side: a splitter, a bender and a mirror share them out, past an anti-coin and an explosive.",
+  "size": [7, 6],
+  "objects": [
+    { "type": "coin", "pos": "A6", "rgb": "r" },
+    { "type": "coin", "pos": "B5", "rgb": "b" },
+    { "type": "laser", "pos": "D7", "rot": 6, "rgb": "b" },
+    { "type": "antiCoin", "pos": "E2" },
+    { "type": "laser", "pos": "E7", "rot": 6, "rgb": "r" },
+    { "type": "coin", "pos": "F4", "rgb": "b" },
+    { "type": "explosive", "pos": "F7" }
+  ],
+  "toolbox": [
+    { "type": "bender" },
+    { "type": "splitter", "rot": 0 },
+    { "type": "mirror", "rot": 0 }
+  ],
+  "solution": [
+    { "piece": 0, "pos": "E5", "rot": 0 },
+    { "piece": 1, "pos": "D5", "rot": 2 },
+    { "piece": 2, "pos": "E6", "rot": 1 }
+  ]
+}

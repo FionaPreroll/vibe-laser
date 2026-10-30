@@ -1,0 +1,25 @@
+{
+  "$schema": "../../../level.schema.json",
+  "version": 1,
+  "name": { "en": "Crooked Paths", "de": "Krumme Wege" },
+  "note": "Splicer, bender and double mirror together, with two lasers and an anti-coin that must stay dark.",
+  "size": [7, 6],
+  "objects": [
+    { "type": "coin", "pos": "A5", "rgb": "b" },
+    { "type": "laser", "pos": "B1", "rot": 2, "rgb": "b" },
+    { "type": "coin", "pos": "D6", "rgb": "r" },
+    { "type": "antiCoin", "pos": "E1" },
+    { "type": "laser", "pos": "E7", "rot": 6, "rgb": "r" },
+    { "type": "coin", "pos": "F4", "rgb": "b" }
+  ],
+  "toolbox": [
+    { "type": "splicer", "rot": 0 },
+    { "type": "bender" },
+    { "type": "doubleMirror", "rot": 0 }
+  ],
+  "solution": [
+    { "piece": 0, "pos": "B5", "rot": 6 },
+    { "piece": 1, "pos": "E5", "rot": 0 },
+    { "piece": 2, "pos": "E6", "rot": 5 }
+  ]
+}

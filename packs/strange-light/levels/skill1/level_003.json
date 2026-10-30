@@ -1,0 +1,15 @@
+{
+  "$schema": "../../../level.schema.json",
+  "version": 1,
+  "name": { "en": "Double Bend", "de": "Doppelknick" },
+  "note": "Two benders and two beams. Benders do not turn, so only where they stand decides where light goes.",
+  "size": [7, 5],
+  "objects": [
+    { "type": "laser", "pos": "B1", "rot": 2, "rgb": "g" },
+    { "type": "laser", "pos": "C1", "rot": 2, "rgb": "r" },
+    { "type": "coin", "pos": "E3", "rgb": "g" },
+    { "type": "coin", "pos": "E5", "rgb": "r" }
+  ],
+  "toolbox": [{ "type": "bender", "count": 2 }],
+  "solution": [{ "piece": 0, "pos": "C3", "rot": 0 }, { "piece": 1, "pos": "B2", "rot": 0 }]
+}

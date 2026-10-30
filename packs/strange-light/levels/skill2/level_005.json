@@ -1,0 +1,23 @@
+{
+  "$schema": "../../../level.schema.json",
+  "version": 1,
+  "name": { "en": "Back to Front", "de": "Verkehrte Welt" },
+  "note": "The prismirror splits the white beam, and a green selector and a mirror send the colors to their coins.",
+  "size": [7, 5],
+  "objects": [
+    { "type": "coin", "pos": "A2", "rgb": "b" },
+    { "type": "coin", "pos": "A7", "rgb": "g" },
+    { "type": "laser", "pos": "C1", "rot": 2, "rgb": "rgb" },
+    { "type": "coin", "pos": "D3", "rgb": "r" }
+  ],
+  "toolbox": [
+    { "type": "prismirror", "rot": 0 },
+    { "type": "selector", "rot": 0, "rgb": "g" },
+    { "type": "mirror", "rot": 0 }
+  ],
+  "solution": [
+    { "piece": 0, "pos": "C2", "rot": 2 },
+    { "piece": 1, "pos": "A4", "rot": 1 },
+    { "piece": 2, "pos": "C3", "rot": 5 }
+  ]
+}

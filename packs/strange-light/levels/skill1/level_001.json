@@ -1,0 +1,15 @@
+{
+  "$schema": "../../../level.schema.json",
+  "version": 1,
+  "name": { "en": "Bend in the Road", "de": "Kurve voraus" },
+  "note": "Two beams side by side: the bender turns one aside, the mirror the other.",
+  "size": [6, 5],
+  "objects": [
+    { "type": "coin", "pos": "A3", "rgb": "b" },
+    { "type": "coin", "pos": "A4", "rgb": "r" },
+    { "type": "laser", "pos": "C6", "rot": 6, "rgb": "b" },
+    { "type": "laser", "pos": "D6", "rot": 6, "rgb": "r" }
+  ],
+  "toolbox": [{ "type": "bender" }, { "type": "mirror", "rot": 0 }],
+  "solution": [{ "piece": 0, "pos": "C5", "rot": 0 }, { "piece": 1, "pos": "D4", "rot": 1 }]
+}

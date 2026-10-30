@@ -41,3 +41,13 @@ test('previews the light while a piece is carried, unless switched off', async (
   await expect(page.getByRole('application', { name: /^Handle with Care:/ })).toBeVisible()
   await expect(board).toHaveAttribute('data-preview', 'off')
 })
+
+test('opens Strange Light at the space station and plays its first level', async ({ page }) => {
+  await page.goto('./')
+  await page.getByRole('button', { name: /^Strange Light/ }).click()
+  await expect(page.locator('.select-screen')).toHaveClass(/theme-space/)
+  await page.getByRole('button', { name: /^1\. Bent Light/ }).click()
+  await expect(page.getByRole('button', { name: /^\d\. / })).toHaveCount(6)
+  await page.getByRole('button', { name: /^1\. Bend in the Road/ }).click()
+  await expect(page.locator('.board')).toHaveAttribute('data-art', 'neon')
+})

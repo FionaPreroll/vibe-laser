@@ -1,0 +1,23 @@
+{
+  "$schema": "../../../level.schema.json",
+  "version": 1,
+  "name": { "en": "Fork in the Road", "de": "Weggabelung" },
+  "note": "A splicer splits the blue beam; a bender and a mirror steer two of its branches to their coins.",
+  "size": [7, 5],
+  "objects": [
+    { "type": "coin", "pos": "A2", "rgb": "b" },
+    { "type": "coin", "pos": "B7", "rgb": "b" },
+    { "type": "laser", "pos": "C7", "rot": 6, "rgb": "b" },
+    { "type": "coin", "pos": "E5", "rgb": "b" }
+  ],
+  "toolbox": [
+    { "type": "splicer", "rot": 0 },
+    { "type": "bender" },
+    { "type": "mirror", "rot": 0 }
+  ],
+  "solution": [
+    { "piece": 0, "pos": "C5", "rot": 2 },
+    { "piece": 1, "pos": "C4", "rot": 0 },
+    { "piece": 2, "pos": "B5", "rot": 3 }
+  ]
+}

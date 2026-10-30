@@ -170,9 +170,12 @@ packs/
     …
   lightworks/                eighteen puzzles for after the tutorial, in three skills
   lightworks-hints/          the same puzzles with hints and solutions, borrowed from lightworks
+  strange-light/             eighteen puzzles with the parts of the expansion packs
 ```
 
 The Tutorial pack teaches one part per level. Lightworks combines them: each level is built around one idea, such as a prism used backwards or a slime steered with beams, and was checked by a brute-force search for a single solution that needs every piece in the toolbox. Every level of its third skill, Crossfire, has two lasers; in Switchboard nothing is placed, and only one of the 4,096 ways to turn its four mirrors solves it.
+
+Strange Light is the pack for the five parts of the expansion packs, drawn in Neon at the space station's console: benders and splicers in its first skill, prismirrors, selectors and complexes in its second, and in the third the same parts among explosives and anti-coins. Its levels were made by a generator that puts the pieces of a toolbox on a board, places coins where only each piece's light falls, and keeps a layout only when a search over every placement finds exactly one way to place the pieces, with no piece to spare.
 
 Hints & Solutions packs are the original's `IsSolved` packs. A pack with `showsSolutions` offers two buttons above the board. A hint shows the next move of the level's known solution that the board does not show yet: `nextHint()` in `src/content/solution.ts` finds it, the board draws the piece faintly where it goes, turned as it should be, in a purple frame, and the bar says it in words, mentioning a wait for slimes, mines or ships where the solution has one. Hints only go forward, so a piece the solution moves twice does not send them back. The solution restarts the level and plays its moves with a pause between them, waiting on the game's own clock where the solution waits. Rather than copies of the Lightworks files, `lightworks-hints` names `levelsFrom: "lightworks"`: the loader gives the borrowed levels ids of the hints pack, so solving them there counts there.
 
