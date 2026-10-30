@@ -25,6 +25,7 @@ All changes players can notice are listed here. The format follows [Keep a Chang
 - On small screens and on phones on their side, the header's buttons sit behind a Menu button and open as a list, instead of being squeezed into one row.
 - Help and the level Fuel Run now say where a ship must be to take a fuel cell aboard: on the cell just north of it, not on the fuel cell itself, which would explode.
 - A piece dragged with a finger floats a little above it, so the finger hides neither the piece nor where its light would go.
+- A level's intro shows in full the first time; after that it keeps to one line, and More opens it again.
 
 ### Fixed
 
