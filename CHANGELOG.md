@@ -12,6 +12,7 @@ All changes players can notice are listed here. The format follows [Keep a Chang
 - When a slime eats a mirror, a note below the board says so, since undo cannot bring the mirror back, and offers to start the level again.
 - On a phone held upright, the game asks to be turned on its side. On touch screens a Full screen button in the header hides the browser's bars and, where the browser allows, holds the game in landscape. Installed as an app, the game opens in landscape.
 - On a touch screen, holding a finger on a piece turns it right, as a right click does.
+- On phones that can vibrate, a short buzz as pieces go down or turn, and a rumble when an explosive goes off. The settings switch it off.
 
 ### Changed
 

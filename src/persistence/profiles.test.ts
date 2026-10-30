@@ -52,6 +52,7 @@ describe('ProfileBook', () => {
       colorBlind: false,
       art: 'pack',
       beamPreview: true,
+      vibration: true,
     })
   })
 
