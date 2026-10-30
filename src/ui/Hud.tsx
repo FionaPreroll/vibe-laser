@@ -18,10 +18,12 @@ interface Props {
   readonly onHelp: () => void
   /** Once the level is solved: on to the next unsolved level, if there is one. */
   readonly onNext?: () => void
+  /** The moves of the level's known solution, as a target. */
+  readonly par?: number
 }
 
 /** The button bar below the board, as in the original, with the stability bar above it. */
-export function Hud({ controller, onExit, onHelp, onNext }: Props) {
+export function Hud({ controller, onExit, onHelp, onNext, par }: Props) {
   const { session } = controller
   const { phase, stable, puzzle } = session.state.value
   return (
@@ -82,7 +84,11 @@ export function Hud({ controller, onExit, onHelp, onNext }: Props) {
           />
         )}
         <HudButton icon="help" label={t('help')} onClick={onHelp} />
-        <span class="moves">{t('movesCounter', { count: session.moves.value })}</span>
+        <span class="moves">
+          {par === undefined
+            ? t('movesCounter', { count: session.moves.value })
+            : t('movesPar', { count: session.moves.value, par })}
+        </span>
         <ColorDots piece={controller.inspected.value} />
       </div>
       <p id="controls-hint" class="hint">

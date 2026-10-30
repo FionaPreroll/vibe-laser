@@ -34,6 +34,46 @@ export function playSolution(session: GameSession, level: LevelFile): number | u
   return steps.length
 }
 
+/**
+ * Par: the moves the level's known solution takes, counted as the game counts them, where every
+ * piece put down counts one and every 45° turn one more, as a click turns it. Undefined without a
+ * solution that solves the level.
+ */
+export function parOf(level: LevelFile, packRules?: Partial<Rules>): number | undefined {
+  const session = new GameSession(puzzleOf(level), rulesOf(level, packRules))
+  let moves = 0
+  const stop = session.onEvents((events) => {
+    for (const event of events) if (event.kind === 'command') moves += clicks(event.command)
+  })
+  try {
+    playSolution(session, level)
+    if (session.state.value.phase !== 'stabilizing') return solvedOrNot(session, moves)
+    // With mines or ships about, the solution must hold until the bar is full.
+    for (let tick = 0; tick < STABLE_TICKS && session.state.value.phase === 'stabilizing'; tick++) {
+      session.tick()
+    }
+    return solvedOrNot(session, moves)
+  } finally {
+    stop()
+  }
+}
+
+function solvedOrNot(session: GameSession, moves: number): number | undefined {
+  return session.state.value.phase === 'solved' ? moves : undefined
+}
+
+/** How many moves a command takes a player: one per piece moved, one per 45° turn. */
+function clicks(command: Command): number {
+  switch (command.kind) {
+    case 'move':
+      return 1
+    case 'rotate':
+      return Math.abs(command.steps)
+    case 'batch':
+      return command.commands.reduce((sum, each) => sum + clicks(each), 0)
+  }
+}
+
 /** The id of the item a step moves: by its toolbox slot or its cell at the start. */
 function itemOfStep(start: Puzzle, size: Size, step: Move): number | undefined {
   const origin: Place =

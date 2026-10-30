@@ -58,6 +58,14 @@ describe('SolvedDialog with moves', () => {
     [{ moves: 4, before: 6 }, 'Solved in 4 moves. A new best! Before, it took you 6 moves.'],
     [{ moves: 4, before: 1 }, 'Solved in 4 moves. Your best is 1 move.'],
     [{ moves: 4, before: 4 }, 'Solved in 4 moves. Your best is 4 moves.'],
+    [
+      { moves: 3, before: undefined, par: 3 },
+      'Solved in 3 moves. ★ Par is 3 moves, and you made it!',
+    ],
+    [
+      { moves: 5, before: 6, par: 1 },
+      'Solved in 5 moves. A new best! Before, it took you 6 moves. Par is 1 move.',
+    ],
   ])('tells the moves of %o', async (record, text) => {
     vi.useFakeTimers()
     render(

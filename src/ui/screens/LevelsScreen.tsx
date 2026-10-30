@@ -1,6 +1,7 @@
-import { useEffect, useState } from 'preact/hooks'
+import { useEffect, useMemo, useState } from 'preact/hooks'
 import { findPack, type Level } from '../../content/packs'
 import { selectScreenOf } from '../../content/schema'
+import { parOf } from '../../content/solution'
 import { locale, t, tn } from '../../i18n'
 import { navigate } from '../router'
 import { Missing } from './SkillsScreen'
@@ -29,6 +30,16 @@ export function LevelsScreen({ pack: id, skill: number, solved, best }: Props) {
       current = false
     }
   }, [skill])
+  // Par: the moves of each level's known solution; a pack that shows its solutions has none.
+  const pars = useMemo(
+    () =>
+      new Map(
+        pack?.file.showsSolutions
+          ? []
+          : levels.map((level) => [level.id, parOf(level.file, pack?.file.rules)] as const),
+      ),
+    [levels, pack],
+  )
   if (pack === undefined || skill === undefined) return <Missing />
 
   const many = pack.file.selectSkill && pack.skills.length > 1
@@ -55,6 +66,8 @@ export function LevelsScreen({ pack: id, skill: number, solved, best }: Props) {
           const name = levels.find((level) => level.id === entry.id)?.file.name[locale.value]
           const done = solved.has(entry.id)
           const fewest = best?.get(entry.id)
+          const par = pars.get(entry.id)
+          const star = fewest !== undefined && par !== undefined && fewest <= par
           return (
             <li key={entry.id}>
               <button
@@ -65,6 +78,14 @@ export function LevelsScreen({ pack: id, skill: number, solved, best }: Props) {
                 <span>{name ? t('levelLabel', { number: entry.number, name }) : entry.number}</span>
                 {done && (
                   <span class="mark">
+                    {star && (
+                      <>
+                        <span class="star" aria-hidden="true">
+                          ★{' '}
+                        </span>
+                        <span class="visually-hidden">{t('parStar')}, </span>
+                      </>
+                    )}
                     {fewest === undefined ? t('solvedMark') : tn('solvedMarkBest', fewest)}
                   </span>
                 )}

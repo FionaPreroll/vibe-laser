@@ -13,7 +13,12 @@ interface Props {
   readonly text?: string
   readonly levelsLabel?: string
   /** The moves that solved the level, and the fewest it took before, if it was solved before. */
-  readonly record?: { readonly moves: number; readonly before: number | undefined }
+  readonly record?: {
+    readonly moves: number
+    readonly before: number | undefined
+    /** The moves of the known solution, when there is one. */
+    readonly par?: number | undefined
+  }
 }
 
 /** Shown a moment after every coin spins; the board stays locked behind it. */
@@ -39,8 +44,10 @@ export function SolvedDialog({ onNext, onLevels, onReplay, text, levelsLabel, re
   )
 }
 
-function recordText({ moves, before }: NonNullable<Props['record']>): string {
-  const solved = tn('solvedInMoves', moves)
-  if (before === undefined) return solved
-  return `${solved} ${moves < before ? tn('newBest', before) : tn('bestSoFar', before)}`
+function recordText({ moves, before, par }: NonNullable<Props['record']>): string {
+  const parts = [tn('solvedInMoves', moves)]
+  if (before !== undefined)
+    parts.push(moves < before ? tn('newBest', before) : tn('bestSoFar', before))
+  if (par !== undefined) parts.push(moves <= par ? tn('parReached', par) : tn('parMissed', par))
+  return parts.join(' ')
 }

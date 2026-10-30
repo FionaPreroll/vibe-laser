@@ -6,6 +6,7 @@ import { findLevel } from './packs'
 import { type LevelFile, levelSchema } from './schema'
 import {
   nextHint,
+  parOf,
   playSolution,
   playStep,
   recordMoves,
@@ -124,6 +125,24 @@ describe('playSolution', () => {
     const session = sessionOf(level)
     expect(playSolution(session, level)).toBe(3)
     expect(session.ticks).toBe(40)
+  })
+})
+
+describe('parOf', () => {
+  it('counts the moves of the known solution as a player makes them', () => {
+    // One move to B6, one turn to the left.
+    expect(parOf(firstLight())).toBe(2)
+    expect(parOf(firstLight({ solution: [{ piece: 0, pos: 'B6', rot: 5 }] }))).toBeUndefined()
+    expect(parOf(firstLight({ solution: undefined }))).toBeUndefined()
+  })
+
+  it('has a par for every built-in level', async () => {
+    for (const id of ['tutorial/3/2', 'lightworks/1/1', 'strange-light/3/6']) {
+      const found = findLevel(id)
+      const level = await found?.entry.load()
+      if (level === undefined) throw new Error(`No level ${id}`)
+      expect(parOf(level.file, found?.pack.file.rules)).toBeGreaterThan(0)
+    }
   })
 })
 
