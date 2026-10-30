@@ -120,6 +120,8 @@ export const en = {
     'Pieces show their colors as letters, R, G and B, and beams draw each color as a line of its own: red, green and blue side by side.',
   beamPreview: 'Show where light would go',
   vibration: 'Vibrate as pieces go down and turn',
+  leftHanded: 'Buttons on the left, for left hands',
+  leftHandedHint: 'On a phone or tablet on its side, the buttons sit left of the board.',
   beamPreviewHint:
     'While you carry a piece, the beams show faintly where light would go if you put it down there, and explosives it would reach get a red ring.',
 
@@ -507,6 +509,9 @@ export const de: Record<MessageKey, string> = {
     'Teile zeigen ihre Farben als Buchstaben, R, G und B, und Strahlen zeichnen jede Farbe als eigene Linie: Rot, Grün und Blau nebeneinander.',
   beamPreview: 'Zeigen, wohin das Licht ginge',
   vibration: 'Beim Ablegen und Drehen vibrieren',
+  leftHanded: 'Knöpfe links, für Linkshänder',
+  leftHandedHint:
+    'Auf einem Handy oder Tablet im Querformat stehen die Knöpfe links vom Spielfeld.',
   beamPreviewHint:
     'Während du ein Teil trägst, zeigen die Strahlen blass, wohin das Licht ginge, wenn du es dort ablegst, und Sprengstoff, den es erreichen würde, bekommt einen roten Ring.',
 

@@ -77,6 +77,20 @@ export function SettingsDialog({ book, onClose }: Props) {
         <p id="beam-preview-hint" class="hint">
           {t('beamPreviewHint')}
         </p>
+        <label class="check">
+          <input
+            type="checkbox"
+            checked={settings.leftHanded}
+            aria-describedby="left-handed-hint"
+            onChange={(event) =>
+              void book.updateSettings({ leftHanded: event.currentTarget.checked })
+            }
+          />
+          <span>{t('leftHanded')}</span>
+        </label>
+        <p id="left-handed-hint" class="hint">
+          {t('leftHandedHint')}
+        </p>
         {'vibrate' in navigator && (
           <label class="check">
             <input

@@ -20,6 +20,8 @@ const settingsSchema = z
     beamPreview: z.boolean().default(true),
     // A short buzz on phones as pieces go down or turn; older saves load with it on.
     vibration: z.boolean().default(true),
+    // Buttons left of the board on a phone or tablet on its side; older saves load with them right.
+    leftHanded: z.boolean().default(false),
   })
   .strict()
 
@@ -66,6 +68,7 @@ export const DEFAULT_SETTINGS: Settings = {
   art: 'pack',
   beamPreview: true,
   vibration: true,
+  leftHanded: false,
 }
 
 const KEY = 'save'

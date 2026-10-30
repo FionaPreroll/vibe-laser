@@ -53,6 +53,7 @@ describe('ProfileBook', () => {
       art: 'pack',
       beamPreview: true,
       vibration: true,
+      leftHanded: false,
     })
   })
 
