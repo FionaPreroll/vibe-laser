@@ -1,0 +1,61 @@
+{
+  "$schema": "../../../level.schema.json",
+  "version": 1,
+  "name": {
+    "en": "Spare Barrels",
+    "de": "Ersatzfässer"
+  },
+  "size": [7, 6],
+  "objects": [
+    {
+      "type": "fuelCell",
+      "pos": "A1"
+    },
+    {
+      "type": "coin",
+      "pos": "C1",
+      "rgb": "g"
+    },
+    {
+      "type": "explosive",
+      "pos": "C3"
+    },
+    {
+      "type": "laser",
+      "pos": "C7",
+      "rot": 0,
+      "rgb": "g"
+    },
+    {
+      "type": "coin",
+      "pos": "D1",
+      "rgb": "g"
+    },
+    {
+      "type": "explosive",
+      "pos": "D2"
+    }
+  ],
+  "toolbox": [
+    {
+      "type": "splitter",
+      "rot": 0
+    },
+    {
+      "type": "mirror",
+      "rot": 0
+    }
+  ],
+  "solution": [
+    {
+      "piece": 0,
+      "pos": "B7",
+      "rot": 4
+    },
+    {
+      "piece": 1,
+      "pos": "B1",
+      "rot": 3
+    }
+  ]
+}

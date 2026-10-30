@@ -1,0 +1,82 @@
+{
+  "$schema": "../../../level.schema.json",
+  "version": 1,
+  "name": {
+    "en": "Dark Matter",
+    "de": "Dunkle Materie"
+  },
+  "size": [8, 8],
+  "objects": [
+    {
+      "type": "explosive",
+      "pos": "B6"
+    },
+    {
+      "type": "explosive",
+      "pos": "C7"
+    },
+    {
+      "type": "coin",
+      "pos": "D1",
+      "rgb": "r"
+    },
+    {
+      "type": "blackHole",
+      "pos": "D2"
+    },
+    {
+      "type": "blackHole",
+      "pos": "D4"
+    },
+    {
+      "type": "laser",
+      "pos": "F2",
+      "rot": 4,
+      "rgb": "rgb"
+    },
+    {
+      "type": "coin",
+      "pos": "G1",
+      "rgb": "r"
+    },
+    {
+      "type": "blackHole",
+      "pos": "G8"
+    },
+    {
+      "type": "antiCoin",
+      "pos": "H3"
+    }
+  ],
+  "toolbox": [
+    {
+      "type": "prism",
+      "rot": 0
+    },
+    {
+      "type": "mirror",
+      "rot": 0
+    },
+    {
+      "type": "splitter",
+      "rot": 0
+    }
+  ],
+  "solution": [
+    {
+      "piece": 0,
+      "pos": "G2",
+      "rot": 0
+    },
+    {
+      "piece": 1,
+      "pos": "H2",
+      "rot": 7
+    },
+    {
+      "piece": 2,
+      "pos": "H1",
+      "rot": 2
+    }
+  ]
+}

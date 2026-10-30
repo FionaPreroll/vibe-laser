@@ -1,0 +1,67 @@
+{
+  "$schema": "../../../level.schema.json",
+  "version": 1,
+  "name": {
+    "en": "Rainbow in the Dark",
+    "de": "Regenbogen im Dunkeln"
+  },
+  "size": [8, 7],
+  "objects": [
+    {
+      "type": "laser",
+      "pos": "A2",
+      "rot": 4,
+      "rgb": "rgb"
+    },
+    {
+      "type": "antiCoin",
+      "pos": "A6"
+    },
+    {
+      "type": "antiCoin",
+      "pos": "B4"
+    },
+    {
+      "type": "coin",
+      "pos": "E2",
+      "rgb": "rgb"
+    },
+    {
+      "type": "coin",
+      "pos": "F1",
+      "rgb": "r"
+    },
+    {
+      "type": "antiCoin",
+      "pos": "F8"
+    }
+  ],
+  "toolbox": [
+    {
+      "type": "prism",
+      "rot": 0
+    },
+    {
+      "type": "mirror",
+      "rot": 0,
+      "count": 2
+    }
+  ],
+  "solution": [
+    {
+      "piece": 0,
+      "pos": "F2",
+      "rot": 0
+    },
+    {
+      "piece": 1,
+      "pos": "G2",
+      "rot": 7
+    },
+    {
+      "piece": 2,
+      "pos": "G1",
+      "rot": 1
+    }
+  ]
+}

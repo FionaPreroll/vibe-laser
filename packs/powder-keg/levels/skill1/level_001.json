@@ -1,0 +1,54 @@
+{
+  "$schema": "../../../level.schema.json",
+  "version": 1,
+  "name": {
+    "en": "Short Fuse",
+    "de": "Kurze Lunte"
+  },
+  "size": [7, 6],
+  "objects": [
+    {
+      "type": "explosive",
+      "pos": "A4"
+    },
+    {
+      "type": "explosive",
+      "pos": "B7"
+    },
+    {
+      "type": "laser",
+      "pos": "E5",
+      "rot": 2,
+      "rgb": "r"
+    },
+    {
+      "type": "coin",
+      "pos": "F1",
+      "rgb": "r"
+    },
+    {
+      "type": "coin",
+      "pos": "F6",
+      "rgb": "r"
+    }
+  ],
+  "toolbox": [
+    {
+      "type": "mirror",
+      "rot": 0,
+      "count": 2
+    }
+  ],
+  "solution": [
+    {
+      "piece": 0,
+      "pos": "E7",
+      "rot": 5
+    },
+    {
+      "piece": 1,
+      "pos": "F7",
+      "rot": 7
+    }
+  ]
+}

@@ -1,0 +1,81 @@
+{
+  "$schema": "../../../level.schema.json",
+  "version": 1,
+  "name": {
+    "en": "Blue Powder",
+    "de": "Blaues Pulver"
+  },
+  "size": [8, 7],
+  "objects": [
+    {
+      "type": "coin",
+      "pos": "A7",
+      "rgb": "b"
+    },
+    {
+      "type": "coin",
+      "pos": "B1",
+      "rgb": "b"
+    },
+    {
+      "type": "coin",
+      "pos": "B3",
+      "rgb": "b"
+    },
+    {
+      "type": "coin",
+      "pos": "C3",
+      "rgb": "b"
+    },
+    {
+      "type": "explosive",
+      "pos": "D5"
+    },
+    {
+      "type": "fuelCell",
+      "pos": "D6"
+    },
+    {
+      "type": "explosive",
+      "pos": "E7"
+    },
+    {
+      "type": "explosive",
+      "pos": "F6"
+    },
+    {
+      "type": "laser",
+      "pos": "G1",
+      "rot": 2,
+      "rgb": "b"
+    }
+  ],
+  "toolbox": [
+    {
+      "type": "splitter",
+      "rot": 0
+    },
+    {
+      "type": "mirror",
+      "rot": 0,
+      "count": 2
+    }
+  ],
+  "solution": [
+    {
+      "piece": 1,
+      "pos": "G3",
+      "rot": 7
+    },
+    {
+      "piece": 0,
+      "pos": "A3",
+      "rot": 4
+    },
+    {
+      "piece": 2,
+      "pos": "A1",
+      "rot": 3
+    }
+  ]
+}

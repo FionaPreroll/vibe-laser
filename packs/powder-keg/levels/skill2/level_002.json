@@ -1,0 +1,54 @@
+{
+  "$schema": "../../../level.schema.json",
+  "version": 1,
+  "name": {
+    "en": "In the Shadow",
+    "de": "Im Schatten"
+  },
+  "size": [7, 6],
+  "objects": [
+    {
+      "type": "coin",
+      "pos": "A5",
+      "rgb": "g"
+    },
+    {
+      "type": "coin",
+      "pos": "B4",
+      "rgb": "g"
+    },
+    {
+      "type": "laser",
+      "pos": "F2",
+      "rot": 2,
+      "rgb": "g"
+    },
+    {
+      "type": "antiCoin",
+      "pos": "F6"
+    },
+    {
+      "type": "antiCoin",
+      "pos": "F7"
+    }
+  ],
+  "toolbox": [
+    {
+      "type": "mirror",
+      "rot": 0,
+      "count": 2
+    }
+  ],
+  "solution": [
+    {
+      "piece": 0,
+      "pos": "F4",
+      "rot": 7
+    },
+    {
+      "piece": 1,
+      "pos": "A4",
+      "rot": 3
+    }
+  ]
+}

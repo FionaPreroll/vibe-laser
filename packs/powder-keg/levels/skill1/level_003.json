@@ -1,0 +1,79 @@
+{
+  "$schema": "../../../level.schema.json",
+  "version": 1,
+  "name": {
+    "en": "Tightrope",
+    "de": "Drahtseilakt"
+  },
+  "size": [8, 7],
+  "objects": [
+    {
+      "type": "explosive",
+      "pos": "A6"
+    },
+    {
+      "type": "coin",
+      "pos": "A8",
+      "rgb": "r"
+    },
+    {
+      "type": "fuelCell",
+      "pos": "C3"
+    },
+    {
+      "type": "coin",
+      "pos": "C6",
+      "rgb": "r"
+    },
+    {
+      "type": "explosive",
+      "pos": "E2"
+    },
+    {
+      "type": "coin",
+      "pos": "E4",
+      "rgb": "r"
+    },
+    {
+      "type": "laser",
+      "pos": "E7",
+      "rot": 0,
+      "rgb": "r"
+    },
+    {
+      "type": "fuelCell",
+      "pos": "F6"
+    }
+  ],
+  "toolbox": [
+    {
+      "type": "doubleMirror",
+      "rot": 0
+    },
+    {
+      "type": "splitter",
+      "rot": 0
+    },
+    {
+      "type": "refractor",
+      "rot": 0
+    }
+  ],
+  "solution": [
+    {
+      "piece": 1,
+      "pos": "B7",
+      "rot": 3
+    },
+    {
+      "piece": 2,
+      "pos": "D7",
+      "rot": 1
+    },
+    {
+      "piece": 0,
+      "pos": "C8",
+      "rot": 2
+    }
+  ]
+}

@@ -1,0 +1,70 @@
+{
+  "$schema": "../../../level.schema.json",
+  "version": 1,
+  "name": {
+    "en": "Candlelight",
+    "de": "Kerzenschein"
+  },
+  "size": [8, 7],
+  "objects": [
+    {
+      "type": "laser",
+      "pos": "A6",
+      "rot": 4,
+      "rgb": "rg"
+    },
+    {
+      "type": "antiCoin",
+      "pos": "B8"
+    },
+    {
+      "type": "antiCoin",
+      "pos": "C6"
+    },
+    {
+      "type": "coin",
+      "pos": "E8",
+      "rgb": "rg"
+    },
+    {
+      "type": "antiCoin",
+      "pos": "G1"
+    },
+    {
+      "type": "coin",
+      "pos": "G3",
+      "rgb": "rg"
+    }
+  ],
+  "toolbox": [
+    {
+      "type": "threeway",
+      "rot": 0
+    },
+    {
+      "type": "slitMirror",
+      "rot": 0
+    },
+    {
+      "type": "refractor",
+      "rot": 0
+    }
+  ],
+  "solution": [
+    {
+      "piece": 0,
+      "pos": "B6",
+      "rot": 4
+    },
+    {
+      "piece": 2,
+      "pos": "D8",
+      "rot": 0
+    },
+    {
+      "piece": 1,
+      "pos": "F2",
+      "rot": 2
+    }
+  ]
+}

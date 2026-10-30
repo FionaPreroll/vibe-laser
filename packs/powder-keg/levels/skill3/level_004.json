@@ -1,0 +1,94 @@
+{
+  "$schema": "../../../level.schema.json",
+  "version": 1,
+  "name": {
+    "en": "Catacombs",
+    "de": "Katakomben"
+  },
+  "size": [8, 8],
+  "objects": [
+    {
+      "type": "blackHole",
+      "pos": "A3"
+    },
+    {
+      "type": "antiCoin",
+      "pos": "C3"
+    },
+    {
+      "type": "coin",
+      "pos": "D5",
+      "rgb": "rb"
+    },
+    {
+      "type": "coin",
+      "pos": "D6",
+      "rgb": "rb"
+    },
+    {
+      "type": "coin",
+      "pos": "D7",
+      "rgb": "rb"
+    },
+    {
+      "type": "fuelCell",
+      "pos": "F1"
+    },
+    {
+      "type": "blackHole",
+      "pos": "F4"
+    },
+    {
+      "type": "coin",
+      "pos": "H1",
+      "rgb": "rb"
+    },
+    {
+      "type": "laser",
+      "pos": "H4",
+      "rot": 0,
+      "rgb": "rb"
+    },
+    {
+      "type": "blackHole",
+      "pos": "H8"
+    }
+  ],
+  "toolbox": [
+    {
+      "type": "threeway",
+      "rot": 0
+    },
+    {
+      "type": "mirror",
+      "rot": 0,
+      "count": 2
+    },
+    {
+      "type": "refractor",
+      "rot": 0
+    }
+  ],
+  "solution": [
+    {
+      "piece": 3,
+      "pos": "G4",
+      "rot": 0
+    },
+    {
+      "piece": 0,
+      "pos": "F3",
+      "rot": 4
+    },
+    {
+      "piece": 1,
+      "pos": "D3",
+      "rot": 3
+    },
+    {
+      "piece": 2,
+      "pos": "D8",
+      "rot": 6
+    }
+  ]
+}

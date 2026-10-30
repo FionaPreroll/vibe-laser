@@ -1,0 +1,89 @@
+{
+  "$schema": "../../../level.schema.json",
+  "version": 1,
+  "name": {
+    "en": "Into the Void",
+    "de": "Ins Nichts"
+  },
+  "size": [8, 8],
+  "objects": [
+    {
+      "type": "explosive",
+      "pos": "A4"
+    },
+    {
+      "type": "laser",
+      "pos": "A6",
+      "rot": 4,
+      "rgb": "r"
+    },
+    {
+      "type": "blackHole",
+      "pos": "B3"
+    },
+    {
+      "type": "blackHole",
+      "pos": "B4"
+    },
+    {
+      "type": "explosive",
+      "pos": "B7"
+    },
+    {
+      "type": "coin",
+      "pos": "B8",
+      "rgb": "r"
+    },
+    {
+      "type": "coin",
+      "pos": "C4",
+      "rgb": "g"
+    },
+    {
+      "type": "laser",
+      "pos": "D8",
+      "rot": 6,
+      "rgb": "g"
+    },
+    {
+      "type": "antiCoin",
+      "pos": "E6"
+    },
+    {
+      "type": "coin",
+      "pos": "G3",
+      "rgb": "r"
+    }
+  ],
+  "toolbox": [
+    {
+      "type": "doubleMirror",
+      "rot": 0
+    },
+    {
+      "type": "refractor",
+      "rot": 0
+    },
+    {
+      "type": "splitter",
+      "rot": 0
+    }
+  ],
+  "solution": [
+    {
+      "piece": 1,
+      "pos": "B6",
+      "rot": 0
+    },
+    {
+      "piece": 2,
+      "pos": "C7",
+      "rot": 7
+    },
+    {
+      "piece": 0,
+      "pos": "D4",
+      "rot": 1
+    }
+  ]
+}
