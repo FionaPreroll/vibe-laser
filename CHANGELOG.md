@@ -18,6 +18,10 @@ All changes players can notice are listed here. The format follows [Keep a Chang
 - On a phone or tablet on its side, the buttons sit to the right of the board instead of below it, so the board gets the whole height. The header stays on one line, and the notch of a phone no longer covers the game.
 - Help, the settings and the dialogs at the end of a level close with a tap or click on the dark area around them. An end dialog put aside this way, or with Escape, leaves the board in view and comes back with a button.
 
+### Changed
+
+- Help and the level Fuel Run now say where a ship must be to take a fuel cell aboard: on the cell just north of it, not on the fuel cell itself, which would explode.
+
 ## [0.1.0] - 2026-10-30
 
 The first version.
