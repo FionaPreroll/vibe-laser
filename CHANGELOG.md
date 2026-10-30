@@ -4,6 +4,10 @@ All changes players can notice are listed here. The format follows [Keep a Chang
 
 ## [Unreleased]
 
+## [0.1.0] - 2026-10-30
+
+The first version.
+
 ### Added
 
 - Five tutorial levels: guide red, green and blue laser beams onto coins of their color with mirrors, double mirrors and slit mirrors, and keep dark anti-coins out of the light. Every level is open from the start.
@@ -59,3 +63,6 @@ All changes players can notice are listed here. The format follows [Keep a Chang
 ### Fixed
 
 - A spaceship that runs into a dead end turns round and flies back, instead of standing still there.
+
+[Unreleased]: https://github.com/FionaPreroll/vibe-laser/compare/v0.1.0...HEAD
+[0.1.0]: https://github.com/FionaPreroll/vibe-laser/releases/tag/v0.1.0
