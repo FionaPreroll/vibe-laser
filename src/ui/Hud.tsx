@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'preact/hooks'
 import type { Piece } from '../core/board'
 import { type Color, PRIMARIES, type Primary } from '../core/color'
 import { STABLE_TICKS } from '../game/session'
@@ -26,6 +27,7 @@ export function Hud({ controller, onExit, onHelp }: Props) {
           <progress max={STABLE_TICKS} value={stable} aria-label={t('stability')} />
         </div>
       )}
+      <EatenMirrorNotice controller={controller} />
       <div class="hud-buttons" role="toolbar" aria-label={t('actions')}>
         <button type="button" onClick={onExit}>
           {t('exit')}
@@ -69,6 +71,42 @@ export function Hud({ controller, onExit, onHelp }: Props) {
       <p id="controls-hint" class="hint">
         {t(touchScreen.value ? 'touchControls' : 'controls')}
       </p>
+    </div>
+  )
+}
+
+/**
+ * Says when a slime has eaten a mirror. Undo cannot bring it back, and without it the level may no
+ * longer be solvable, so it offers a fresh start; restarting puts the notice away.
+ */
+function EatenMirrorNotice({ controller }: { readonly controller: BoardController }) {
+  const { session } = controller
+  const [eaten, setEaten] = useState(false)
+  useEffect(
+    () =>
+      session.onEvents((events) => {
+        if (events.some((event) => event.kind === 'ate' && event.meal === 'mirror')) setEaten(true)
+      }),
+    [session],
+  )
+  const restarted = session.moves.value === 0 && !session.canUndo.value
+  useEffect(() => {
+    if (restarted) setEaten(false)
+  }, [restarted])
+  if (!eaten) return null
+  return (
+    <div class="hud-notice" role="status">
+      <span>{t('mirrorEaten')}</span>
+      <button
+        type="button"
+        class="primary"
+        onClick={() => {
+          controller.select(undefined)
+          session.restart()
+        }}
+      >
+        {t('restart')}
+      </button>
     </div>
   )
 }

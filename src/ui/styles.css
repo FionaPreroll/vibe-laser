@@ -206,6 +206,19 @@ button.primary {
   accent-color: #59d6ff;
 }
 
+.hud-notice {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  margin-bottom: 8px;
+  padding: 6px 10px;
+  border: 1px solid #c9a227;
+  border-radius: 8px;
+  background: rgb(245 197 66 / 0.1);
+  font-size: 0.875rem;
+}
+
 .hint {
   margin: 8px 0 0;
   color: var(--text-quiet);

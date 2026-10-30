@@ -21,7 +21,14 @@ export interface World {
 
 export type ActorEvent =
   | { readonly kind: 'moved'; readonly item: number; readonly from: number; readonly to: number }
-  | { readonly kind: 'ate'; readonly item: number; readonly food: number; readonly cell: number }
+  | {
+      readonly kind: 'ate'
+      readonly item: number
+      readonly food: number
+      /** What was eaten: an explosive, or a mirror the player may miss. */
+      readonly meal: 'explosive' | 'mirror'
+      readonly cell: number
+    }
   | {
       readonly kind: 'collected'
       readonly item: number

@@ -24,7 +24,7 @@ describe('EffectLayer', () => {
     expect(effects.playing).toBe(2)
     effects.play({ kind: 'fired', item: 0, target: 3, from: 0, at: 4 }, at)
     expect(effects.playing).toBe(4)
-    effects.play({ kind: 'ate', item: 0, food: 1, cell: 2 }, at)
+    effects.play({ kind: 'ate', item: 0, food: 1, meal: 'explosive', cell: 2 }, at)
     effects.play({ kind: 'collected', item: 0, fuel: 1, cell: 2 }, at)
     effects.play({ kind: 'swallowed', item: 0, cell: 2 }, at)
     expect(effects.playing).toBe(7)
