@@ -27,6 +27,8 @@ export const en = {
   levelMissing: 'There is no level here.',
   levelBroken: 'This level could not be loaded.',
   levelHeading: '{pack} · {skill} · {number}. {name}',
+  continue: 'Continue',
+  continueLevel: '{pack} · {skill} · level {number}',
   sharedHeading: 'Shared level · {name}',
   sharedBroken: 'This link holds no level of this game. Perhaps it was cut off when it was copied.',
   sharedSolved: 'Every coin is spinning. Keep the level in your own packs to play it again later.',
@@ -416,6 +418,8 @@ export const de: Record<MessageKey, string> = {
   levelMissing: 'Hier gibt es kein Level.',
   levelBroken: 'Dieses Level ließ sich nicht laden.',
   levelHeading: '{pack} · {skill} · {number}. {name}',
+  continue: 'Weiterspielen',
+  continueLevel: '{pack} · {skill} · Level {number}',
   sharedHeading: 'Geteiltes Level · {name}',
   sharedBroken:
     'Dieser Link enthält kein Level dieses Spiels. Vielleicht wurde er beim Kopieren abgeschnitten.',

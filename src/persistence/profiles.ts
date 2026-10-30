@@ -33,6 +33,8 @@ const profileSchema = z
     solved: z.array(z.string()),
     /** The fewest moves each level was solved in; older saves load without any. */
     best: z.record(z.string(), z.number().int().min(0)).default({}),
+    /** The level played last, for the Continue button; older saves load without one. */
+    last: z.string().optional(),
     settings: settingsSchema,
   })
   .strict()
@@ -151,6 +153,13 @@ export class ProfileBook {
       ...(better ? { best: { ...profile.best, [levelId]: moves } } : {}),
     })
     if (first && !known) await this.#options.persist?.()
+  }
+
+  /** Remembers the level being played, so the pack list can lead back to it. */
+  async markPlayed(levelId: string): Promise<void> {
+    const profile = this.active.value
+    if (profile.last === levelId) return
+    await this.#change(profile.id, { last: levelId })
   }
 
   async updateSettings(changes: Partial<Settings>): Promise<void> {

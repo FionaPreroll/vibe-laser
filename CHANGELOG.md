@@ -16,6 +16,7 @@ All changes players can notice are listed here. The format follows [Keep a Chang
 - A setting for left hands puts the buttons left of the board on a phone or tablet on its side.
 - With slimes, mines or ships on the board, a button in the bar runs them two or four times as fast, and the stability bar with them.
 - While you carry a piece, dotted lines show where slimes and ships would walk if you put it down there, with a red ring where one would set off an explosive.
+- A Continue button above the level packs leads back to the level played last, or to the next unsolved level of its pack once that one is solved. Each profile remembers its own.
 
 ### Changed
 

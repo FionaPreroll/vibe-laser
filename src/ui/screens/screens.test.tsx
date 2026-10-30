@@ -29,6 +29,22 @@ describe('PacksScreen', () => {
     expect(shown.value).toEqual({ name: 'skills', pack: 'tutorial' })
   })
 
+  it('continues with the level played last, or the next unsolved one, once there is one', () => {
+    const { unmount } = render(<PacksScreen solved={new Set()} />)
+    expect(screen.queryByRole('button', { name: /^Continue/ })).toBeNull()
+    unmount()
+
+    render(<PacksScreen solved={new Set(['tutorial/1/1'])} last="tutorial/1/1" />)
+    const next = button(/^Continue/)
+    expect(next.textContent).toContain('Tutorial · Mirrors · level 2')
+    fireEvent.click(next)
+    expect(shown.value).toEqual({ name: 'play', level: 'tutorial/1/2' })
+    cleanup()
+
+    render(<PacksScreen solved={new Set()} last="tutorial/3/2" />)
+    expect(button(/^Continue/).textContent).toContain('Hazards · level 2')
+  })
+
   it('shows each pack with a banner in the style of its selection screen', () => {
     render(<PacksScreen solved={new Set()} />)
     const banner = (name: RegExp) => button(name).querySelector('.card-banner')?.className

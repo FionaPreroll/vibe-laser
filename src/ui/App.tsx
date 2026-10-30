@@ -189,7 +189,7 @@ export function App({ store, audio }: Props) {
             : 'menu'
         }
       >
-        {current.name === 'packs' && <PacksScreen solved={solved} />}
+        {current.name === 'packs' && <PacksScreen solved={solved} last={book.active.value.last} />}
         {current.name === 'skills' && (
           <SkillsScreen pack={current.pack} solved={solved} onHelp={() => setOverlay('help')} />
         )}
