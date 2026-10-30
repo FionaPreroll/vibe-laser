@@ -1,0 +1,65 @@
+{
+  "$schema": "../../../level.schema.json",
+  "version": 1,
+  "name": {
+    "en": "Dead End",
+    "de": "Sackgasse"
+  },
+  "size": [7, 7],
+  "objects": [
+    {
+      "type": "coin",
+      "pos": "A1",
+      "rgb": "r"
+    },
+    {
+      "type": "coin",
+      "pos": "A4",
+      "rgb": "r"
+    },
+    {
+      "type": "laser",
+      "pos": "B1",
+      "rot": 2,
+      "rgb": "r"
+    },
+    {
+      "type": "blackHole",
+      "pos": "B3"
+    },
+    {
+      "type": "blackHole",
+      "pos": "C2"
+    },
+    {
+      "type": "explosive",
+      "pos": "C6"
+    },
+    {
+      "type": "blackHole",
+      "pos": "F5"
+    }
+  ],
+  "toolbox": [
+    {
+      "type": "mirror",
+      "rot": 0
+    },
+    {
+      "type": "splitter",
+      "rot": 0
+    }
+  ],
+  "solution": [
+    {
+      "piece": 0,
+      "pos": "B2",
+      "rot": 7
+    },
+    {
+      "piece": 1,
+      "pos": "A2",
+      "rot": 4
+    }
+  ]
+}

@@ -1,0 +1,82 @@
+{
+  "$schema": "../../../level.schema.json",
+  "version": 1,
+  "name": {
+    "en": "Sealed Vault",
+    "de": "Versiegelte Kammer"
+  },
+  "size": [8, 8],
+  "objects": [
+    {
+      "type": "laser",
+      "pos": "A2",
+      "rot": 4,
+      "rgb": "rgb"
+    },
+    {
+      "type": "coin",
+      "pos": "B1",
+      "rgb": "r"
+    },
+    {
+      "type": "coin",
+      "pos": "C4",
+      "rgb": "r"
+    },
+    {
+      "type": "blackHole",
+      "pos": "C7"
+    },
+    {
+      "type": "explosive",
+      "pos": "D5"
+    },
+    {
+      "type": "explosive",
+      "pos": "D6"
+    },
+    {
+      "type": "antiCoin",
+      "pos": "D7"
+    },
+    {
+      "type": "blackHole",
+      "pos": "F5"
+    },
+    {
+      "type": "blackHole",
+      "pos": "F8"
+    }
+  ],
+  "toolbox": [
+    {
+      "type": "prism",
+      "rot": 0
+    },
+    {
+      "type": "mirror",
+      "rot": 0
+    },
+    {
+      "type": "splitter",
+      "rot": 0
+    }
+  ],
+  "solution": [
+    {
+      "piece": 0,
+      "pos": "B2",
+      "rot": 0
+    },
+    {
+      "piece": 2,
+      "pos": "C2",
+      "rot": 0
+    },
+    {
+      "piece": 1,
+      "pos": "C1",
+      "rot": 1
+    }
+  ]
+}

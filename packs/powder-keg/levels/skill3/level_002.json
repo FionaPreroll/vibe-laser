@@ -1,0 +1,65 @@
+{
+  "$schema": "../../../level.schema.json",
+  "version": 1,
+  "name": {
+    "en": "Abyss",
+    "de": "Abgrund"
+  },
+  "size": [7, 7],
+  "objects": [
+    {
+      "type": "antiCoin",
+      "pos": "C4"
+    },
+    {
+      "type": "blackHole",
+      "pos": "D1"
+    },
+    {
+      "type": "blackHole",
+      "pos": "D2"
+    },
+    {
+      "type": "coin",
+      "pos": "E1",
+      "rgb": "b"
+    },
+    {
+      "type": "coin",
+      "pos": "E3",
+      "rgb": "b"
+    },
+    {
+      "type": "blackHole",
+      "pos": "F4"
+    },
+    {
+      "type": "laser",
+      "pos": "G3",
+      "rot": 6,
+      "rgb": "b"
+    }
+  ],
+  "toolbox": [
+    {
+      "type": "doubleMirror",
+      "rot": 0
+    },
+    {
+      "type": "splitter",
+      "rot": 0
+    }
+  ],
+  "solution": [
+    {
+      "piece": 0,
+      "pos": "G2",
+      "rot": 1
+    },
+    {
+      "piece": 1,
+      "pos": "E2",
+      "rot": 4
+    }
+  ]
+}

@@ -1,0 +1,57 @@
+{
+  "$schema": "../../../level.schema.json",
+  "version": 1,
+  "name": {
+    "en": "Look Away",
+    "de": "Wegschauen"
+  },
+  "size": [7, 6],
+  "objects": [
+    {
+      "type": "coin",
+      "pos": "B3",
+      "rgb": "r"
+    },
+    {
+      "type": "coin",
+      "pos": "B7",
+      "rgb": "r"
+    },
+    {
+      "type": "antiCoin",
+      "pos": "D5"
+    },
+    {
+      "type": "laser",
+      "pos": "F5",
+      "rot": 2,
+      "rgb": "r"
+    },
+    {
+      "type": "antiCoin",
+      "pos": "F7"
+    }
+  ],
+  "toolbox": [
+    {
+      "type": "splitter",
+      "rot": 0
+    },
+    {
+      "type": "mirror",
+      "rot": 0
+    }
+  ],
+  "solution": [
+    {
+      "piece": 1,
+      "pos": "F6",
+      "rot": 7
+    },
+    {
+      "piece": 0,
+      "pos": "B6",
+      "rot": 4
+    }
+  ]
+}

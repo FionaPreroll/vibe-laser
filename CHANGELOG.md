@@ -7,6 +7,7 @@ All changes players can notice are listed here. The format follows [Keep a Chang
 ### Added
 
 - A new level pack, Sea of Colors: eighteen puzzles about color, in three skills. Prisms fan white light out, Converters change its color, and Filters sort it with filters and polarizers. Its skills are chosen in a ship's log, with the sounds of the sea.
+- A new level pack, Powder Keg: eighteen puzzles down in the crypt, where light is dangerous, in three skills. Explosives must stay dark, Dark Coins brings anti-coins, and in Black Holes they all meet. It glows in Neon, with the crypt's sounds.
 
 ## [0.1.0] - 2026-10-30
 

@@ -61,3 +61,13 @@ test('opens Sea of Colors at sea and plays its first level', async ({ page }) =>
   await page.getByRole('button', { name: /^1\. Spray of Light/ }).click()
   await expect(page.locator('.board')).toBeVisible()
 })
+
+test('opens Powder Keg in the crypt and plays its first level', async ({ page }) => {
+  await page.goto('./')
+  await page.getByRole('button', { name: /^Powder Keg/ }).click()
+  await expect(page.locator('.select-screen')).toHaveClass(/theme-crypt/)
+  await page.getByRole('button', { name: /^1\. Explosives/ }).click()
+  await expect(page.getByRole('button', { name: /^\d\. / })).toHaveCount(6)
+  await page.getByRole('button', { name: /^1\. Short Fuse/ }).click()
+  await expect(page.locator('.board')).toHaveAttribute('data-art', 'neon')
+})

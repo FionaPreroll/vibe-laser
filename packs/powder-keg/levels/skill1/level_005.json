@@ -1,0 +1,75 @@
+{
+  "$schema": "../../../level.schema.json",
+  "version": 1,
+  "name": {
+    "en": "White Heat",
+    "de": "Weißglut"
+  },
+  "size": [8, 7],
+  "objects": [
+    {
+      "type": "laser",
+      "pos": "A3",
+      "rot": 4,
+      "rgb": "rgb"
+    },
+    {
+      "type": "explosive",
+      "pos": "C5"
+    },
+    {
+      "type": "coin",
+      "pos": "C8",
+      "rgb": "r"
+    },
+    {
+      "type": "explosive",
+      "pos": "E1"
+    },
+    {
+      "type": "coin",
+      "pos": "F7",
+      "rgb": "r"
+    },
+    {
+      "type": "coin",
+      "pos": "G7",
+      "rgb": "g"
+    },
+    {
+      "type": "explosive",
+      "pos": "G8"
+    }
+  ],
+  "toolbox": [
+    {
+      "type": "prism",
+      "rot": 0
+    },
+    {
+      "type": "doubleMirror",
+      "rot": 0
+    },
+    {
+      "type": "splitter",
+      "rot": 0
+    }
+  ],
+  "solution": [
+    {
+      "piece": 2,
+      "pos": "F3",
+      "rot": 0
+    },
+    {
+      "piece": 0,
+      "pos": "F6",
+      "rot": 2
+    },
+    {
+      "piece": 1,
+      "pos": "F8",
+      "rot": 3
+    }
+  ]
+}

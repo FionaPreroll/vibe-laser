@@ -1,0 +1,72 @@
+{
+  "$schema": "../../../level.schema.json",
+  "version": 1,
+  "name": {
+    "en": "Grave Goods",
+    "de": "Grabbeigaben"
+  },
+  "size": [8, 7],
+  "objects": [
+    {
+      "type": "laser",
+      "pos": "A8",
+      "rot": 4,
+      "rgb": "rgb"
+    },
+    {
+      "type": "antiCoin",
+      "pos": "B1"
+    },
+    {
+      "type": "coin",
+      "pos": "B4",
+      "rgb": "b"
+    },
+    {
+      "type": "antiCoin",
+      "pos": "C2"
+    },
+    {
+      "type": "coin",
+      "pos": "F5",
+      "rgb": "g"
+    },
+    {
+      "type": "antiCoin",
+      "pos": "F6"
+    },
+    {
+      "type": "coin",
+      "pos": "F7",
+      "rgb": "g"
+    }
+  ],
+  "toolbox": [
+    {
+      "type": "prism",
+      "rot": 0
+    },
+    {
+      "type": "mirror",
+      "rot": 0,
+      "count": 2
+    }
+  ],
+  "solution": [
+    {
+      "piece": 0,
+      "pos": "E8",
+      "rot": 4
+    },
+    {
+      "piece": 1,
+      "pos": "E4",
+      "rot": 1
+    },
+    {
+      "piece": 2,
+      "pos": "G6",
+      "rot": 0
+    }
+  ]
+}

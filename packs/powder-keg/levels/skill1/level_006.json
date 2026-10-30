@@ -1,0 +1,76 @@
+{
+  "$schema": "../../../level.schema.json",
+  "version": 1,
+  "name": {
+    "en": "Last Match",
+    "de": "Das letzte Streichholz"
+  },
+  "size": [8, 7],
+  "objects": [
+    {
+      "type": "explosive",
+      "pos": "A3"
+    },
+    {
+      "type": "fuelCell",
+      "pos": "A8"
+    },
+    {
+      "type": "explosive",
+      "pos": "B2"
+    },
+    {
+      "type": "laser",
+      "pos": "D8",
+      "rot": 6,
+      "rgb": "b"
+    },
+    {
+      "type": "explosive",
+      "pos": "F3"
+    },
+    {
+      "type": "coin",
+      "pos": "F4",
+      "rgb": "b"
+    },
+    {
+      "type": "coin",
+      "pos": "F8",
+      "rgb": "b"
+    },
+    {
+      "type": "coin",
+      "pos": "G3",
+      "rgb": "b"
+    }
+  ],
+  "toolbox": [
+    {
+      "type": "splitter",
+      "rot": 0
+    },
+    {
+      "type": "mirror",
+      "rot": 0,
+      "count": 2
+    }
+  ],
+  "solution": [
+    {
+      "piece": 1,
+      "pos": "D4",
+      "rot": 3
+    },
+    {
+      "piece": 0,
+      "pos": "G4",
+      "rot": 0
+    },
+    {
+      "piece": 2,
+      "pos": "G8",
+      "rot": 7
+    }
+  ]
+}

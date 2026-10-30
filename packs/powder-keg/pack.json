@@ -1,0 +1,18 @@
+{
+  "$schema": "../pack.schema.json",
+  "version": 1,
+  "title": { "en": "Powder Keg", "de": "Pulverfass" },
+  "description": {
+    "en": "Eighteen puzzles down in the crypt, where light is dangerous: explosives and fuel cells must stay dark, anti-coins too, and black holes swallow every beam.",
+    "de": "Achtzehn Rätsel unten in der Gruft, wo Licht gefährlich ist: Sprengstoff und Brennstoffzellen müssen dunkel bleiben, Anti-Münzen auch, und Schwarze Löcher schlucken jeden Strahl."
+  },
+  "position": 7,
+  "skills": [
+    { "en": "Explosives", "de": "Sprengstoff" },
+    { "en": "Dark Coins", "de": "Dunkle Münzen" },
+    { "en": "Black Holes", "de": "Schwarze Löcher" }
+  ],
+  "skin": "neon",
+  "sounds": "crypt",
+  "selectScreen": "crypt"
+}
