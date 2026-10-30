@@ -80,6 +80,9 @@ export function PlayScreen({ level: id, book, speaker, paused, onHelp }: Props) 
       }),
     [controller, book, id, found?.pack],
   )
+  useEffect(() => {
+    if (found !== undefined) void book.markPlayed(id)
+  }, [book, id, found])
   const reducedMotion = book.active.value.settings.reducedMotion
   useEffect(() => {
     if (controller === undefined) return

@@ -1,4 +1,11 @@
-import { countSolved, levelsOf, library, type Pack } from '../../content/packs'
+import {
+  countSolved,
+  findLevel,
+  levelsOf,
+  library,
+  nextUnsolved,
+  type Pack,
+} from '../../content/packs'
 import { selectScreenOf } from '../../content/schema'
 import { locale, t } from '../../i18n'
 import { navigate } from '../router'
@@ -9,9 +16,42 @@ export function openPack(pack: Pack): void {
   else navigate({ name: 'levels', pack: pack.id, skill: 1 })
 }
 
-export function PacksScreen({ solved }: { readonly solved: ReadonlySet<string> }) {
+interface Props {
+  readonly solved: ReadonlySet<string>
+  /** The level played last, if any. */
+  readonly last?: string
+}
+
+/**
+ * Where Continue leads: the level played last while it is unsolved, else the next unsolved level
+ * of its pack; nothing when that pack is done or no level was played yet.
+ */
+export function continueTo(last: string | undefined, solved: ReadonlySet<string>) {
+  if (last === undefined) return undefined
+  const id = solved.has(last) ? nextUnsolved(last, solved)?.id : last
+  return id === undefined ? undefined : findLevel(id)
+}
+
+export function PacksScreen({ solved, last }: Props) {
+  const next = continueTo(last, solved)
   return (
     <section class="screen" aria-labelledby="packs-title">
+      {next && (
+        <button
+          type="button"
+          class="primary continue"
+          onClick={() => navigate({ name: 'play', level: next.entry.id })}
+        >
+          <span class="continue-label">{t('continue')}</span>
+          <span class="continue-level">
+            {t('continueLevel', {
+              pack: next.pack.file.title[locale.value],
+              skill: next.skill.name[locale.value],
+              number: next.entry.number,
+            })}
+          </span>
+        </button>
+      )}
       <h2 id="packs-title">{t('packsTitle')}</h2>
       <ul class="cards">
         {library.value.map((pack) => {

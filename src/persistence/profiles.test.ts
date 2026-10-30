@@ -172,4 +172,13 @@ describe('ProfileBook', () => {
     await Promise.all([first, second, book.saved()])
     expect(values.at(-1)).toMatchObject({ profiles: [{ settings: { soundVolume: 0.2 } }] })
   })
+
+  it('remembers the level played last, for each profile', async () => {
+    const { book } = await open()
+    expect(book.active.value.last).toBeUndefined()
+    await book.markPlayed('tutorial/2/3')
+    expect(book.active.value.last).toBe('tutorial/2/3')
+    await book.create('Fiona')
+    expect(book.active.value.last).toBeUndefined()
+  })
 })
