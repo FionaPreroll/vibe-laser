@@ -62,7 +62,7 @@ Hazards and actors stop beams. Actors also have a heading, written as a digit af
 | Part       | Abbreviation | What it does                                                                                                                                                |
 | ---------- | ------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Explosive  | `T`          | Explodes when light, a mine or a ship reaches it, and destroys everything on its eight neighbours. Explosives among them go off as well.                    |
-| Fuel cell  | `FC`         | Explodes like an explosive. A ship flying over it takes it aboard and can fire once.                                                                        |
+| Fuel cell  | `FC`         | Explodes like an explosive. A ship passing the cell just north of it beams it aboard and can fire once; a ship flying into it sets it off.                  |
 | Black hole | `H`          | Swallows light. While no light falls into it, it pulls in ships in line with it and destroys them.                                                          |
 | Slime      | `SL`         | Walks ahead and turns right where something is in its way. It eats the first explosive, or the first plain mirror without light, that it runs into.         |
 | Robot mine | `MI`         | Jumps around in all eight directions and bounces off beams, pieces and the edge. Running into an explosive sets it off.                                     |

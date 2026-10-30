@@ -10,6 +10,10 @@ All changes players can notice are listed here. The format follows [Keep a Chang
 - A new level pack, Powder Keg: eighteen puzzles down in the crypt, where light is dangerous, in three skills. Explosives must stay dark, Dark Coins brings anti-coins, and in Black Holes they all meet. It glows in Neon, with the crypt's sounds.
 - A new level pack, Glass Maze: eighteen puzzles about the path of light, in three skills. Refraction bends beams with refractors, Split Beams divides them with splitters and threeways, and in Two Lasers two beams share every board. Its skills are chosen in the clinic of light, with the clinic's sounds.
 
+### Changed
+
+- Help and the level Fuel Run now say where a ship must be to take a fuel cell aboard: on the cell just north of it, not on the fuel cell itself, which would explode.
+
 ## [0.1.0] - 2026-10-30
 
 The first version.

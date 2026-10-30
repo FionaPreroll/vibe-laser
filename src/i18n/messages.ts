@@ -178,7 +178,7 @@ export const en = {
     'Explodes when light, a mine or a ship reaches it, and takes its neighbours with it.',
   'parts.fuelCell': 'Fuel cell',
   'parts.fuelCell.text':
-    'Explodes like an explosive. A ship flying over it takes it aboard and can fire once.',
+    'Explodes like an explosive. A ship passing the cell just north of it beams it aboard and can fire once; a ship flying into it sets it off.',
   'parts.blackHole': 'Black hole',
   'parts.blackHole.text': 'Swallows light. While it is dark, it pulls in ships in line with it.',
   'parts.slime': 'Slime',
@@ -556,7 +556,7 @@ export const de: Record<MessageKey, string> = {
     'Explodiert, wenn Licht, eine Mine oder ein Raumschiff ihn erreicht, und reißt seine Nachbarn mit.',
   'parts.fuelCell': 'Brennstoffzelle',
   'parts.fuelCell.text':
-    'Explodiert wie Sprengstoff. Ein Raumschiff, das darüber fliegt, nimmt sie auf und kann einmal schießen.',
+    'Explodiert wie Sprengstoff. Ein Raumschiff, das auf dem Feld direkt nördlich davon vorbeifliegt, holt sie an Bord und kann einmal schießen; fliegt es in sie hinein, geht sie hoch.',
   'parts.blackHole': 'Schwarzes Loch',
   'parts.blackHole.text':
     'Schluckt Licht. Solange es dunkel ist, zieht es Raumschiffe an, die mit ihm in einer Linie stehen.',
