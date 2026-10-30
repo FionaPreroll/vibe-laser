@@ -14,6 +14,9 @@ All changes players can notice are listed here. The format follows [Keep a Chang
 ### Changed
 
 - Help, the slime's description and the level Hungry Slime now say that slimes, mines and ships never cross a beam, and that turning the beam away sets them off.
+- On a phone held upright, the game asks to be turned on its side. On touch screens a Full screen button in the header hides the browser's bars and, where the browser allows, holds the game in landscape. Installed as an app, the game opens in landscape.
+- On a phone or tablet on its side, the buttons sit to the right of the board instead of below it, so the board gets the whole height. The header stays on one line, and the notch of a phone no longer covers the game.
+- Help, the settings and the dialogs at the end of a level close with a tap or click on the dark area around them. An end dialog put aside this way, or with Escape, leaves the board in view and comes back with a button.
 
 ## [0.1.0] - 2026-10-30
 

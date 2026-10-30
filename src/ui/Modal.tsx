@@ -1,6 +1,7 @@
 import type { ComponentChildren } from 'preact'
 import { useEffect, useRef } from 'preact/hooks'
 import { t } from '../i18n'
+import { useBackdropDismiss } from './backdrop'
 
 interface Props {
   readonly id: string
@@ -10,8 +11,9 @@ interface Props {
 }
 
 /**
- * A dialog over the current screen, such as help or the settings; Escape closes it. The focus
- * moves into it when it opens and returns to where it was when it closes.
+ * A dialog over the current screen, such as help or the settings; Escape or a click on the dim
+ * backdrop around it closes it. The focus moves into it when it opens and returns to where it was
+ * when it closes.
  */
 export function Modal({ id, title, onClose, children }: Props) {
   const close = useRef<HTMLButtonElement>(null)
@@ -29,9 +31,10 @@ export function Modal({ id, title, onClose, children }: Props) {
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
   }, [onClose])
+  const backdrop = useBackdropDismiss(onClose)
 
   return (
-    <div class="modal-backdrop">
+    <div class="modal-backdrop" {...backdrop}>
       <div class="modal" role="dialog" aria-modal="true" aria-labelledby={`${id}-title`}>
         <header class="modal-header">
           <h2 id={`${id}-title`}>{title}</h2>

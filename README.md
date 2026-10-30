@@ -17,6 +17,7 @@ Play it at https://fionapreroll.github.io/vibe-laser/.
 - A level is solved when every coin spins: each colored coin needs light of exactly its color, and dark anti-coins must stay out of the light.
 - Keep light away from explosives. One that goes off sets off its neighbours too, and the level is lost; only starting again helps.
 - Slimes, robot mines and spaceships move by themselves. With mines or ships on the board, a solution must hold for five seconds while a bar fills.
+- The game is played across the screen. A phone held upright asks to be turned; on a phone or tablet on its side the buttons sit to the right of the board, and on touch screens the Full screen button hides the browser's bars.
 - The buttons below the board lead back to the level selection, restart the level, clean up (unlit pieces go back into the toolbox), undo, redo, rotate the selected piece and open the help.
 - Three dots at the end of the button bar show the colors of the piece under the pointer, as in the original: a yellow piece lights red and green, and a complex shows its inner color after a slash. After a key they show the piece in the keyboard frame, and on a touch screen the selected piece.
 - Each player can have a profile of their own, with their own progress and settings: the volume of sound effects and music, less motion on the board, color-blind mode, the preview of the beams while a piece is carried, and the look of the board: Plain, Neon, or the look each level pack is made for. Profiles can be exported as a file and imported in another browser.

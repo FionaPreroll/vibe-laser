@@ -80,6 +80,12 @@ export const en = {
   failedTitle: 'Explosion',
   failedText: 'An explosive went off, and undo cannot bring it back. Start the level again.',
   startAgain: 'Start again',
+  showResult: '{title}: show again',
+
+  turnTitle: 'Turn your phone',
+  turnText: 'Vibe Laser is played across the screen. Turn your phone on its side.',
+  fullScreen: 'Full screen',
+  leaveFullScreen: 'Leave full screen',
 
   profilesTitle: 'Profiles',
   defaultName: 'Player',
@@ -458,6 +464,12 @@ export const de: Record<MessageKey, string> = {
   failedText:
     'Ein Sprengstoff ist explodiert, und Rückgängig hilft nicht mehr. Starte das Level neu.',
   startAgain: 'Neu starten',
+  showResult: '{title}: wieder zeigen',
+
+  turnTitle: 'Dreh dein Handy',
+  turnText: 'Vibe Laser spielt man im Querformat. Dreh dein Handy auf die Seite.',
+  fullScreen: 'Vollbild',
+  leaveFullScreen: 'Vollbild beenden',
 
   profilesTitle: 'Profile',
   defaultName: 'Spieler',
