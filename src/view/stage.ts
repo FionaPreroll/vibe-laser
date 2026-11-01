@@ -168,6 +168,11 @@ export async function createStage(
     screen = resized
   }
   app.renderer.on('resize', fitToHost)
+  // resizeTo follows only the window. The host also changes size on its own, as when the button
+  // bar below it gains a button once the level is solved.
+  const hostResized =
+    typeof ResizeObserver === 'undefined' ? undefined : new ResizeObserver(() => app.queueResize())
+  hostResized?.observe(host)
 
   return {
     app,
@@ -194,6 +199,7 @@ export async function createStage(
       host.removeEventListener('focus', onFocus)
       host.removeEventListener('blur', onBlur)
       app.renderer.off('resize', fitToHost)
+      hostResized?.disconnect()
       app.destroy(true, { children: true })
     },
   }

@@ -1633,6 +1633,8 @@ button.link {
   .play-area .moves {
     grid-column: 1 / -1;
     margin: 4px 0 0;
+    /* The bar beside the board is narrow: par goes onto a line of its own rather than past its edge. */
+    white-space: normal;
   }
 
   .play-area .color-dots {
