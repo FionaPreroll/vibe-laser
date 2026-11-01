@@ -72,7 +72,8 @@ export const en = {
   solvedTitle: 'Level solved',
   solvedText: 'Every coin is spinning.',
   movesCounter: 'Moves: {count}',
-  movesPar: 'Moves: {count} · par {par}',
+  // A no-break space keeps par and its number on one line in the narrow bar beside the board.
+  movesPar: 'Moves: {count} · par\u00a0{par}',
   parReached: '★ Par is {count} moves, and you made it!',
   parReachedOne: '★ Par is 1 move, and you made it!',
   parMissed: 'Par is {count} moves.',
@@ -501,7 +502,7 @@ export const de: Record<MessageKey, string> = {
   solvedTitle: 'Level gelöst',
   solvedText: 'Alle Münzen drehen sich.',
   movesCounter: 'Züge: {count}',
-  movesPar: 'Züge: {count} · Par {par}',
+  movesPar: 'Züge: {count} · Par\u00a0{par}',
   parReached: '★ Par sind {count} Züge, und du hast es geschafft!',
   parReachedOne: '★ Par ist 1 Zug, und du hast es geschafft!',
   parMissed: 'Par sind {count} Züge.',

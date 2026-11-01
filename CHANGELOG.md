@@ -36,6 +36,8 @@ All changes players can notice are listed here. The format follows [Keep a Chang
 
 ### Fixed
 
+- Once a level is solved, the board shrinks to make room for the Next level button, instead of reaching under the button bar on smaller screens.
+- On a phone on its side, the moves and par wrap onto two lines instead of running past the edge of the button bar.
 - On a phone on its side, long dialogs such as the settings scroll again, so their lower options can be reached.
 
 ## [0.1.0] - 2026-10-30
