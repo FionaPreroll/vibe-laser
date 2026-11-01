@@ -6,6 +6,23 @@ A laser logic puzzle for the browser. Place mirrors, prisms, filters and other o
 
 Play it at https://fionapreroll.github.io/vibe-laser/.
 
+![A solved level of Sea of Colors: a prism splits white light into red, green and blue, and every coin spins](docs/screenshots/solved.png)
+
+## Screenshots
+
+|                                                                                                              |                                                                                                                          |
+| ------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------ |
+| ![The level packs](docs/screenshots/packs.png)                                                               | ![The skills of Lightworks at a laboratory console](docs/screenshots/skills.png)                                         |
+| Seven level packs, from the Tutorial to Powder Keg.                                                          | Each pack chooses its skills on a screen of its own.                                                                     |
+| ![A mirror carried over the board, with the beams it would make shown faintly](docs/screenshots/preview.png) | ![Explosives and black holes in the Neon look](docs/screenshots/neon.png)                                                |
+| While a piece is carried, faint beams show where its light would go.                                         | Explosives, fuel cells and black holes, here in the Neon look of Powder Keg.                                             |
+| ![A hint outlines where the next piece goes](docs/screenshots/hint.png)                                      | ![Color-blind mode writes colors as letters and draws each color as a line of its own](docs/screenshots/color-blind.png) |
+| Hints & Solutions shows where the next piece goes, or plays the whole solution.                              | Color-blind mode writes colors as letters and draws each color in a beam as a line of its own.                           |
+| ![The level editor](docs/screenshots/editor.png)                                                             | ![A level on a phone held on its side](docs/screenshots/phone.png)                                                       |
+| The level editor makes packs of your own.                                                                    | On a phone on its side, the buttons sit to the right of the board.                                                       |
+
+The pictures are taken by `pnpm screenshots` (see [Screenshots](#updating-the-screenshots)).
+
 ## How to play
 
 - Pick a level pack, a skill and a level. Every level of a skill is open from the start, and solved levels carry a mark. Each pack chooses its skills on a screen of its own, as in the original: the Tutorial on a chalkboard, Lightworks at a laboratory console.
@@ -96,6 +113,7 @@ pnpm dev
 | `pnpm test:e2e`                | Builds, then runs the Playwright browser tests                                        |
 | `pnpm schemas`                 | Writes `packs/*.schema.json` again from the level and pack schemas                    |
 | `pnpm icons`                   | Renders the app icons in `public/icons/` from `public/favicon.svg` with Chromium      |
+| `pnpm screenshots`             | Builds, then takes the README's screenshots into `docs/screenshots/` with Playwright  |
 
 Playwright needs a Chromium: run `pnpm exec playwright install chromium` once, or set `CHROMIUM_PATH` to an installed Chromium binary.
 
@@ -311,6 +329,15 @@ The unit tests run with coverage, and CI uploads the report to [Codecov](https:/
 ### Deployment
 
 Every push to `main` builds the game and deploys `dist/` to GitHub Pages (`.github/workflows/deploy.yml`), with Pages set to GitHub Actions in the repository settings. The build uses relative asset paths, so it runs under any path.
+
+### Updating the screenshots
+
+The pictures in this README live in `docs/screenshots/`. `pnpm screenshots` takes them again: `tests/screenshots/readme.spec.ts` opens each screen in Playwright's Chromium, plays a few moves of a level's known solution with the mouse (`tests/screenshots/play.ts`) and saves the page. It runs with its own config, `playwright.screenshots.config.ts`, so `pnpm test:e2e` leaves it out.
+
+The Screenshots workflow (`.github/workflows/screenshots.yml`) does the same on GitHub. Start it by hand under Actions → Screenshots → Run workflow; it opens a pull request from the branch `chore/update_screenshots` with the new pictures, assigned to whoever started it, and does nothing when no picture changed. Two things to know:
+
+- It needs "Allow GitHub Actions to create and approve pull requests", under Settings → Actions → General → Workflow permissions.
+- A pull request opened by a workflow does not start CI by itself. The pull request only changes pictures, so that does no harm; to run CI anyway, close and reopen it.
 
 ## Branches and pull requests
 

@@ -12,5 +12,11 @@
     "allowImportingTsExtensions": true,
     "types": ["node"]
   },
-  "include": ["vite.config.ts", "playwright.config.ts", "tests", "tools"]
+  "include": [
+    "vite.config.ts",
+    "playwright.config.ts",
+    "playwright.screenshots.config.ts",
+    "tests",
+    "tools"
+  ]
 }
