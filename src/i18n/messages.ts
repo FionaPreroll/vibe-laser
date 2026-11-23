@@ -289,6 +289,26 @@ export const en = {
     'Laser Ray is built with these open-source packages. Their licenses ask that their notices come with the game, so here they are.',
   licensesInEnglish: 'The license texts are in English, as their authors wrote them.',
   licensesFailed: 'The license texts could not be loaded.',
+  'lib.@pixi/colord': 'Part of PixiJS: converts and mixes colors.',
+  'lib.@preact/signals':
+    'Updates the menus and screens as soon as the game, the settings or the language change.',
+  'lib.@preact/signals-core':
+    'Holds the state of the game, the editor and the saves, so that every part of the game sees each change.',
+  'lib.@xmldom/xmldom':
+    'Part of PixiJS: reads XML, such as bitmap fonts, where the browser offers no reader of its own.',
+  'lib.earcut': 'Part of PixiJS: cuts shapes into triangles, which the graphics card can draw.',
+  'lib.eventemitter3': 'Part of PixiJS: passes on events, such as clicks and taps on the board.',
+  'lib.gifuct-js': 'Part of PixiJS, for animated GIF images. The game itself shows none.',
+  'lib.idb-keyval': 'Saves profiles, progress, settings and your own level packs in the browser.',
+  'lib.ismobilejs':
+    'Part of PixiJS: tells phones and tablets from computers, to choose fitting graphics settings.',
+  'lib.js-binary-schema-parser': 'Part of PixiJS: reads GIF files for gifuct-js.',
+  'lib.parse-svg-path': 'Part of PixiJS: turns SVG path data into shapes.',
+  'lib.pixi.js':
+    'Draws the board, the pieces, the laser beams and their effects, with WebGL or WebGPU.',
+  'lib.preact': 'Builds the menus, dialogs and screens around the board.',
+  'lib.tiny-lru': 'Part of PixiJS: remembers measured texts and fonts, so that text draws faster.',
+  'lib.zod': 'Checks levels, shared level links and imported saves before the game uses them.',
   editorButton: 'Level editor',
   editorTitle: 'Level editor',
   editorIntro:
@@ -762,6 +782,30 @@ export const de: Record<MessageKey, string> = {
   licensesInEnglish:
     'Die Lizenztexte sind auf Englisch, so wie ihre Autoren sie geschrieben haben.',
   licensesFailed: 'Die Lizenztexte konnten nicht geladen werden.',
+  'lib.@pixi/colord': 'Teil von PixiJS: rechnet Farben um und mischt sie.',
+  'lib.@preact/signals':
+    'Aktualisiert Menüs und Bildschirme, sobald sich Spiel, Einstellungen oder Sprache ändern.',
+  'lib.@preact/signals-core':
+    'Hält den Zustand von Spiel, Editor und Spielständen, damit jeder Teil des Spiels jede Änderung mitbekommt.',
+  'lib.@xmldom/xmldom':
+    'Teil von PixiJS: liest XML, etwa Bitmap-Schriften, wo der Browser keinen eigenen Leser bietet.',
+  'lib.earcut': 'Teil von PixiJS: zerlegt Formen in Dreiecke, die die Grafikkarte zeichnen kann.',
+  'lib.eventemitter3':
+    'Teil von PixiJS: reicht Ereignisse weiter, etwa Klicks und Tipps auf das Spielfeld.',
+  'lib.gifuct-js': 'Teil von PixiJS, für animierte GIF-Bilder. Das Spiel selbst zeigt keine.',
+  'lib.idb-keyval':
+    'Speichert Profile, Fortschritt, Einstellungen und eigene Level-Pakete im Browser.',
+  'lib.ismobilejs':
+    'Teil von PixiJS: unterscheidet Handys und Tablets von Computern, um passende Grafikeinstellungen zu wählen.',
+  'lib.js-binary-schema-parser': 'Teil von PixiJS: liest GIF-Dateien für gifuct-js.',
+  'lib.parse-svg-path': 'Teil von PixiJS: macht aus SVG-Pfaden Formen.',
+  'lib.pixi.js':
+    'Zeichnet Spielfeld, Bauteile, Laserstrahlen und ihre Effekte, mit WebGL oder WebGPU.',
+  'lib.preact': 'Baut Menüs, Dialoge und Bildschirme rund um das Spielfeld.',
+  'lib.tiny-lru':
+    'Teil von PixiJS: merkt sich vermessene Texte und Schriften, damit Text schneller erscheint.',
+  'lib.zod':
+    'Prüft Level, geteilte Level-Links und importierte Spielstände, bevor das Spiel sie verwendet.',
   editorButton: 'Level-Editor',
   editorTitle: 'Level-Editor',
   editorIntro:

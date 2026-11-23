@@ -5,7 +5,7 @@ import { findLevel, type Pack } from '../../content/packs'
 import { ProfileBook } from '../../persistence/profiles'
 import { memoryStore } from '../../persistence/store'
 import { screen as shown } from '../router'
-import { AboutScreen, renderChangelog } from './AboutScreen'
+import { AboutScreen, purposeOf, renderChangelog } from './AboutScreen'
 import { LevelsScreen } from './LevelsScreen'
 import { openPack, PacksScreen } from './PacksScreen'
 import { ProfilesScreen } from './ProfilesScreen'
@@ -373,6 +373,18 @@ describe('AboutScreen', () => {
       'TERMS AND CONDITIONS',
     )
     expect(screen.queryByText('@types/earcut')).toBeNull()
+    expect(entry?.querySelector('summary')?.textContent).toContain('Draws the board')
+  })
+
+  it('says for every package what it does in the game', async () => {
+    render(<AboutScreen />)
+    await screen.findByText('pixi.js')
+    const entries = document.querySelectorAll('.licenses summary')
+    expect(entries.length).toBeGreaterThan(5)
+    for (const summary of entries) {
+      const name = summary.querySelector('.license-name')?.textContent ?? ''
+      expect(purposeOf(name), `a "lib.${name}" message in src/i18n/messages.ts`).toBeDefined()
+    }
   })
 
   it('renders headings, paragraphs and lists, and links as their text', () => {

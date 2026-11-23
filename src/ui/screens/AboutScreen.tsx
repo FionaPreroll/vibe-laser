@@ -3,7 +3,7 @@ import type { ComponentChildren } from 'preact'
 import { useEffect, useState } from 'preact/hooks'
 import changelog from '../../../CHANGELOG.md?raw'
 import { version } from '../../../package.json'
-import { locale, t } from '../../i18n'
+import { isMessageKey, locale, t } from '../../i18n'
 import { navigate } from '../router'
 
 export const CONTACT_NAME = 'Fiona'
@@ -125,7 +125,16 @@ function BuildFacts({ info }: { readonly info: BuildInfo }) {
   )
 }
 
-/** The packages inside the game, each with its license text behind a summary line. */
+/** What a package does in the game, from the "lib.<name>" messages, if one is written. */
+export function purposeOf(name: string): string | undefined {
+  const key = `lib.${name}`
+  return isMessageKey(key) ? t(key) : undefined
+}
+
+/**
+ * The packages inside the game, each with what it does there in the summary line and its
+ * license text behind it.
+ */
 function Licenses() {
   const [packages, setPackages] = useState<readonly ThirdParty[] | 'failed'>()
   useEffect(() => {
@@ -145,7 +154,7 @@ function Licenses() {
       {packages === undefined && <p class="quiet">{t('loading')}</p>}
       {packages === 'failed' && <p role="alert">{t('licensesFailed')}</p>}
       {Array.isArray(packages) && (
-        <ul class="licenses" lang="en">
+        <ul class="licenses">
           {packages.map((pkg) => (
             <li key={`${pkg.name}@${pkg.version}`}>
               <details>
@@ -153,14 +162,17 @@ function Licenses() {
                   <span class="license-name">{pkg.name}</span>{' '}
                   <span class="quiet">{pkg.version}</span>
                   <span class="license-id">{pkg.license}</span>
+                  {purposeOf(pkg.name) !== undefined && (
+                    <span class="license-purpose">{purposeOf(pkg.name)}</span>
+                  )}
                 </summary>
                 {pkg.homepage !== null && (
                   <p>
                     <ExternalLink href={pkg.homepage}>{shortUrl(pkg.homepage)}</ExternalLink>
                   </p>
                 )}
-                <pre>{pkg.text}</pre>
-                {pkg.notice !== null && <pre>{pkg.notice}</pre>}
+                <pre lang="en">{pkg.text}</pre>
+                {pkg.notice !== null && <pre lang="en">{pkg.notice}</pre>}
               </details>
             </li>
           ))}
