@@ -138,7 +138,7 @@ src/
   ui/           Preact screens, header, button bar and dialogs around the canvas
   main.tsx      entry point
 packs/          the level packs, one folder each
-tools/          Vite plugins for the service worker and for writing built-in packs, the icon renderer
+tools/          Vite plugins for the service worker, build info, third-party licenses and writing built-in packs, the icon renderer
 tests/e2e/      Playwright browser tests
 public/         static files, copied as they are
 ```
@@ -235,7 +235,7 @@ The build bundles every `pack.json`, and each level file becomes a small file of
 
 ## Screens and saves
 
-- The address after `#` names the screen, so the browser's back button and bookmarks work: `#/` lists the packs, `#/packs/tutorial` the skills of a pack, `#/packs/tutorial/2` the levels of a skill, `#/play/tutorial/2/5` opens a level, and `#/profiles` and `#/about` the profiles and the version with the changelog. The editor lives at `#/editor`, a pack in it at `#/editor/<pack>` and a slot at `#/editor/<pack>/2/5`. `#/level/<data>` plays a level from a link.
+- The address after `#` names the screen, so the browser's back button and bookmarks work: `#/` lists the packs, `#/packs/tutorial` the skills of a pack, `#/packs/tutorial/2` the levels of a skill, `#/play/tutorial/2/5` opens a level, and `#/profiles` and `#/about` the profiles and the About screen: version and build, contact and links, third-party licenses and the changelog. The editor lives at `#/editor`, a pack in it at `#/editor/<pack>` and a slot at `#/editor/<pack>/2/5`. `#/level/<data>` plays a level from a link.
 - Help and the settings open over the game and stop its clock while they are open.
 - A pack shows its skills, and its level lists, on a selection screen of its own, after the original's SelectSkillDLL: a laboratory console for packs without a choice, as Deluxe had, and six more. `selectScreenOf()` in `src/content/schema.ts` names a pack's screen, and `src/ui/styles.css` draws each one with CSS alone. The pack list shows every pack with a banner in its style, where the original had a picture of 440 × 50 pixels.
 - `ProfileBook` in `src/persistence/profiles.ts` keeps all profiles in one record in IndexedDB (database `vibe-laser`, store `saves`), through idb-keyval. The record carries a version, and `migrate()` is where later formats will convert older saves; a record it cannot read starts afresh. Changes are saved one after another, so the last one always wins.
@@ -282,6 +282,12 @@ Each pack plays its own sounds, as the original's `Sounds` key let a pack use th
 - Production builds get a service worker from `tools/serviceWorker.ts`. Once the build is written, the plugin lists every file in `dist/` and writes `dist/sw.js` with that list and a version made from the files' contents. The worker keeps every file in a cache named after its scope and version, serves requests in its scope from there and answers page loads with `index.html`. So once the game has loaded, it starts and plays offline, every level included.
 - A new version installs in the background and then waits. `src/ui/updates.ts` shows a notice, and only when the player chooses to reload does the new version take over and remove the old version's cache. While the page stays open, it looks for a new version every hour.
 - The worker leaves requests outside its scope alone and removes only its own older caches, so other sites on the same origin, such as other projects on github.io, are not touched. The dev server has no service worker.
+
+## About screen: build info and licenses
+
+- `tools/buildInfo.ts` gives the game the module `virtual:build-info`: the commit, whether the working tree had changes, the build time and, on GitHub Actions, the run that made the build. There it reads `GITHUB_SHA` and the `GITHUB_RUN_*` variables; elsewhere it asks git. The About screen links the commit and the run.
+- `tools/licenses.ts` gives the game the module `virtual:licenses`: every package that the `dependencies` in `package.json` pull in, with its license text and NOTICE file. Packages with types only are left out. An MIT package without a license file gets the MIT text with its author, an Apache-2.0 package that ships only the short header gets the whole license from `tools/licenses/Apache-2.0.txt`, and any other package without a license text stops the build. The About screen loads the list only when it opens, as a chunk of its own.
+- A new dependency therefore appears on the About screen by itself. Check its license once it shows up there.
 
 ## Game rules decided so far
 

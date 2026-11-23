@@ -30,7 +30,7 @@ test('walks through the screens and back with the browser', async ({ page }) => 
   await expect(page.getByRole('heading', { name: 'Tutorial', exact: true })).toBeVisible()
 
   await page.getByRole('button', { name: 'About' }).click()
-  await expect(page.getByRole('heading', { name: 'About Vibe Laser' })).toBeVisible()
+  await expect(page.getByRole('heading', { name: 'About Laser Ray' })).toBeVisible()
   await expect(page.getByRole('heading', { name: /^0\.1\.0 - / })).toBeVisible()
   await page.getByRole('link', { name: /Vibe Laser/ }).click()
   await expect(page.getByRole('heading', { name: 'Level packs' })).toBeVisible()
