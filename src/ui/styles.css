@@ -1021,17 +1021,58 @@ main.play {
 }
 
 .parts div {
-  padding: 6px 0;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-template-rows: auto 1fr;
+  grid-template-areas:
+    "picture name"
+    "picture text";
+  column-gap: 14px;
+  padding: 8px 0;
   border-top: 1px solid var(--line);
 }
 
 .parts dt {
+  grid-area: name;
   font-weight: 600;
 }
 
 .parts dd {
+  grid-area: text;
   margin: 2px 0 0;
   color: var(--text-quiet);
+}
+
+/* Each part on a small board of four by three cells, with the beams it makes. */
+.parts .part-picture {
+  grid-area: picture;
+  width: 144px;
+  height: 108px;
+  margin: 0;
+  border-radius: 6px;
+  background: var(--line);
+}
+
+.part-picture img {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* Narrow screens put the picture above the text, which keeps its width. */
+@media (max-width: 420px) {
+  .parts div {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto;
+    grid-template-areas:
+      "name"
+      "picture"
+      "text";
+  }
+
+  .parts .part-picture {
+    margin-top: 6px;
+  }
 }
 
 .settings {

@@ -219,6 +219,8 @@ describe('HelpDialog', () => {
     const parts = [...dialog.querySelectorAll('dt')].map((term) => term.textContent)
     expect(parts).toHaveLength(25)
     expect(parts.slice(0, 3)).toEqual(['Laser', 'Coin', 'Anti-coin'])
+    // Each part has room for its picture, drawn once PixiJS has loaded.
+    expect(dialog.querySelectorAll('.part-picture')).toHaveLength(25)
     const wheel = screen.getByRole('img', { name: /red and green make yellow/ })
     expect(wheel.querySelectorAll('text')).toHaveLength(7)
     expect(parts.at(-1)).toBe('Complex')
