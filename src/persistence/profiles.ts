@@ -25,6 +25,8 @@ const settingsSchema = z
     // Keys and controller buttons the player changed, by action; older saves load with the defaults.
     keyBindings: z.record(z.string(), z.array(z.string())).default({}),
     padBindings: z.record(z.string(), z.array(z.number().int().min(0))).default({}),
+    // Look for new versions while playing and say so; opt-in, so older saves load with it off.
+    watchUpdates: z.boolean().default(false),
   })
   .strict()
 
@@ -76,6 +78,7 @@ export const DEFAULT_SETTINGS: Settings = {
   leftHanded: false,
   keyBindings: {},
   padBindings: {},
+  watchUpdates: false,
 }
 
 const KEY = 'save'

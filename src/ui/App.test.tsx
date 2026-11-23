@@ -36,7 +36,7 @@ async function start(hash = '#/', store: KeyValueStore = memoryStore()) {
     useSounds: vi.fn(),
   } satisfies Audio
   render(<App store={store} audio={audio} />)
-  await screen.findByRole('heading', { name: 'Vibe Laser' })
+  await screen.findByRole('heading', { name: 'Laser Ray' })
   return { audio, store }
 }
 
@@ -342,9 +342,9 @@ describe('App', () => {
     await click('Profile: Player')
     expect(screen.getByRole('heading', { name: 'Profiles' })).toBeTruthy()
     await click('About')
-    expect(screen.getByRole('heading', { name: 'About Vibe Laser' })).toBeTruthy()
+    expect(screen.getByRole('heading', { name: 'About Laser Ray' })).toBeTruthy()
     // The browser follows the link to the address of the pack list.
-    expect(screen.getByRole('link', { name: /Vibe Laser/ }).getAttribute('href')).toBe('#/')
+    expect(screen.getByRole('link', { name: /Laser Ray/ }).getAttribute('href')).toBe('#/')
   })
 
   it('lists packs made in the editor and plays their levels', async () => {

@@ -10,5 +10,5 @@ export function downloadFile(name: string, text: string): void {
 
 /** A name for a file from a title: letters and digits, with dashes between words. */
 export function fileName(title: string): string {
-  return title.replace(/[^\p{L}\p{N}]+/gu, '-').replace(/^-+|-+$/g, '') || 'vibe-laser'
+  return title.replace(/[^\p{L}\p{N}]+/gu, '-').replace(/^-+|-+$/g, '') || 'laser-ray'
 }

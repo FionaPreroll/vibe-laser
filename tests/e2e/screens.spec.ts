@@ -30,9 +30,9 @@ test('walks through the screens and back with the browser', async ({ page }) => 
   await expect(page.getByRole('heading', { name: 'Tutorial', exact: true })).toBeVisible()
 
   await page.getByRole('button', { name: 'About' }).click()
-  await expect(page.getByRole('heading', { name: 'About Vibe Laser' })).toBeVisible()
+  await expect(page.getByRole('heading', { name: 'About Laser Ray' })).toBeVisible()
   await expect(page.getByRole('heading', { name: /^0\.1\.0 - / })).toBeVisible()
-  await page.getByRole('link', { name: /Vibe Laser/ }).click()
+  await page.getByRole('link', { name: /Laser Ray/ }).click()
   await expect(page.getByRole('heading', { name: 'Level packs' })).toBeVisible()
 })
 
@@ -97,7 +97,7 @@ test('gives a new profile progress of its own', async ({ page }) => {
   await page.getByRole('button', { name: 'Create' }).click()
   await expect(page.getByRole('button', { name: 'Profile: Fiona' })).toBeVisible()
 
-  await page.getByRole('link', { name: /Vibe Laser/ }).click()
+  await page.getByRole('link', { name: /Laser Ray/ }).click()
   await expect(page.getByRole('button', { name: /^Tutorial/ })).toContainText('0 of 23 solved')
   await page.getByRole('button', { name: 'Profile: Fiona' }).click()
   await page.getByRole('button', { name: 'Play as Player' }).click()
@@ -109,7 +109,7 @@ test('exports a profile and imports it as a copy', async ({ page }, testInfo) =>
   const downloading = page.waitForEvent('download')
   await page.getByRole('button', { name: 'Export' }).click()
   const download = await downloading
-  expect(download.suggestedFilename()).toBe('vibe-laser-Player.json')
+  expect(download.suggestedFilename()).toBe('laser-ray-Player.json')
   const file = testInfo.outputPath('profile.json')
   await download.saveAs(file)
 

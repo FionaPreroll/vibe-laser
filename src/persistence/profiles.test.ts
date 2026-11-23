@@ -56,6 +56,7 @@ describe('ProfileBook', () => {
       leftHanded: false,
       keyBindings: {},
       padBindings: {},
+      watchUpdates: false,
     })
   })
 

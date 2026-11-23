@@ -6,6 +6,9 @@ All changes players can notice are listed here. The format follows [Keep a Chang
 
 ### Added
 
+- Installed as an app on a phone, the status bar and the navigation bar take the game's dark background, on iPhones and iPads too, where the game now reaches under the status bar.
+- A setting, off at first, to check for new versions while playing: every hour and whenever the game comes back to the screen, and a notice says when one is ready. Switched off, a new version comes in quietly the next time the game starts.
+
 - A new level pack, Sea of Colors: eighteen puzzles about color, in three skills. Prisms fan white light out, Converters change its color, and Filters sort it with filters and polarizers. Its skills are chosen in a ship's log, with the sounds of the sea.
 - A new level pack, Powder Keg: eighteen puzzles down in the crypt, where light is dangerous, in three skills. Explosives must stay dark, Dark Coins brings anti-coins, and in Black Holes they all meet. It glows in Neon, with the crypt's sounds.
 - A new level pack, Glass Maze: eighteen puzzles about the path of light, in three skills. Refraction bends beams with refractors, Split Beams divides them with splitters and threeways, and in Two Lasers two beams share every board. Its skills are chosen in the clinic of light, with the clinic's sounds.
@@ -24,6 +27,8 @@ All changes players can notice are listed here. The format follows [Keep a Chang
 - Keys and a game controller: the buttons of the bar name their keys in their tooltips, and new keys restart (R), clean up (C), change the speed (F), open help (H) and go on to the next level (N). WASD moves the frame too. A controller plays with the D-pad or left stick, A to pick up and drop, the shoulder buttons to rotate, X and Y to undo and redo. In the settings, under Keys and controller, every key and button can be changed.
 
 ### Changed
+
+- The game is now called Laser Ray. Saves, profiles and packs carry over as they are; exported profiles are named `laser-ray-….json`.
 
 - Help, the slime's description and the level Hungry Slime now say that slimes, mines and ships never cross a beam, and that turning the beam away sets them off.
 - On a phone or tablet on its side, the buttons sit to the right of the board instead of below it, so the board gets the whole height. The header stays on one line, and the notch of a phone no longer covers the game.

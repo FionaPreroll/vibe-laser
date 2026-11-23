@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { pendingUpdate, registerServiceWorker } from './updates'
+import { pendingUpdate, registerServiceWorker, watchUpdates } from './updates'
 
 class FakeWorker extends EventTarget {
   state = 'installing'
@@ -31,12 +31,19 @@ function browser(served: boolean) {
     register: vi.fn(async () => registration),
   })
   const reload = vi.fn()
-  const start = () => registerServiceWorker(container as unknown as ServiceWorkerContainer, reload)
-  return { registration, container, reload, start }
+  const page = Object.assign(new EventTarget(), { visibilityState: 'visible' })
+  const start = () =>
+    registerServiceWorker(
+      container as unknown as ServiceWorkerContainer,
+      reload,
+      page as unknown as Document,
+    )
+  return { registration, container, reload, page, start }
 }
 
 afterEach(() => {
   pendingUpdate.value = undefined
+  watchUpdates.value = false
   vi.useRealTimers()
   vi.restoreAllMocks()
 })
@@ -55,7 +62,8 @@ describe('registerServiceWorker', () => {
     expect(pendingUpdate.value).toBeUndefined()
   })
 
-  it('offers a new version, and reloads once it has taken over', async () => {
+  it('offers a new version while playing, and reloads once it has taken over', async () => {
+    watchUpdates.value = true
     const { registration, container, reload, start } = browser(true)
     await start()
     const worker = registration.arrive()
@@ -67,13 +75,28 @@ describe('registerServiceWorker', () => {
     expect(reload).toHaveBeenCalledOnce()
   })
 
-  it('offers a version that was already waiting when the page loaded', async () => {
+  it('keeps a new version quiet until the next start unless the player asked to hear of it', async () => {
     const { registration, start } = browser(true)
+    await start()
+    const worker = registration.arrive()
+    expect(pendingUpdate.value).toBeUndefined()
+    expect(worker.postMessage).not.toHaveBeenCalled()
+    watchUpdates.value = true
+    pendingUpdate.value?.()
+    expect(worker.postMessage).toHaveBeenCalledWith('skipWaiting')
+    watchUpdates.value = false
+    expect(pendingUpdate.value).toBeUndefined()
+  })
+
+  it('lets a version that was already waiting take over as the page loads', async () => {
+    const { registration, container, reload, start } = browser(true)
     const worker = new FakeWorker()
     registration.waiting = worker
     await start()
-    pendingUpdate.value?.()
     expect(worker.postMessage).toHaveBeenCalledWith('skipWaiting')
+    container.dispatchEvent(new Event('controllerchange'))
+    expect(reload).toHaveBeenCalledOnce()
+    expect(pendingUpdate.value).toBeUndefined()
   })
 
   it('carries on without offline play when the worker cannot register', async () => {
@@ -84,14 +107,29 @@ describe('registerServiceWorker', () => {
     expect(warn).toHaveBeenCalledOnce()
   })
 
-  it('looks for a new version every hour, even when that fails', async () => {
+  it('looks for a new version only when asked, then every hour, even when that fails', async () => {
     vi.useFakeTimers()
     const { registration, start } = browser(true)
     await start()
-    registration.update.mockRejectedValueOnce(new Error('offline'))
     await vi.advanceTimersByTimeAsync(60 * 60 * 1000)
+    expect(registration.update).not.toHaveBeenCalled()
+    registration.update.mockRejectedValueOnce(new Error('offline'))
+    watchUpdates.value = true
     expect(registration.update).toHaveBeenCalledOnce()
     await vi.advanceTimersByTimeAsync(60 * 60 * 1000)
     expect(registration.update).toHaveBeenCalledTimes(2)
+  })
+
+  it('looks for a new version when the game comes back to the screen', async () => {
+    watchUpdates.value = true
+    const { registration, page, start } = browser(true)
+    await start()
+    registration.update.mockClear()
+    page.visibilityState = 'hidden'
+    page.dispatchEvent(new Event('visibilitychange'))
+    expect(registration.update).not.toHaveBeenCalled()
+    page.visibilityState = 'visible'
+    page.dispatchEvent(new Event('visibilitychange'))
+    expect(registration.update).toHaveBeenCalledOnce()
   })
 })

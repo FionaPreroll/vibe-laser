@@ -73,7 +73,7 @@ function ProfileRow({ profile, active, book }: RowProps) {
   const [name, setName] = useState(profile.name)
 
   const download = () =>
-    downloadFile(`vibe-laser-${fileName(profile.name)}.json`, book.exportProfile(profile.id))
+    downloadFile(`laser-ray-${fileName(profile.name)}.json`, book.exportProfile(profile.id))
 
   return (
     <li class={active ? 'profile active' : 'profile'}>

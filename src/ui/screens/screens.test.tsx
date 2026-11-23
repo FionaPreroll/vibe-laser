@@ -270,7 +270,7 @@ describe('ProfilesScreen', () => {
       downloads.push(`${this.download} ${this.href}`)
     })
     fireEvent.click(button('Export'))
-    expect(downloads).toEqual(['vibe-laser-Kim-Co.json blob:profile'])
+    expect(downloads).toEqual(['laser-ray-Kim-Co.json blob:profile'])
     expect(revoke).toHaveBeenCalledWith('blob:profile')
     expect(JSON.parse(await (files[0] as Blob).text())).toMatchObject({
       format: 'vibe-laser-profile',
@@ -300,7 +300,7 @@ describe('ProfilesScreen', () => {
 describe('AboutScreen', () => {
   it('shows the version and what has changed', () => {
     render(<AboutScreen />)
-    expect(screen.getByRole('heading', { name: 'About Vibe Laser' })).toBeTruthy()
+    expect(screen.getByRole('heading', { name: 'About Laser Ray' })).toBeTruthy()
     expect(screen.getByText(/^Version \d+\.\d+\.\d+/)).toBeTruthy()
     expect(screen.getByRole('heading', { name: /^0\.1\.0 - / })).toBeTruthy()
     fireEvent.click(button('Back'))

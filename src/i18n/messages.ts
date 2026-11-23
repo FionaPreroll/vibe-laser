@@ -1,5 +1,5 @@
 export const en = {
-  appTitle: 'Vibe Laser',
+  appTitle: 'Laser Ray',
   tagline: 'Guide colored laser beams onto every coin.',
   language: 'Language',
   board: '{name}: game board with {columns} columns and {rows} rows',
@@ -97,7 +97,7 @@ export const en = {
   showResult: '{title}: show again',
 
   turnTitle: 'Turn your phone',
-  turnText: 'Vibe Laser is played across the screen. Turn your phone on its side.',
+  turnText: 'Laser Ray is played across the screen. Turn your phone on its side.',
   fullScreen: 'Full screen',
   leaveFullScreen: 'Leave full screen',
 
@@ -165,6 +165,9 @@ export const en = {
   'action.exit': 'Exit',
   leftHanded: 'Buttons on the left, for left hands',
   leftHandedHint: 'On a phone or tablet on its side, the buttons sit left of the board.',
+  watchUpdates: 'Check for new versions while playing',
+  watchUpdatesHint:
+    'Checks every hour and whenever the game comes back to the screen, and says when a new version is ready. Switched off, a new version comes in quietly at the next start.',
   beamPreviewHint:
     'While you carry a piece, the beams show faintly where light would go if you put it down there, and explosives it would reach get a red ring. Dotted lines show where slimes and ships would then walk.',
 
@@ -246,7 +249,7 @@ export const en = {
   'parts.ship.text':
     'Flies east and west and drops a row at obstacles. With a fuel cell aboard, it shoots the next explosive ahead.',
 
-  aboutTitle: 'About Vibe Laser',
+  aboutTitle: 'About Laser Ray',
   aboutText:
     'A laser logic puzzle inspired by Aargon Deluxe (Twilight Games, 2001), with rules rebuilt from a written specification and levels and art of its own.',
   version: 'Version {version}',
@@ -427,7 +430,7 @@ export type MessageKey = keyof typeof en
 
 /** Typed against the English catalog, so a missing German text fails the type check. */
 export const de: Record<MessageKey, string> = {
-  appTitle: 'Vibe Laser',
+  appTitle: 'Laser Ray',
   tagline: 'Lenke farbige Laserstrahlen auf jede Münze.',
   language: 'Sprache',
   board: '{name}: Spielfeld mit {columns} Spalten und {rows} Zeilen',
@@ -527,7 +530,7 @@ export const de: Record<MessageKey, string> = {
   showResult: '{title}: wieder zeigen',
 
   turnTitle: 'Dreh dein Handy',
-  turnText: 'Vibe Laser spielt man im Querformat. Dreh dein Handy auf die Seite.',
+  turnText: 'Laser Ray spielt man im Querformat. Dreh dein Handy auf die Seite.',
   fullScreen: 'Vollbild',
   leaveFullScreen: 'Vollbild beenden',
 
@@ -598,6 +601,9 @@ export const de: Record<MessageKey, string> = {
   leftHanded: 'Knöpfe links, für Linkshänder',
   leftHandedHint:
     'Auf einem Handy oder Tablet im Querformat stehen die Knöpfe links vom Spielfeld.',
+  watchUpdates: 'Beim Spielen nach neuen Versionen suchen',
+  watchUpdatesHint:
+    'Sucht stündlich und immer, wenn das Spiel wieder auf den Bildschirm kommt, und meldet, wenn eine neue Version bereit ist. Ausgeschaltet kommt eine neue Version beim nächsten Start still dazu.',
   beamPreviewHint:
     'Während du ein Teil trägst, zeigen die Strahlen blass, wohin das Licht ginge, wenn du es dort ablegst, und Sprengstoff, den es erreichen würde, bekommt einen roten Ring. Gepunktete Linien zeigen, wohin Schleime und Raumschiffe dann laufen würden.',
 
@@ -681,7 +687,7 @@ export const de: Record<MessageKey, string> = {
   'parts.ship.text':
     'Fliegt nach Osten und Westen und rückt an Hindernissen eine Zeile nach unten. Mit einer Brennstoffzelle an Bord schießt es auf den nächsten Sprengstoff voraus.',
 
-  aboutTitle: 'Über Vibe Laser',
+  aboutTitle: 'Über Laser Ray',
   aboutText:
     'Ein Laser-Logikspiel nach dem Vorbild von Aargon Deluxe (Twilight Games, 2001), mit Regeln nach einer schriftlichen Spezifikation und eigenen Leveln und eigener Grafik.',
   version: 'Version {version}',
