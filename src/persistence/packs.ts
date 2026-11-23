@@ -39,6 +39,12 @@ type ShelfData = z.output<typeof shelfSchema>
 
 const KEY = 'packs'
 
+/** The packs of a shelf as a backup holds them; undefined when they cannot be read. */
+export function parsePacks(value: unknown): CustomPack[] | undefined {
+  const parsed = z.array(customPackSchema).safeParse(value)
+  return parsed.success ? parsed.data : undefined
+}
+
 export function slotOf(skill: number, slot: number): string {
   return `${skill}/${slot}`
 }
@@ -156,6 +162,11 @@ export class PackShelf {
     const pack = { id: this.#newId(), pack: parsed.data.pack, levels: parsed.data.levels }
     await this.#write([...this.#data.value.packs, pack])
     return pack
+  }
+
+  /** Puts packs in place of all the player's own, as when a backup is restored. */
+  async replace(packs: readonly CustomPack[]): Promise<void> {
+    await this.#write(packs)
   }
 
   async #change(id: string, change: (pack: CustomPack) => CustomPack): Promise<void> {

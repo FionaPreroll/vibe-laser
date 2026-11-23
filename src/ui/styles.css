@@ -1161,6 +1161,18 @@ main.play {
   margin: 0;
 }
 
+.backup-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.backup-buttons .file-button {
+  display: inline-block;
+  margin: 0;
+}
+
 input,
 textarea {
   padding: 6px 10px;

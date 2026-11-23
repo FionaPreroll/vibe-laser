@@ -248,6 +248,35 @@ describe('App', () => {
     await waitFor(() => expect(beamPreview.value).toBe(false))
   })
 
+  it('keeps the screen on during levels, or always, as the profile says', async () => {
+    const released = vi.fn(async () => {})
+    const request = vi.fn(async () => ({
+      released: false,
+      release: released,
+      addEventListener: () => {},
+    }))
+    Object.defineProperty(navigator, 'wakeLock', { value: { request }, configurable: true })
+    try {
+      await start('#/play/tutorial/1/1')
+      await waitFor(() => expect(request).toHaveBeenCalledOnce())
+      await act(() => navigate({ name: 'packs' }))
+      expect(released).toHaveBeenCalledOnce()
+      await click('Settings')
+      await act(() => {
+        fireEvent.change(screen.getByLabelText('Keep the screen on'), {
+          target: { value: 'always' },
+        })
+      })
+      await waitFor(() => expect(request).toHaveBeenCalledTimes(2))
+      await act(() => {
+        fireEvent.change(screen.getByLabelText('Keep the screen on'), { target: { value: 'off' } })
+      })
+      expect(released).toHaveBeenCalledTimes(2)
+    } finally {
+      Reflect.deleteProperty(navigator, 'wakeLock')
+    }
+  })
+
   it('draws the board anew in the look of the profile', async () => {
     await start('#/play/tutorial/1/1')
     await waitFor(() => expect(mount).toHaveBeenCalledOnce())

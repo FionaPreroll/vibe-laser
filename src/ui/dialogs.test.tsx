@@ -1,6 +1,7 @@
 // @vitest-environment happy-dom
 import { act, cleanup, fireEvent, render, screen, waitFor } from '@testing-library/preact'
 import { afterEach, describe, expect, it, vi } from 'vitest'
+import { PackShelf } from '../persistence/packs'
 import { ProfileBook } from '../persistence/profiles'
 import { memoryStore } from '../persistence/store'
 import { FailedDialog } from './FailedDialog'
@@ -8,6 +9,8 @@ import { HelpDialog } from './HelpDialog'
 import { Modal } from './Modal'
 import { SettingsDialog } from './SettingsDialog'
 import { SolvedDialog } from './SolvedDialog'
+
+const shelf = await PackShelf.open(memoryStore())
 
 afterEach(() => {
   cleanup()
@@ -229,7 +232,7 @@ describe('SettingsDialog', () => {
   it('binds an action to the next key or controller button, and only that action', async () => {
     const book = await ProfileBook.open(memoryStore(), { name: 'Player' })
     const onClose = vi.fn()
-    render(<SettingsDialog book={book} onClose={onClose} />)
+    render(<SettingsDialog book={book} shelf={shelf} onClose={onClose} />)
     const restartKey = () => screen.getByRole('button', { name: /^Key for Restart:/ })
     expect(restartKey().textContent).toBe('R')
     await act(() => void fireEvent.click(restartKey()))
@@ -271,7 +274,7 @@ describe('SettingsDialog', () => {
 
   it('changes the volumes, motion and colors of the active profile', async () => {
     const book = await ProfileBook.open(memoryStore(), { name: 'Player' })
-    render(<SettingsDialog book={book} onClose={() => {}} />)
+    render(<SettingsDialog book={book} shelf={shelf} onClose={() => {}} />)
     const sound = screen.getByLabelText('Sound effects') as HTMLInputElement
     const music = screen.getByLabelText('Music') as HTMLInputElement
     const motion = screen.getByLabelText('Reduce motion') as HTMLInputElement
@@ -314,6 +317,7 @@ describe('SettingsDialog', () => {
       beamPreview: false,
       vibration: true,
       leftHanded: true,
+      wakeLock: 'playing',
       keyBindings: {},
       padBindings: {},
     })
@@ -321,15 +325,38 @@ describe('SettingsDialog', () => {
     expect(screen.getByLabelText('Language')).toBeTruthy()
   })
 
+  it('offers to keep the screen on only where the browser can', async () => {
+    const book = await ProfileBook.open(memoryStore(), { name: 'Player' })
+    const { unmount } = render(<SettingsDialog book={book} shelf={shelf} onClose={() => {}} />)
+    expect(screen.queryByLabelText('Keep the screen on')).toBeNull()
+    unmount()
+    Object.defineProperty(navigator, 'wakeLock', { value: {}, configurable: true })
+    try {
+      render(<SettingsDialog book={book} shelf={shelf} onClose={() => {}} />)
+      const select = screen.getByLabelText('Keep the screen on') as HTMLSelectElement
+      expect([...select.options].map((option) => option.text)).toEqual([
+        'Never',
+        'While playing a level',
+        'Always',
+      ])
+      expect(select.value).toBe('playing')
+      expect(select.getAttribute('aria-describedby')).toBe('wake-lock-hint')
+      await act(() => void fireEvent.change(select, { target: { value: 'always' } }))
+      expect(book.active.value.settings.wakeLock).toBe('always')
+    } finally {
+      Reflect.deleteProperty(navigator, 'wakeLock')
+    }
+  })
+
   it('offers vibration only on devices that can vibrate', async () => {
     const book = await ProfileBook.open(memoryStore(), { name: 'Player' })
-    const { unmount } = render(<SettingsDialog book={book} onClose={() => {}} />)
+    const { unmount } = render(<SettingsDialog book={book} shelf={shelf} onClose={() => {}} />)
     const has = 'vibrate' in navigator
     expect(screen.queryByLabelText('Vibrate as pieces go down and turn') !== null).toBe(has)
     unmount()
     Object.defineProperty(navigator, 'vibrate', { value: vi.fn(), configurable: true })
     try {
-      render(<SettingsDialog book={book} onClose={() => {}} />)
+      render(<SettingsDialog book={book} shelf={shelf} onClose={() => {}} />)
       await act(() => {
         fireEvent.click(screen.getByLabelText('Vibrate as pieces go down and turn'))
       })
