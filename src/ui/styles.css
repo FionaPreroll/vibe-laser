@@ -1256,6 +1256,113 @@ input[type="file"] {
   font-size: 0.9375rem;
 }
 
+.about .quiet {
+  color: var(--text-quiet);
+}
+
+.about a {
+  color: var(--accent);
+  overflow-wrap: break-word;
+}
+
+.about .nowrap {
+  white-space: nowrap;
+}
+
+/* Build and contact side by side where there is room, one above the other on phones. */
+.about-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 12px;
+  margin: 16px 0;
+}
+
+.about-card {
+  padding: 4px 16px 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+}
+
+.about-card h3 {
+  margin: 12px 0 8px;
+}
+
+.facts {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 4px 16px;
+  margin: 0;
+}
+
+.facts dt {
+  color: var(--text-quiet);
+}
+
+.facts dd {
+  margin: 0;
+  min-width: 0;
+}
+
+.licenses {
+  margin: 8px 0 16px;
+  padding: 0;
+  list-style: none;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+
+.licenses li + li {
+  border-top: 1px solid var(--line);
+}
+
+.licenses summary {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0 8px;
+  padding: 6px 12px;
+  list-style: none;
+  cursor: pointer;
+}
+
+.licenses summary::-webkit-details-marker {
+  display: none;
+}
+
+.licenses summary::before {
+  content: "▸";
+  color: var(--text-quiet);
+}
+
+.licenses details[open] > summary::before {
+  content: "▾";
+}
+
+.license-name {
+  font-weight: 600;
+}
+
+.license-id {
+  margin-left: auto;
+  color: var(--text-quiet);
+  font-size: 0.8125rem;
+}
+
+.licenses details > :not(summary) {
+  margin: 0 12px 8px;
+}
+
+.licenses pre {
+  max-height: 16rem;
+  overflow: auto;
+  padding: 8px;
+  border-radius: 6px;
+  background: var(--surface);
+  font-size: 0.75rem;
+  white-space: pre-wrap;
+}
+
 /* Level editor */
 
 .visually-hidden {

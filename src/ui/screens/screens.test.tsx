@@ -301,10 +301,78 @@ describe('AboutScreen', () => {
   it('shows the version and what has changed', () => {
     render(<AboutScreen />)
     expect(screen.getByRole('heading', { name: 'About Laser Ray' })).toBeTruthy()
-    expect(screen.getByText(/^Version \d+\.\d+\.\d+/)).toBeTruthy()
+    expect(screen.getByText(/^\d+\.\d+\.\d+$/)).toBeTruthy()
     expect(screen.getByRole('heading', { name: /^0\.1\.0 - / })).toBeTruthy()
     fireEvent.click(button('Back'))
     expect(shown.value).toEqual({ name: 'packs' })
+  })
+
+  it('links the commit and the CI run of a GitHub build', () => {
+    const commit = '0123456789abcdef0123456789abcdef01234567'
+    render(
+      <AboutScreen
+        info={{
+          commit,
+          modified: false,
+          builtAt: '2026-11-23T18:00:00.000Z',
+          ciRun: {
+            url: 'https://github.com/FionaPreroll/vibe-laser/actions/runs/42',
+            workflow: 'Deploy',
+            number: '17',
+            attempt: '2',
+          },
+        }}
+      />,
+    )
+    const link = (name: string | RegExp) => screen.getByRole('link', { name })
+    expect(link('0123456').getAttribute('href')).toBe(
+      `https://github.com/FionaPreroll/vibe-laser/commit/${commit}`,
+    )
+    expect(link('Deploy #17, attempt 2').getAttribute('href')).toBe(
+      'https://github.com/FionaPreroll/vibe-laser/actions/runs/42',
+    )
+    expect(document.querySelector('time')?.getAttribute('datetime')).toBe(
+      '2026-11-23T18:00:00.000Z',
+    )
+  })
+
+  it('tells of a local build with changes, and of a missing commit', () => {
+    const { unmount } = render(
+      <AboutScreen
+        info={{ commit: 'abcdef1234567', modified: true, builtAt: 'now', ciRun: null }}
+      />,
+    )
+    expect(screen.getByText(/with local changes/)).toBeTruthy()
+    expect(screen.getByText('Built outside GitHub')).toBeTruthy()
+    expect(screen.getByText('now')).toBeTruthy()
+    unmount()
+    render(<AboutScreen info={{ commit: null, modified: false, builtAt: 'now', ciRun: null }} />)
+    expect(screen.getByText('unknown')).toBeTruthy()
+  })
+
+  it('names the contact, the website and the source', () => {
+    render(<AboutScreen />)
+    expect(screen.getByRole('link', { name: 'fipreroll+app@gmail.com' }).getAttribute('href')).toBe(
+      'mailto:fipreroll+app@gmail.com',
+    )
+    expect(screen.getByRole('link', { name: 'fionapreroll.github.io' }).getAttribute('href')).toBe(
+      'https://fionapreroll.github.io/',
+    )
+    expect(
+      screen.getByRole('link', { name: 'github.com/FionaPreroll/vibe-laser' }).getAttribute('href'),
+    ).toBe('https://github.com/FionaPreroll/vibe-laser')
+  })
+
+  it('lists the licenses of the packages inside the game', async () => {
+    render(<AboutScreen />)
+    const pixi = await screen.findByText('pixi.js')
+    const entry = pixi.closest('details')
+    expect(entry?.textContent).toContain('MIT')
+    expect(entry?.textContent).toContain('Permission is hereby granted')
+    expect(screen.getByText('idb-keyval').closest('details')?.textContent).toContain(
+      'TERMS AND CONDITIONS',
+    )
+    expect(screen.queryByText('@types/earcut')).toBeNull()
   })
 
   it('renders headings, paragraphs and lists, and links as their text', () => {
