@@ -1,5 +1,5 @@
 export const en = {
-  appTitle: 'Vibe Laser',
+  appTitle: 'Laser Ray',
   tagline: 'Guide colored laser beams onto every coin.',
   language: 'Language',
   board: '{name}: game board with {columns} columns and {rows} rows',
@@ -97,7 +97,7 @@ export const en = {
   showResult: '{title}: show again',
 
   turnTitle: 'Turn your phone',
-  turnText: 'Vibe Laser is played across the screen. Turn your phone on its side.',
+  turnText: 'Laser Ray is played across the screen. Turn your phone on its side.',
   fullScreen: 'Full screen',
   leaveFullScreen: 'Leave full screen',
 
@@ -165,6 +165,9 @@ export const en = {
   'action.exit': 'Exit',
   leftHanded: 'Buttons on the left, for left hands',
   leftHandedHint: 'On a phone or tablet on its side, the buttons sit left of the board.',
+  watchUpdates: 'Check for new versions while playing',
+  watchUpdatesHint:
+    'Checks every hour and whenever the game comes back to the screen, and says when a new version is ready. Switched off, a new version comes in quietly at the next start.',
   wakeLockLabel: 'Keep the screen on',
   'wakeLock.off': 'Never',
   'wakeLock.playing': 'While playing a level',
@@ -461,7 +464,7 @@ export type MessageKey = keyof typeof en
 
 /** Typed against the English catalog, so a missing German text fails the type check. */
 export const de: Record<MessageKey, string> = {
-  appTitle: 'Vibe Laser',
+  appTitle: 'Laser Ray',
   tagline: 'Lenke farbige Laserstrahlen auf jede Münze.',
   language: 'Sprache',
   board: '{name}: Spielfeld mit {columns} Spalten und {rows} Zeilen',
@@ -561,7 +564,7 @@ export const de: Record<MessageKey, string> = {
   showResult: '{title}: wieder zeigen',
 
   turnTitle: 'Dreh dein Handy',
-  turnText: 'Vibe Laser spielt man im Querformat. Dreh dein Handy auf die Seite.',
+  turnText: 'Laser Ray spielt man im Querformat. Dreh dein Handy auf die Seite.',
   fullScreen: 'Vollbild',
   leaveFullScreen: 'Vollbild beenden',
 
@@ -632,6 +635,9 @@ export const de: Record<MessageKey, string> = {
   leftHanded: 'Knöpfe links, für Linkshänder',
   leftHandedHint:
     'Auf einem Handy oder Tablet im Querformat stehen die Knöpfe links vom Spielfeld.',
+  watchUpdates: 'Beim Spielen nach neuen Versionen suchen',
+  watchUpdatesHint:
+    'Sucht stündlich und immer, wenn das Spiel wieder auf den Bildschirm kommt, und meldet, wenn eine neue Version bereit ist. Ausgeschaltet kommt eine neue Version beim nächsten Start still dazu.',
   wakeLockLabel: 'Bildschirm anlassen',
   'wakeLock.off': 'Nie',
   'wakeLock.playing': 'Während eines Levels',

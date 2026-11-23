@@ -4,11 +4,19 @@ test('describes itself for installing, with icons that load', async ({ page }) =
   await page.goto('./')
   const href = await page.locator('link[rel="manifest"]').getAttribute('href')
   const manifest = await page.evaluate(async (url) => (await fetch(url)).json(), href ?? '')
-  expect(manifest).toMatchObject({ name: 'Vibe Laser', start_url: './', display: 'standalone' })
+  expect(manifest).toMatchObject({ name: 'Laser Ray', start_url: './', display: 'standalone' })
   for (const icon of manifest.icons as { src: string }[]) {
     const response = await page.request.get(new URL(icon.src, page.url()).href)
     expect(response.headers()['content-type'], icon.src).toBe('image/png')
   }
+})
+
+test("colors the phone's bars like the game's background", async ({ page }) => {
+  await page.goto('./')
+  await expect(page.locator('meta[name="theme-color"]')).toHaveAttribute(
+    'content',
+    'rgb(11, 14, 20)',
+  )
 })
 
 test('plays offline once the game has loaded', async ({ page, context }) => {

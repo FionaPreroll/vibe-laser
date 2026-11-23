@@ -55,7 +55,7 @@ test('makes a level in a pack of its own look, tests it, and plays it from the p
 
   await page.reload()
   await expect(page.getByRole('textbox', { name: 'Name (English)' })).toHaveValue('Corner')
-  await page.getByRole('link', { name: /Vibe Laser/ }).click()
+  await page.getByRole('link', { name: /Laser Ray/ }).click()
   await page.getByRole('button', { name: /^Mine/ }).click()
   await page.getByRole('button', { name: '1. Corner' }).click()
   await expect(

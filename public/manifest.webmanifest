@@ -1,6 +1,6 @@
 {
-  "name": "Vibe Laser",
-  "short_name": "Vibe Laser",
+  "name": "Laser Ray",
+  "short_name": "Laser Ray",
   "description": "A laser logic puzzle: guide colored laser beams onto every coin.",
   "start_url": "./",
   "scope": "./",

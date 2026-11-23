@@ -27,7 +27,7 @@ export function SaveBackup({ book, shelf, ask = (question) => confirm(question) 
 
   const download = () => {
     const now = new Date()
-    downloadFile(`vibe-laser-backup-${day(now)}.json`, exportBackup(book, shelf, now))
+    downloadFile(`laser-ray-backup-${day(now)}.json`, exportBackup(book, shelf, now))
   }
 
   const load = async (file: File) => {

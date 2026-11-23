@@ -152,6 +152,24 @@ export function SettingsDialog({ book, shelf, onClose }: Props) {
         <p id="art-hint" class="hint">
           {t('artHint')}
         </p>
+        {'serviceWorker' in navigator && (
+          <>
+            <label class="check">
+              <input
+                type="checkbox"
+                checked={settings.watchUpdates}
+                aria-describedby="watch-updates-hint"
+                onChange={(event) =>
+                  void book.updateSettings({ watchUpdates: event.currentTarget.checked })
+                }
+              />
+              <span>{t('watchUpdates')}</span>
+            </label>
+            <p id="watch-updates-hint" class="hint">
+              {t('watchUpdatesHint')}
+            </p>
+          </>
+        )}
         <LanguageSwitch />
         <KeyBindings book={book} />
         <SaveBackup book={book} shelf={shelf} />

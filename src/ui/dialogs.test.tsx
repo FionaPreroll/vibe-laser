@@ -322,9 +322,24 @@ describe('SettingsDialog', () => {
       wakeLock: 'playing',
       keyBindings: {},
       padBindings: {},
+      watchUpdates: false,
     })
     expect(motion.checked).toBe(true)
     expect(screen.getByLabelText('Language')).toBeTruthy()
+  })
+
+  it('lets players ask to hear of new versions where the game has a service worker', async () => {
+    const book = await ProfileBook.open(memoryStore(), { name: 'Player' })
+    Object.defineProperty(navigator, 'serviceWorker', { value: {}, configurable: true })
+    try {
+      render(<SettingsDialog book={book} shelf={shelf} onClose={() => {}} />)
+      await act(() => {
+        fireEvent.click(screen.getByLabelText('Check for new versions while playing'))
+      })
+      expect(book.active.value.settings.watchUpdates).toBe(true)
+    } finally {
+      Reflect.deleteProperty(navigator, 'serviceWorker')
+    }
   })
 
   it('offers to keep the screen on only where the browser can', async () => {

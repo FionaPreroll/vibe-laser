@@ -30,8 +30,12 @@ body {
   display: flex;
   flex-direction: column;
   height: 100%;
-  /* Phones on their side keep the notch and the rounded corners out of the game. */
-  padding: 0 env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+  /*
+   * Phones keep the notch, the rounded corners and the system bars out of the game, which reaches
+   * under them with its background when it runs as an installed app.
+   */
+  padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom)
+    env(safe-area-inset-left);
 }
 
 .top-bar {
