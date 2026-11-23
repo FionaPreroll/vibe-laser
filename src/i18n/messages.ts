@@ -168,6 +168,22 @@ export const en = {
   watchUpdates: 'Check for new versions while playing',
   watchUpdatesHint:
     'Checks every hour and whenever the game comes back to the screen, and says when a new version is ready. Switched off, a new version comes in quietly at the next start.',
+  wakeLockLabel: 'Keep the screen on',
+  'wakeLock.off': 'Never',
+  'wakeLock.playing': 'While playing a level',
+  'wakeLock.always': 'Always',
+  wakeLockHint:
+    'Keeps the screen from dimming and locking while you think. The screen keeps its own settings while the game is in the background.',
+  backupTitle: 'Saves and backup',
+  backupHint:
+    'Save every profile, with its progress and settings, and your own level packs to one file. Loading it in another browser or on another device brings them all back.',
+  exportBackup: 'Save a backup',
+  importBackup: 'Load a backup',
+  confirmRestore:
+    'Replace every profile and your own packs here with those of the backup (profiles: {profiles}, packs: {packs})? What is not in the backup is lost.',
+  backupRestored: 'The backup is loaded.',
+  backupProfileAdded: 'The file held one profile; it is added to the others.',
+  backupFailed: 'That file is no backup of this game.',
   beamPreviewHint:
     'While you carry a piece, the beams show faintly where light would go if you put it down there, and explosives it would reach get a red ring. Dotted lines show where slimes and ships would then walk.',
 
@@ -604,6 +620,22 @@ export const de: Record<MessageKey, string> = {
   watchUpdates: 'Beim Spielen nach neuen Versionen suchen',
   watchUpdatesHint:
     'Sucht stündlich und immer, wenn das Spiel wieder auf den Bildschirm kommt, und meldet, wenn eine neue Version bereit ist. Ausgeschaltet kommt eine neue Version beim nächsten Start still dazu.',
+  wakeLockLabel: 'Bildschirm anlassen',
+  'wakeLock.off': 'Nie',
+  'wakeLock.playing': 'Während eines Levels',
+  'wakeLock.always': 'Immer',
+  wakeLockHint:
+    'Hält den Bildschirm wach, damit er beim Nachdenken nicht dunkel wird und sperrt. Läuft das Spiel im Hintergrund, gelten die Einstellungen des Geräts.',
+  backupTitle: 'Spielstände und Sicherung',
+  backupHint:
+    'Speichere alle Profile mit Fortschritt und Einstellungen und deine eigenen Level-Packs in einer Datei. In einem anderen Browser oder auf einem anderen Gerät geladen, bringt sie alles zurück.',
+  exportBackup: 'Sicherung speichern',
+  importBackup: 'Sicherung laden',
+  confirmRestore:
+    'Alle Profile und eigenen Packs hier durch die der Sicherung ersetzen (Profile: {profiles}, Packs: {packs})? Was nicht in der Sicherung ist, geht verloren.',
+  backupRestored: 'Die Sicherung ist geladen.',
+  backupProfileAdded: 'Die Datei enthielt ein Profil; es kommt zu den anderen dazu.',
+  backupFailed: 'Diese Datei ist keine Sicherung dieses Spiels.',
   beamPreviewHint:
     'Während du ein Teil trägst, zeigen die Strahlen blass, wohin das Licht ginge, wenn du es dort ablegst, und Sprengstoff, den es erreichen würde, bekommt einen roten Ring. Gepunktete Linien zeigen, wohin Schleime und Raumschiffe dann laufen würden.',
 

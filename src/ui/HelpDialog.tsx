@@ -1,11 +1,17 @@
+import { useEffect, useState } from 'preact/hooks'
+import { partScene } from '../content/partScenes'
+import type { ArtStyle } from '../content/schema'
+import type { PartKind } from '../core/board'
 import { PALETTE } from '../editor/palette'
 import { t } from '../i18n'
+import { artStyleOf, colorBlind } from '../view/display'
 import { BEAM_COLORS } from '../view/palette'
 import { Modal } from './Modal'
 import { touchScreen } from './pointer'
 import { controlsText } from './shortcuts'
 
 export function HelpDialog({ onClose }: { readonly onClose: () => void }) {
+  const pictures = usePartPictures(artStyleOf(undefined), colorBlind.value)
   return (
     <Modal id="help" title={t('helpTitle')} onClose={onClose}>
       <p>{t('helpGoal')}</p>
@@ -21,12 +27,55 @@ export function HelpDialog({ onClose }: { readonly onClose: () => void }) {
         {PALETTE.map(({ kind }) => (
           <div key={kind}>
             <dt>{t(`parts.${kind}`)}</dt>
+            {/* The text beside it says what the picture shows. */}
+            <dd class="part-picture">
+              {pictures?.has(kind) && <img src={pictures.get(kind)} alt="" />}
+            </dd>
             <dd>{t(`parts.${kind}.text`)}</dd>
           </div>
         ))}
       </dl>
     </Modal>
   )
+}
+
+type Pictures = ReadonlyMap<PartKind, string>
+
+/** Pictures drawn so far, by art style and color-blind mode; they stay for the next visit. */
+const drawn = new Map<string, Promise<Pictures>>()
+
+/**
+ * A small board for each part, with beams that show what it does to light, drawn by the game's own
+ * art. PixiJS loads only when the help opens; without WebGL the help goes on without pictures.
+ */
+function usePartPictures(style: ArtStyle, split: boolean): Pictures | undefined {
+  const key = `${style}:${split}`
+  const [pictures, setPictures] = useState<{ key: string; pictures: Pictures }>()
+  useEffect(() => {
+    let open = true
+    let drawing = drawn.get(key)
+    if (drawing === undefined) {
+      drawing = Promise.all([import('../view/partPictures'), import('../view/art')]).then(
+        ([{ drawBoards }, { createArt }]) => {
+          const boards = new Map(PALETTE.map(({ kind }) => [kind, partScene(kind)]))
+          return drawBoards(boards, createArt(style), split)
+        },
+      )
+      drawn.set(key, drawing)
+      // A failure may pass, as when the browser had too many WebGL contexts: try again next time.
+      drawing.catch(() => drawn.delete(key))
+    }
+    drawing.then(
+      (result) => {
+        if (open) setPictures({ key, pictures: result })
+      },
+      (error: unknown) => console.warn('The pictures of the parts could not be drawn', error),
+    )
+    return () => {
+      open = false
+    }
+  }, [key, style, split])
+  return pictures?.key === key ? pictures.pictures : undefined
 }
 
 /** Lights that overlap mix: the regions carry the letters that color-blind mode writes on pieces. */

@@ -26,6 +26,7 @@ import { paintSystemBars } from './systemBars'
 import { TopMenu } from './TopMenu'
 import { UpdateNotice } from './UpdateNotice'
 import { watchUpdates } from './updates'
+import { ScreenAwake } from './wakeLock'
 
 /** The game's sound: effects for the session, music, and volumes from the settings. */
 export interface Audio extends Speaker {
@@ -156,6 +157,20 @@ export function App({ store, audio }: Props) {
   // After every screen change, since a screen may bring a background of its own.
   useEffect(() => paintSystemBars(), [screen.value])
 
+  useEffect(() => {
+    if (book === undefined) return
+    const awake = new ScreenAwake()
+    const stop = effect(() => {
+      const mode = book.active.value.settings.wakeLock
+      const { name } = screen.value
+      awake.set(mode === 'always' || (mode === 'playing' && (name === 'play' || name === 'shared')))
+    })
+    return () => {
+      stop()
+      awake.dispose()
+    }
+  }, [book])
+
   if (opened === undefined || book === undefined) return <p class="loading">{t('loading')}</p>
   const current = screen.value
   const solved = book.solved.value
@@ -247,7 +262,9 @@ export function App({ store, audio }: Props) {
         {current.name === 'about' && <AboutScreen />}
       </main>
       {overlay === 'help' && <HelpDialog onClose={closeOverlay} />}
-      {overlay === 'settings' && <SettingsDialog book={book} onClose={closeOverlay} />}
+      {overlay === 'settings' && shelf && (
+        <SettingsDialog book={book} shelf={shelf} onClose={closeOverlay} />
+      )}
       <TurnNotice />
     </div>
   )

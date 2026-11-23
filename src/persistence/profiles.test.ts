@@ -54,6 +54,7 @@ describe('ProfileBook', () => {
       beamPreview: true,
       vibration: true,
       leftHanded: false,
+      wakeLock: 'playing',
       keyBindings: {},
       padBindings: {},
       watchUpdates: false,
