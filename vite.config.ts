@@ -1,12 +1,14 @@
 import preact from '@preact/preset-vite'
 import { defineConfig } from 'vitest/config'
+import { buildInfo } from './tools/buildInfo.ts'
+import { licenses } from './tools/licenses.ts'
 import { packFiles } from './tools/packFiles.ts'
 import { serviceWorker } from './tools/serviceWorker.ts'
 
 export default defineConfig({
   // Relative asset URLs, so the build runs under any path, such as GitHub Pages' /vibe-laser/.
   base: './',
-  plugins: [preact(), packFiles(), serviceWorker()],
+  plugins: [preact(), packFiles(), serviceWorker(), buildInfo(), licenses()],
   test: {
     include: ['src/**/*.test.{ts,tsx}', 'tools/**/*.test.ts'],
     coverage: {

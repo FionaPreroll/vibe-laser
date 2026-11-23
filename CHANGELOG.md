@@ -6,6 +6,7 @@ All changes players can notice are listed here. The format follows [Keep a Chang
 
 ### Added
 
+- The About page shows which build you are playing, with its commit and, for builds made on GitHub, the run that made it. It also names a contact address, links to fionapreroll.github.io and to the source code, and lists the licenses of the open-source packages inside the game.
 - A new level pack, Sea of Colors: eighteen puzzles about color, in three skills. Prisms fan white light out, Converters change its color, and Filters sort it with filters and polarizers. Its skills are chosen in a ship's log, with the sounds of the sea.
 - A new level pack, Powder Keg: eighteen puzzles down in the crypt, where light is dangerous, in three skills. Explosives must stay dark, Dark Coins brings anti-coins, and in Black Holes they all meet. It glows in Neon, with the crypt's sounds.
 - A new level pack, Glass Maze: eighteen puzzles about the path of light, in three skills. Refraction bends beams with refractors, Split Beams divides them with splitters and threeways, and in Two Lasers two beams share every board. Its skills are chosen in the clinic of light, with the clinic's sounds.

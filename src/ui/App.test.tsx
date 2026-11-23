@@ -371,7 +371,7 @@ describe('App', () => {
     await click('Profile: Player')
     expect(screen.getByRole('heading', { name: 'Profiles' })).toBeTruthy()
     await click('About')
-    expect(screen.getByRole('heading', { name: 'About Vibe Laser' })).toBeTruthy()
+    expect(screen.getByRole('heading', { name: 'About Laser Ray' })).toBeTruthy()
     // The browser follows the link to the address of the pack list.
     expect(screen.getByRole('link', { name: /Vibe Laser/ }).getAttribute('href')).toBe('#/')
   })
