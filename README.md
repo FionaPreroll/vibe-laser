@@ -289,7 +289,7 @@ Each pack plays its own sounds, as the original's `Sounds` key let a pack use th
 
 - `tools/buildInfo.ts` gives the game the module `virtual:build-info`: the commit, whether the working tree had changes, the build time and, on GitHub Actions, the run that made the build. There it reads `GITHUB_SHA` and the `GITHUB_RUN_*` variables; elsewhere it asks git. The About screen links the commit and the run.
 - `tools/licenses.ts` gives the game the module `virtual:licenses`: every package that the `dependencies` in `package.json` pull in, with its license text and NOTICE file. Packages with types only are left out. An MIT package without a license file gets the MIT text with its author, an Apache-2.0 package that ships only the short header gets the whole license from `tools/licenses/Apache-2.0.txt`, and any other package without a license text stops the build. The About screen loads the list only when it opens, as a chunk of its own.
-- A new dependency therefore appears on the About screen by itself. Check its license once it shows up there.
+- A new dependency therefore appears on the About screen by itself. Check its license once it shows up there, and add a `lib.<name>` message in English and German that says what it does in the game: a test in `src/ui/screens/screens.test.tsx` asks for one for every package.
 
 ## Game rules decided so far
 

@@ -47,6 +47,11 @@ export function tn(key: CountedKey, count: number): string {
   return count === 1 ? t(`${key}One` as MessageKey) : t(key, { count })
 }
 
+/** Whether a key, such as one put together at run time, names a message. */
+export function isMessageKey(key: string): key is MessageKey {
+  return Object.hasOwn(en, key)
+}
+
 /** Text in the current language, with {placeholders} filled from params. */
 export function t(key: MessageKey, params?: Readonly<Record<string, string | number>>): string {
   return format(catalogs[locale.value][key], params)
