@@ -7,6 +7,10 @@ import type { KeyValueStore } from './store'
 /** Looks players choose from: 'pack' draws each pack in its own skin, the others every pack. */
 export const LOOKS = ['pack', ...ART_STYLES] as const
 
+/** When the screen stays on: never, while a level is played, or as long as the game is open. */
+export const WAKE_LOCKS = ['off', 'playing', 'always'] as const
+export type WakeLockMode = (typeof WAKE_LOCKS)[number]
+
 const settingsSchema = z
   .object({
     soundVolume: z.number().min(0).max(1),
@@ -22,6 +26,8 @@ const settingsSchema = z
     vibration: z.boolean().default(true),
     // Buttons left of the board on a phone or tablet on its side; older saves load with them right.
     leftHanded: z.boolean().default(false),
+    // Whether the screen stays on; older saves load keeping it on during levels.
+    wakeLock: z.enum(WAKE_LOCKS).default('playing'),
     // Keys and controller buttons the player changed, by action; older saves load with the defaults.
     keyBindings: z.record(z.string(), z.array(z.string())).default({}),
     padBindings: z.record(z.string(), z.array(z.number().int().min(0))).default({}),
@@ -74,6 +80,7 @@ export const DEFAULT_SETTINGS: Settings = {
   beamPreview: true,
   vibration: true,
   leftHanded: false,
+  wakeLock: 'playing',
   keyBindings: {},
   padBindings: {},
 }
@@ -232,6 +239,13 @@ export class ProfileBook {
       profiles: [...this.#data.value.profiles, profile],
     })
     return profile
+  }
+
+  /** Puts saves in place of all profiles, as when a backup is restored. */
+  async replace(data: SaveData): Promise<void> {
+    const parsed = saveSchema.safeParse(data)
+    if (!parsed.success) throw new SyntaxError('These are no saves of this game')
+    await this.#write(parsed.data)
   }
 
   #uniqueName(name: string): string {

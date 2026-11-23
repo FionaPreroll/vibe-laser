@@ -1,16 +1,20 @@
 import { t } from '../i18n'
-import { LOOKS, type ProfileBook } from '../persistence/profiles'
+import type { PackShelf } from '../persistence/packs'
+import { LOOKS, type ProfileBook, WAKE_LOCKS } from '../persistence/profiles'
 import { KeyBindings } from './KeyBindings'
 import { LanguageSwitch } from './LanguageSwitch'
 import { Modal } from './Modal'
+import { SaveBackup } from './SaveBackup'
+import { canKeepAwake } from './wakeLock'
 
 interface Props {
   readonly book: ProfileBook
+  readonly shelf: PackShelf
   readonly onClose: () => void
 }
 
 /** Settings of the active profile; the language belongs to the browser. */
-export function SettingsDialog({ book, onClose }: Props) {
+export function SettingsDialog({ book, shelf, onClose }: Props) {
   const { settings } = book.active.value
   const percent = (value: number) => Math.round(value * 100)
   return (
@@ -104,6 +108,30 @@ export function SettingsDialog({ book, onClose }: Props) {
             <span>{t('vibration')}</span>
           </label>
         )}
+        {canKeepAwake() && (
+          <>
+            <label>
+              <span>{t('wakeLockLabel')}</span>
+              <select
+                value={settings.wakeLock}
+                aria-describedby="wake-lock-hint"
+                onChange={(event) => {
+                  const wakeLock = WAKE_LOCKS.find((mode) => mode === event.currentTarget.value)
+                  if (wakeLock !== undefined) void book.updateSettings({ wakeLock })
+                }}
+              >
+                {WAKE_LOCKS.map((mode) => (
+                  <option key={mode} value={mode}>
+                    {t(`wakeLock.${mode}`)}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <p id="wake-lock-hint" class="hint">
+              {t('wakeLockHint')}
+            </p>
+          </>
+        )}
         <label>
           <span>{t('artLabel')}</span>
           <select
@@ -126,6 +154,7 @@ export function SettingsDialog({ book, onClose }: Props) {
         </p>
         <LanguageSwitch />
         <KeyBindings book={book} />
+        <SaveBackup book={book} shelf={shelf} />
       </div>
     </Modal>
   )
