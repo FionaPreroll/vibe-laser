@@ -270,7 +270,7 @@ describe('ProfilesScreen', () => {
       downloads.push(`${this.download} ${this.href}`)
     })
     fireEvent.click(button('Export'))
-    expect(downloads).toEqual(['vibe-laser-Kim-Co.json blob:profile'])
+    expect(downloads).toEqual(['laser-ray-Kim-Co.json blob:profile'])
     expect(revoke).toHaveBeenCalledWith('blob:profile')
     expect(JSON.parse(await (files[0] as Blob).text())).toMatchObject({
       format: 'vibe-laser-profile',

@@ -42,7 +42,7 @@ describe('SaveBackup', () => {
     })
     fireEvent.click(screen.getByRole('button', { name: 'Save a backup' }))
     expect(downloads).toHaveLength(1)
-    expect(downloads[0]).toMatch(/^vibe-laser-backup-\d{4}-\d\d-\d\d\.json$/)
+    expect(downloads[0]).toMatch(/^laser-ray-backup-\d{4}-\d\d-\d\d\.json$/)
     expect(JSON.parse(await (files[0] as Blob).text())).toMatchObject({
       format: 'vibe-laser-backup',
       saves: { profiles: [{ name: 'Fiona' }] },

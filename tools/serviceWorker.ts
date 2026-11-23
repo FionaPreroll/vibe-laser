@@ -62,7 +62,7 @@ async function filesIn(folder: string): Promise<string[]> {
  *   player chooses to reload.
  */
 export function workerSource(files: readonly string[], version: string): string {
-  return `// Vibe Laser's service worker, written by tools/serviceWorker.ts during the build.
+  return `// Laser Ray's service worker, written by tools/serviceWorker.ts during the build.
 const FILES = ${JSON.stringify(files)}
 const SCOPE = self.registration.scope
 const PREFIX = 'vibe-laser ' + SCOPE + ' '

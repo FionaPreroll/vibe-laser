@@ -1,4 +1,4 @@
-# Vibe Laser
+# Laser Ray
 
 [![Coverage](https://codecov.io/gh/FionaPreroll/vibe-laser/branch/main/graph/badge.svg)](https://codecov.io/gh/FionaPreroll/vibe-laser)
 
@@ -43,7 +43,7 @@ The pictures are taken by `pnpm screenshots` (see [Screenshots](#updating-the-sc
 - Game controller: the D-pad or left stick moves the frame, A picks up and drops, B cancels, LB and RB rotate, X and Y undo and redo, LS restarts, LT cleans up, RT changes the speed, Start opens help, RS goes on and Back leaves the level. Held directions repeat. The settings rebind every key and button under Keys and controller; each profile keeps its own, and a key or button does only one thing. Bindings live in `src/view/bindings.ts`, and `src/view/gamepad.ts` polls the Gamepad API once per frame.
 - The level editor in the header makes levels of your own, in packs that appear in the pack list next to the built-in ones (see [Level editor](#level-editor)).
 - A level made in the editor can travel as a link: whoever opens it plays the level at once, and can keep it in a pack of their own, Shared levels.
-- Once it has loaded, the game also plays offline, and browsers can install it as an app. When a new version is out, a notice below the header offers to reload into it.
+- Once it has loaded, the game also plays offline, and browsers can install it as an app. A new version comes in at the next start; with the setting to check for new versions while playing, a notice below the header offers to reload into it right away. Installed on a phone, the status bar and the navigation bar take the game's background.
 
 ## Parts
 
@@ -282,7 +282,9 @@ Each pack plays its own sounds, as the original's `Sounds` key let a pack use th
 
 - `public/manifest.webmanifest` gives the game's name, colors and icons, so browsers can install it as an app. `pnpm icons` renders the icons in `public/icons/` from `public/favicon.svg`; the maskable one keeps its picture in the middle 80 %, which launchers show whatever shape they cut.
 - Production builds get a service worker from `tools/serviceWorker.ts`. Once the build is written, the plugin lists every file in `dist/` and writes `dist/sw.js` with that list and a version made from the files' contents. The worker keeps every file in a cache named after its scope and version, serves requests in its scope from there and answers page loads with `index.html`. So once the game has loaded, it starts and plays offline, every level included.
-- A new version installs in the background and then waits. `src/ui/updates.ts` shows a notice, and only when the player chooses to reload does the new version take over and remove the old version's cache. While the page stays open, it looks for a new version every hour.
+- A new version installs in the background and then waits. When the page loads with a version waiting, `src/ui/updates.ts` lets it take over at once, before anything is played. One that arrives while the game runs waits for the next start, unless the player switched on the opt-in setting `watchUpdates`: then the game looks for a new version every hour and whenever the page becomes visible again, shows a notice, and only when the player chooses to reload does the new version take over and remove the old version's cache.
+- The `theme-color` meta tag, which colors a phone's status bar and navigation bar and a browser's toolbar, is set by `src/ui/systemBars.ts` from the page's background after every screen change, so it follows `--background` in `styles.css`. On iOS, `black-translucent` lets the game reach under the status bar; `.shell` keeps its content clear of all safe-area insets.
+- The game was called Vibe Laser before. Technical names keep that name so that saves and files carry over: the IndexedDB database, `localStorage` keys, the file formats `vibe-laser-profile`, `vibe-laser-pack` and `vibe-laser-backup`, the service worker's cache names and the repository.
 - The worker leaves requests outside its scope alone and removes only its own older caches, so other sites on the same origin, such as other projects on github.io, are not touched. The dev server has no service worker.
 
 ## About screen: build info and licenses

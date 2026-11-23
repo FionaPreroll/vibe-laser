@@ -22,8 +22,10 @@ import { PlayScreen } from './screens/PlayScreen'
 import { ProfilesScreen } from './screens/ProfilesScreen'
 import { SharedScreen } from './screens/SharedScreen'
 import { SkillsScreen } from './screens/SkillsScreen'
+import { paintSystemBars } from './systemBars'
 import { TopMenu } from './TopMenu'
 import { UpdateNotice } from './UpdateNotice'
+import { watchUpdates } from './updates'
 import { ScreenAwake } from './wakeLock'
 
 /** The game's sound: effects for the session, music, and volumes from the settings. */
@@ -146,10 +148,14 @@ export function App({ store, audio }: Props) {
         chosenArt.value = settings.art
         beamPreview.value = settings.beamPreview
         vibration.value = settings.vibration
+        watchUpdates.value = settings.watchUpdates
         bindings.value = resolveBindings({ keys: settings.keyBindings, pad: settings.padBindings })
       }),
     [book],
   )
+
+  // After every screen change, since a screen may bring a background of its own.
+  useEffect(() => paintSystemBars(), [screen.value])
 
   useEffect(() => {
     if (book === undefined) return

@@ -57,6 +57,7 @@ describe('ProfileBook', () => {
       wakeLock: 'playing',
       keyBindings: {},
       padBindings: {},
+      watchUpdates: false,
     })
   })
 

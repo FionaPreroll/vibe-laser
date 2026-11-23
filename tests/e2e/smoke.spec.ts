@@ -20,7 +20,7 @@ test('opens the first level from the pack list without errors', async ({ page })
   await page.getByRole('button', { name: /^1\. Mirrors/ }).click()
   await page.getByRole('button', { name: /^1\. First Light/ }).click()
 
-  await expect(page.getByRole('heading', { name: 'Vibe Laser' })).toBeVisible()
+  await expect(page.getByRole('heading', { name: 'Laser Ray' })).toBeVisible()
   await expect(
     page.getByRole('application', { name: 'First Light: game board with 6 columns and 3 rows' }),
   ).toBeVisible()
